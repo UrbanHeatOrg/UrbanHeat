@@ -39,7 +39,7 @@ app.add_middleware(
 )
 
 session_service = InMemorySessionService()
-runner = Runner(app_name="dallas_heat_planner", agent=ag.root_agent, session_service=session_service)
+runner = Runner(app_name="dallas_heat_orchestrator", agent=ag.root_agent, session_service=session_service)
 
 class ChatRequest(BaseModel):
     message: str
@@ -1413,9 +1413,9 @@ async def chat(req: ChatRequest):
                 "locations": []
             }
             
-        session = await session_service.get_session(app_name="dallas_heat_planner", user_id="planner_web", session_id=req.session_id)
+        session = await session_service.get_session(app_name="dallas_heat_orchestrator", user_id="planner_web", session_id=req.session_id)
         if not session:
-            session = await session_service.create_session(app_name="dallas_heat_planner", user_id="planner_web")
+            session = await session_service.create_session(app_name="dallas_heat_orchestrator", user_id="planner_web")
             session_id = session.id
         else:
             session_id = req.session_id
@@ -1631,3 +1631,20 @@ if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)
+
+
+@app.get("/api/forestry")
+def forestry(top_n: int = 5, budget: float = 100000.0):
+    return tools.evaluate_urban_forestry_roi(top_n=top_n, budget_per_tract=budget)
+
+@app.get("/api/forestry/tract")
+def forestry_tract(census_tract: str):
+    return tools.get_tract_canopy_planting_sites(census_tract)
+
+@app.get("/api/grid-vulnerability")
+def grid_vulnerability(top_n: int = 5, census_tract: str = None):
+    return tools.assess_grid_vulnerability_and_medical_risk(top_n=top_n, census_tract=census_tract)
+
+@app.get("/api/dispatch")
+def emergency_dispatch(forecast_temp: float = 102.0, top_n: int = 5, ercot_alert: bool = True):
+    return tools.dispatch_emergency_wellness_checks(forecast_temp_f=forecast_temp, top_n=top_n, ercot_grid_alert=ercot_alert)

@@ -3791,3 +3791,575 @@ def get_cooling_accessibility_isochrones(
 
 
 
+
+
+def dispatch_emergency_wellness_checks(
+    forecast_temp_f: float = 102.0,
+    top_n: int = 5,
+    ercot_grid_alert: bool = True
+) -> Dict[str, Any]:
+    """Evaluates Dallas census tracts for Track 1: Today (Emergency Response).
+    
+    Determines optimal tactical dispatch routes for mobile hydration trucks and door-to-door
+    paramedic wellness checks ahead of extreme heat and ERCOT peak load grid stress.
+    
+    Combines tomorrow's forecast temperature with BigQuery ML predicted heat offsets,
+    no-vehicle transit barriers, elderly population, and HHS emPOWER electricity-dependent
+    residents (oxygen concentrators and dialysis machines).
+    
+    Args:
+        forecast_temp_f: Citywide baseline forecast high temperature in °F (default 102.0).
+        top_n: Number of high-priority dispatch tracts to return (default 5).
+        ercot_grid_alert: Whether ERCOT grid alert conditions are active, elevating oxygen/dialysis priority.
+    """
+    client = get_bq_client()
+    grid_multiplier = 1.8 if ercot_grid_alert else 1.0
+    
+    query = f"""
+    WITH tract_candidates AS (
+      SELECT
+        t.geo_id,
+        tb.tract_name,
+        t.tract_lat,
+        t.tract_lon,
+        t.total_pop,
+        CASE WHEN t.median_age < 0 THEN 36.2 ELSE t.median_age END AS median_age,
+        t.housing_units,
+        CASE 
+          WHEN t.median_year_structure_built > 1800 AND t.median_year_structure_built < 2030 
+          THEN t.median_year_structure_built 
+          ELSE 1975.0 
+        END AS median_year_structure_built,
+        COALESCE(t.poverty_rate, 0.0) AS poverty_rate,
+        COALESCE(t.no_vehicle_rate, 0.0) AS no_vehicle_rate,
+        COALESCE(t.total_pop / NULLIF(tb.land_area_sqmi, 0), 3000.0) AS pop_density_per_sqmi,
+        COALESCE(
+          (
+            SELECT MIN(ST_DISTANCE(ST_GEOGPOINT(t.tract_lon, t.tract_lat), pk.geometry))
+            FROM `{PROJECT_ID}.{DATASET}.dallas_parks` pk
+          ),
+          1000.0
+        ) AS dist_to_park_m,
+        COALESCE(emp.empower_beneficiaries_count, 0) AS empower_total,
+        COALESCE(emp.oxygen_dependent_count, 0) AS oxygen_count,
+        COALESCE(emp.dialysis_dependent_count, 0) AS dialysis_count,
+        COALESCE(emp.grid_outage_risk_tier, 'Standard') AS grid_risk_tier
+      FROM `{PROJECT_ID}.{DATASET}.tract_demographics` t
+      JOIN `{PROJECT_ID}.{DATASET}.dallas_tract_boundaries` tb ON t.geo_id = tb.geo_id
+      LEFT JOIN `{PROJECT_ID}.{DATASET}.dallas_hhs_empower` emp ON t.geo_id = emp.geo_id
+      WHERE t.total_pop > 500
+    ),
+    predictions AS (
+      SELECT
+        t.*,
+        p.predicted_temp_offset_f
+      FROM ML.EXPLAIN_PREDICT(
+        MODEL `{PROJECT_ID}.{DATASET}.heat_offset_model`,
+        (
+          SELECT
+            geo_id,
+            tract_lat AS latitude,
+            tract_lon AS longitude,
+            total_pop,
+            pop_density_per_sqmi,
+            median_age,
+            housing_units,
+            median_year_structure_built,
+            poverty_rate,
+            no_vehicle_rate,
+            dist_to_park_m
+          FROM tract_candidates
+        ),
+        STRUCT(3 AS top_k_features)
+      ) p
+      JOIN tract_candidates t ON p.geo_id = t.geo_id
+    )
+    SELECT
+      geo_id,
+      tract_name,
+      ROUND(tract_lat, 4) AS latitude,
+      ROUND(tract_lon, 4) AS longitude,
+      ROUND(total_pop, 0) AS total_pop,
+      ROUND(predicted_temp_offset_f, 2) AS heat_offset_f,
+      ROUND({forecast_temp_f} + predicted_temp_offset_f, 1) AS effective_felt_temp_f,
+      ROUND(poverty_rate * 100, 1) AS poverty_pct,
+      ROUND(no_vehicle_rate * 100, 1) AS no_vehicle_pct,
+      ROUND(median_age, 1) AS median_age,
+      empower_total,
+      oxygen_count,
+      dialysis_count,
+      grid_risk_tier,
+      ROUND(
+        (predicted_temp_offset_f * 2.0) +
+        (no_vehicle_rate * 100 * 0.15) +
+        (poverty_rate * 100 * 0.10) +
+        ((oxygen_count * 0.08 + dialysis_count * 0.05) * {grid_multiplier}),
+        2
+      ) AS tactical_dispatch_score
+    FROM predictions
+    ORDER BY tactical_dispatch_score DESC
+    LIMIT {min(max(top_n, 1), 20)};
+    """
+    
+    try:
+        rows = list(client.query(query).result())
+        routes = []
+        for i, r in enumerate(rows, start=1):
+            routes.append({
+                "dispatch_rank": i,
+                "census_tract": r.geo_id,
+                "tract_name": f"Tract {r.tract_name}",
+                "latitude": r.latitude,
+                "longitude": r.longitude,
+                "total_population": int(r.total_pop),
+                "forecast_conditions": {
+                    "baseline_city_forecast_f": forecast_temp_f,
+                    "microclimate_offset_f": r.heat_offset_f,
+                    "felt_peak_temperature_f": r.effective_felt_temp_f
+                },
+                "demographic_transit_barriers": {
+                    "poverty_rate_pct": r.poverty_pct,
+                    "zero_vehicle_rate_pct": r.no_vehicle_pct,
+                    "median_age": r.median_age
+                },
+                "medically_fragile_roster": {
+                    "oxygen_dependent_residents": r.oxygen_count,
+                    "dialysis_dependent_residents": r.dialysis_count,
+                    "total_empower_beneficiaries": r.empower_total,
+                    "grid_outage_risk_tier": r.grid_risk_tier
+                },
+                "tactical_dispatch_score": r.tactical_dispatch_score,
+                "recommended_deployment": (
+                    f"Route Hydration Unit #{i} & EMS Paramedic Team: Conduct direct wellness checks on "
+                    f"{r.oxygen_count} oxygen-dependent and {r.dialysis_count} dialysis-dependent residents "
+                    f"ahead of {r.effective_felt_temp_f}°F peak afternoon heat."
+                )
+            })
+            
+        return {
+            "track": "Track 1: Today (Emergency Response)",
+            "operational_question": f"It's {forecast_temp_f}°F tomorrow. Where do the hydration trucks and wellness checks go?",
+            "ercot_grid_alert_status": ercot_grid_alert,
+            "dispatches_ordered": len(routes),
+            "priority_dispatch_routes": routes
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+def assess_grid_vulnerability_and_medical_risk(top_n: int = 5, census_tract: str = None) -> dict:
+    """Assess compound grid failure risk and medically fragile electricity-dependent populations.
+
+    Combines HHS emPOWER data (oxygen concentrators, hemodialysis machines, electric wheelchairs)
+    with Department of Energy (DOE) LEAD low-income energy burden data and census demographics
+    to identify tracts where heatwaves coupled with power outages or energy poverty threaten life safety.
+
+    Args:
+        top_n: Number of priority tracts to return if no census_tract specified (default: 5, max: 20).
+        census_tract: Optional 11-digit GEOID to evaluate a single specific tract.
+
+    Returns:
+        Structured assessment with emPOWER counts, energy burden %, outage risk tier, and backup power siting guidance.
+    """
+    client = get_bq_client()
+    
+    where_clause = f"WHERE e.geo_id = '{census_tract}'" if census_tract else ""
+    limit_clause = f"LIMIT {min(max(top_n, 1), 20)}" if not census_tract else "LIMIT 1"
+    
+    query = f"""
+    SELECT
+        e.geo_id,
+        tb.tract_name,
+        e.empower_beneficiaries_count,
+        e.oxygen_dependent_count,
+        e.dialysis_dependent_count,
+        e.electric_wheelchair_count,
+        e.grid_outage_risk_tier,
+        b.median_energy_burden_pct,
+        b.low_income_energy_burden_pct,
+        b.severe_burden_households_count,
+        b.energy_burden_category,
+        SAFE_CAST(tb.center_lat AS FLOAT64) as latitude,
+        SAFE_CAST(tb.center_lon AS FLOAT64) as longitude,
+        td.total_pop,
+        ROUND(td.poverty_rate * 100, 1) as poverty_pct,
+        ROUND(td.no_vehicle_rate * 100, 1) as no_vehicle_pct
+    FROM `{PROJECT_ID}.{DATASET}.dallas_hhs_empower` e
+    JOIN `{PROJECT_ID}.{DATASET}.dallas_doe_energy_burden` b ON e.geo_id = b.geo_id
+    JOIN `{PROJECT_ID}.{DATASET}.dallas_tract_boundaries` tb ON e.geo_id = tb.geo_id
+    JOIN `{PROJECT_ID}.{DATASET}.tract_demographics` td ON e.geo_id = td.geo_id
+    {where_clause}
+    ORDER BY e.empower_beneficiaries_count DESC
+    {limit_clause};
+    """
+    
+    try:
+        rows = list(client.query(query).result())
+        tracts = []
+        for i, r in enumerate(rows, start=1):
+            tracts.append({
+                "rank": i,
+                "census_tract": r.geo_id,
+                "tract_name": f"Tract {r.tract_name}",
+                "latitude": round(r.latitude, 4),
+                "longitude": round(r.longitude, 4),
+                "total_population": int(r.total_pop or 0),
+                "poverty_rate_pct": r.poverty_pct,
+                "zero_vehicle_rate_pct": r.no_vehicle_pct,
+                "medically_fragile_profile": {
+                    "total_empower_beneficiaries": r.empower_beneficiaries_count,
+                    "oxygen_dependent": r.oxygen_dependent_count,
+                    "dialysis_dependent": r.dialysis_dependent_count,
+                    "electric_wheelchair_dependent": r.electric_wheelchair_count,
+                    "outage_risk_tier": r.grid_outage_risk_tier
+                },
+                "energy_burden_profile": {
+                    "median_energy_burden_pct": r.median_energy_burden_pct,
+                    "low_income_energy_burden_pct": r.low_income_energy_burden_pct,
+                    "severe_burden_households": r.severe_burden_households_count,
+                    "energy_burden_category": r.energy_burden_category
+                },
+                "resilience_recommendation": (
+                    f"Designate local cooling shelter with solar microgrid + battery energy storage (BESS) "
+                    f"to protect {r.empower_beneficiaries_count} electricity-dependent residents "
+                    f"({r.oxygen_dependent_count} on oxygen, {r.dialysis_dependent_count} on dialysis) "
+                    f"during ERCOT rolling blackouts. Median energy burden is {r.median_energy_burden_pct}%."
+                )
+            })
+            
+        return {
+            "city": "Dallas",
+            "analysis_type": "Compound Grid Vulnerability & Medically Fragile Population Assessment",
+            "data_sources": ["HHS emPOWER Program", "DOE Low-Income Energy Affordability Data (LEAD)"],
+            "tracts_evaluated": len(tracts),
+            "priority_tracts": tracts
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+def evaluate_urban_forestry_roi(
+    top_n: int = 5,
+    budget_per_tract: float = 100000.0,
+    cost_per_tree: float = 350.0
+) -> Dict[str, Any]:
+    """Evaluates Dallas census tracts for Track 3 (Urban Forestry): Where does tree planting
+
+    buy the most heat relief per dollar?
+
+    Uses BigQuery ML ML.EXPLAIN_PREDICT feature attributions to find neighborhoods where
+    heat offset is heavily driven by impervious surface, building density (housing units),
+    and distance from green spaces/parks. Computes expected cooling relief (°F reduction),
+    number of trees planted within budget, residents impacted, and Cooling Relief ROI per $10k spent.
+
+    Args:
+        top_n: Number of top priority tracts to return (default 5).
+        budget_per_tract: Allocated municipal tree-planting budget per tract in dollars (default $100,000).
+        cost_per_tree: Estimated nursery acquisition, planting, and 3-year establishment cost per tree (default $350).
+
+    Returns:
+        Dictionary containing methodology, citywide summary, and ranked tracts with cost-benefit metrics.
+    """
+    client = get_bq_client()
+    trees_plantable = int(budget_per_tract / cost_per_tree)
+
+    query = f"""
+    WITH tract_candidates AS (
+      SELECT
+        t.geo_id,
+        b.tract_name,
+        t.tract_lat,
+        t.tract_lon,
+        t.total_pop,
+        CASE WHEN t.median_age < 0 THEN 36.2 ELSE t.median_age END AS median_age,
+        t.housing_units,
+        CASE 
+          WHEN t.median_year_structure_built > 1800 AND t.median_year_structure_built < 2030 
+          THEN t.median_year_structure_built 
+          ELSE 1975.0 
+        END AS median_year_structure_built,
+        COALESCE(t.poverty_rate, 0.0) AS poverty_rate,
+        COALESCE(t.no_vehicle_rate, 0.0) AS no_vehicle_rate,
+        COALESCE(b.land_area_sqmi, 1.0) AS land_area_sqmi,
+        COALESCE(t.total_pop / NULLIF(b.land_area_sqmi, 0), 3000.0) AS pop_density_per_sqmi,
+        COALESCE(
+          (
+            SELECT MIN(ST_DISTANCE(ST_GEOGPOINT(t.tract_lon, t.tract_lat), pk.geometry))
+            FROM `{PROJECT_ID}.{DATASET}.dallas_parks` pk
+          ),
+          1000.0
+        ) AS dist_to_park_m,
+        COALESCE(doe.median_energy_burden_pct, 4.0) AS median_energy_burden_pct,
+        COALESCE(doe.low_income_energy_burden_pct, 8.0) AS low_income_energy_burden_pct,
+        COALESCE(doe.severe_burden_households_count, 0) AS severe_burden_homes
+      FROM `{PROJECT_ID}.{DATASET}.tract_demographics` t
+      JOIN `{PROJECT_ID}.{DATASET}.dallas_tract_boundaries` b ON t.geo_id = b.geo_id
+      LEFT JOIN `{PROJECT_ID}.{DATASET}.dallas_doe_energy_burden` doe ON t.geo_id = doe.geo_id
+      WHERE t.total_pop > 500
+        AND b.land_area_sqmi > 0
+    ),
+    explained AS (
+      SELECT
+        c.*,
+        p.predicted_temp_offset_f,
+        p.top_feature_attributions
+      FROM ML.EXPLAIN_PREDICT(
+        MODEL `{PROJECT_ID}.{DATASET}.heat_offset_model`,
+        (
+          SELECT
+            geo_id,
+            tract_lat AS latitude,
+            tract_lon AS longitude,
+            total_pop,
+            pop_density_per_sqmi,
+            median_age,
+            housing_units,
+            median_year_structure_built,
+            poverty_rate,
+            no_vehicle_rate,
+            dist_to_park_m
+          FROM tract_candidates
+        ),
+        STRUCT(8 AS top_k_features)
+      ) p
+      JOIN tract_candidates c ON p.geo_id = c.geo_id
+    )
+    SELECT
+      geo_id,
+      tract_name,
+      ROUND(tract_lat, 4) AS latitude,
+      ROUND(tract_lon, 4) AS longitude,
+      ROUND(total_pop, 0) AS total_pop,
+      ROUND(land_area_sqmi, 3) AS land_area_sqmi,
+      ROUND(housing_units, 0) AS housing_units,
+      ROUND(poverty_rate * 100, 1) AS poverty_pct,
+      ROUND(no_vehicle_rate * 100, 1) AS no_vehicle_pct,
+      ROUND(dist_to_park_m, 0) AS dist_to_park_m,
+      ROUND(predicted_temp_offset_f, 2) AS predicted_heat_offset_f,
+      ROUND(median_energy_burden_pct, 1) AS median_energy_burden_pct,
+      ROUND(low_income_energy_burden_pct, 1) AS low_income_energy_burden_pct,
+      severe_burden_homes,
+      ROUND(COALESCE((SELECT attribution FROM UNNEST(top_feature_attributions) WHERE feature = 'dist_to_park_m'), 0.0), 3) AS park_distance_attribution_f,
+      ROUND(COALESCE((SELECT attribution FROM UNNEST(top_feature_attributions) WHERE feature = 'housing_units'), 0.0), 3) AS building_density_attribution_f,
+      ROUND(COALESCE((SELECT attribution FROM UNNEST(top_feature_attributions) WHERE feature = 'pop_density_per_sqmi'), 0.0), 3) AS pop_density_attribution_f
+    FROM explained
+    WHERE predicted_temp_offset_f > 0.5
+    ORDER BY (
+      COALESCE((SELECT attribution FROM UNNEST(top_feature_attributions) WHERE feature = 'dist_to_park_m'), 0.0) * 1.5 +
+      COALESCE((SELECT attribution FROM UNNEST(top_feature_attributions) WHERE feature = 'housing_units'), 0.0) * 1.0 +
+      (poverty_rate * 0.8) +
+      (median_energy_burden_pct / 10.0 * 0.5)
+    ) DESC
+    LIMIT {min(max(top_n, 1), 20)};
+    """
+    try:
+        job = client.query(query)
+        tracts = []
+        for i, row in enumerate(job.result(), start=1):
+            park_attr = float(row.park_distance_attribution_f or 0.0)
+            bldg_attr = float(row.building_density_attribution_f or 0.0)
+            combined_impervious_attr = max(0.1, round(park_attr + max(0.0, bldg_attr), 3))
+            
+            # Canopy mitigation potential: planting ~285 mature shade trees mitigates 15% to 35% of actionable heat attribution
+            mitigation_factor = min(0.40, max(0.15, 0.15 + (trees_plantable / 1500.0)))
+            expected_temp_reduction_f = round(min(float(row.predicted_heat_offset_f), combined_impervious_attr * mitigation_factor + 0.35), 2)
+            
+            # Relief per dollar metric with energy-burden multiplier:
+            # Trees planted on residential building envelopes shave AC load and energy burden
+            energy_multiplier = 1.0 + (float(row.median_energy_burden_pct or 4.0) / 10.0)
+            person_cooling_degrees = round(expected_temp_reduction_f * float(row.total_pop), 1)
+            cooling_roi_score = round(((person_cooling_degrees * energy_multiplier) / budget_per_tract) * 10000.0, 2)
+            
+            tracts.append({
+                "rank": i,
+                "census_tract": row.geo_id,
+                "tract_name": f"Tract {row.tract_name}",
+                "latitude": row.latitude,
+                "longitude": row.longitude,
+                "population": int(row.total_pop),
+                "land_area_sqmi": row.land_area_sqmi,
+                "poverty_rate_pct": row.poverty_pct,
+                "no_vehicle_rate_pct": row.no_vehicle_pct,
+                "dist_to_park_meters": row.dist_to_park_m,
+                "current_heat_offset_f": row.predicted_heat_offset_f,
+                "energy_burden_profile": {
+                    "median_energy_burden_pct": row.median_energy_burden_pct,
+                    "low_income_energy_burden_pct": row.low_income_energy_burden_pct,
+                    "severe_burden_households": int(row.severe_burden_homes or 0)
+                },
+                "attributions": {
+                    "park_access_deficit_f": park_attr,
+                    "building_density_driver_f": bldg_attr,
+                    "combined_impervious_attribution_f": combined_impervious_attr
+                },
+                "investment_model": {
+                    "tract_budget": budget_per_tract,
+                    "estimated_trees_planted": trees_plantable,
+                    "cost_per_tree": cost_per_tree,
+                    "expected_heat_reduction_f": expected_temp_reduction_f,
+                    "person_degrees_relief": person_cooling_degrees,
+                    "cooling_roi_per_10k": cooling_roi_score
+                },
+                "grid_peak_shaving_benefit": (
+                    f"Canopy shading on residential structures reduces afternoon peak AC cooling demand by ~18%, "
+                    f"relieving local grid distribution transformers and reducing household energy bills "
+                    f"where families face a {row.median_energy_burden_pct}% median energy burden."
+                ),
+                "primary_relief_driver": (
+                    f"Park desert ({int(row.dist_to_park_m):,}m away) & high building density driving "
+                    f"+{combined_impervious_attr:.2f}°F attribution. Tree canopy investment yields {cooling_roi_score} "
+                    f"energy-burden-weighted person-degrees of relief per $10k spent."
+                )
+            })
+            
+        return {
+            "track": "Track 3: Urban Forestry & Canopy Expansion (This Decade)",
+            "framing": "Where does tree planting buy the most relief per dollar?",
+            "analysis_model": "BigQuery ML ML.EXPLAIN_PREDICT feature attributions + DOE LEAD Energy Burden Shaving",
+            "budget_assumptions": {
+                "budget_per_tract_usd": budget_per_tract,
+                "cost_per_tree_usd": cost_per_tree,
+                "trees_planted_per_tract": trees_plantable
+            },
+            "ranked_canopy_investment_tracts": tracts
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+def get_tract_canopy_planting_sites(census_tract: str) -> Dict[str, Any]:
+    """Retrieves detailed urban canopy, park coverage, and candidate civic planting sites
+
+    for a specific Dallas census tract.
+
+    Queries Dallas tract boundaries, park polygons, candidate municipal/civic facilities,
+    and historical weather stations to produce an operational planting action plan.
+
+    Args:
+        census_tract: The 11-digit census tract GEOID (e.g., '48113014204').
+
+    Returns:
+        Dictionary containing current green cover percentage, park acres, housing density,
+        nearest weather station extreme heat stats, and candidate civic planting sites
+        (schools, places of worship, community centers).
+    """
+    client = get_bq_client()
+    
+    summary_query = f"""
+    WITH tract_geo AS (
+      SELECT
+        b.geo_id,
+        b.tract_name,
+        b.land_area_sqmi,
+        t.total_pop,
+        t.housing_units,
+        t.poverty_rate,
+        t.no_vehicle_rate,
+        ST_AREA(b.tract_geom) AS tract_area_m2,
+        b.tract_geom,
+        t.tract_lat,
+        t.tract_lon
+      FROM `{PROJECT_ID}.{DATASET}.dallas_tract_boundaries` b
+      JOIN `{PROJECT_ID}.{DATASET}.tract_demographics` t ON b.geo_id = t.geo_id
+      WHERE b.geo_id = '{census_tract}'
+    ),
+    park_summary AS (
+      SELECT
+        tg.geo_id,
+        ROUND(COALESCE(SUM(ST_AREA(ST_INTERSECTION(tg.tract_geom, p.geometry))) * 0.000247105, 0.0), 1) as park_acres_inside_tract,
+        ROUND(COALESCE(SUM(ST_AREA(ST_INTERSECTION(tg.tract_geom, p.geometry))) / NULLIF(MAX(tg.tract_area_m2), 0) * 100, 0.0), 2) as current_green_cover_pct
+      FROM tract_geo tg
+      LEFT JOIN `{PROJECT_ID}.{DATASET}.dallas_parks` p ON ST_INTERSECTS(tg.tract_geom, p.geometry)
+      GROUP BY tg.geo_id
+    ),
+    min_park AS (
+      SELECT
+        ROUND(MIN(ST_DISTANCE(ST_GEOGPOINT(tg.tract_lon, tg.tract_lat), p.geometry)), 0) as dist_to_nearest_park_m
+      FROM tract_geo tg
+      CROSS JOIN `{PROJECT_ID}.{DATASET}.dallas_parks` p
+    ),
+    nearest_station AS (
+      SELECT
+        s.station_id,
+        s.station_name,
+        ROUND(ST_DISTANCE(ST_GEOGPOINT(s.longitude, s.latitude), ST_GEOGPOINT(tg.tract_lon, tg.tract_lat)), 0) as station_dist_meters,
+        ROUND(MAX(s.max_temp_f), 1) as record_high_f,
+        COUNTIF(s.max_temp_f >= 100) as days_over_100_7yr
+      FROM `{PROJECT_ID}.{DATASET}.station_daily_temps` s
+      CROSS JOIN tract_geo tg
+      GROUP BY s.station_id, s.station_name, s.latitude, s.longitude, tg.tract_lon, tg.tract_lat
+      ORDER BY station_dist_meters ASC
+      LIMIT 1
+    )
+    SELECT
+      tg.geo_id,
+      tg.tract_name,
+      tg.land_area_sqmi,
+      tg.total_pop,
+      tg.housing_units,
+      ROUND(tg.housing_units / NULLIF(tg.land_area_sqmi, 0), 1) as housing_density_sqmi,
+      ROUND(tg.poverty_rate * 100, 1) as poverty_pct,
+      ROUND(tg.no_vehicle_rate * 100, 1) as no_vehicle_pct,
+      ps.park_acres_inside_tract,
+      ps.current_green_cover_pct,
+      mp.dist_to_nearest_park_m,
+      ns.station_name as nearest_station_name,
+      ns.station_dist_meters,
+      ns.record_high_f as station_record_high_f,
+      ns.days_over_100_7yr
+    FROM tract_geo tg
+    JOIN park_summary ps ON tg.geo_id = ps.geo_id
+    CROSS JOIN min_park mp
+    CROSS JOIN nearest_station ns;
+    """
+    
+    facilities_query = f"""
+    SELECT
+      osm_id,
+      facility_name,
+      facility_type,
+      ROUND(latitude, 5) as latitude,
+      ROUND(longitude, 5) as longitude,
+      ROUND(dist_to_park_m, 0) as dist_to_park_m
+    FROM `{PROJECT_ID}.{DATASET}.candidate_facilities_scored`
+    WHERE geo_id = '{census_tract}'
+    ORDER BY dist_to_park_m DESC
+    LIMIT 6;
+    """
+    
+    try:
+        sum_rows = list(client.query(summary_query).result())
+        if not sum_rows:
+            return {"error": f"Census tract {census_tract} not found in Dallas boundaries."}
+        
+        info = dict(sum_rows[0])
+        
+        fac_rows = list(client.query(facilities_query).result())
+        planting_sites = [dict(r) for r in fac_rows]
+        
+        return {
+            "census_tract": info["geo_id"],
+            "tract_name": f"Tract {info['tract_name']}",
+            "canopy_and_land_profile": {
+                "land_area_sqmi": info["land_area_sqmi"],
+                "population": int(info["total_pop"]),
+                "housing_density_per_sqmi": info["housing_density_sqmi"],
+                "park_acres_in_tract": info["park_acres_inside_tract"],
+                "current_green_cover_pct": info["current_green_cover_pct"],
+                "distance_to_nearest_park_m": info["dist_to_nearest_park_m"],
+                "poverty_rate_pct": info["poverty_pct"],
+                "no_vehicle_rate_pct": info["no_vehicle_pct"]
+            },
+            "climate_station_context": {
+                "nearest_station": info["nearest_station_name"],
+                "distance_meters": info["station_dist_meters"],
+                "station_all_time_record_f": info["station_record_high_f"],
+                "days_over_100f_past_7yrs": info["days_over_100_7yr"]
+            },
+            "recommended_civic_planting_sites": planting_sites,
+            "action_plan": (
+                f"Tract {info['tract_name']} currently has {info['current_green_cover_pct']}% green cover with "
+                f"a distance of {int(info['dist_to_nearest_park_m']):,}m to the nearest public park. "
+                f"Recommended planting focus on {len(planting_sites)} civic facilities (schools, churches) "
+                f"within the tract to intercept solar radiation along high-pedestrian pathways."
+            )
+        }
+    except Exception as e:
+        return {"error": str(e)}
