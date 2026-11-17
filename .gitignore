@@ -22,3 +22,8 @@ Thumbs.db
 # Local data
 *.parquet
 *.csv.gz
+*.duckdb*
+
+# Agent skills cache
+.agents/skills/
+skills-lock.json

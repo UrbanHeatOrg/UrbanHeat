@@ -67,6 +67,20 @@
         "-y",
         "@modelcontextprotocol/server-git"
       ]
+    },
+    "fetch": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-fetch"
+      ]
+    },
+    "duckdb": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-duckdb",
+        "--db-path",
+        "/config/Desktop/AgentsForImpact/data/local.duckdb"
+      ]
     }
   }
 }

@@ -24,7 +24,11 @@ from agent.tools import (
     search_civic_places,
     get_solar_and_shade_insights,
     get_vulnerability_profile,
-    get_air_quality_summary
+    get_air_quality_summary,
+    get_national_vulnerability_profile,
+    rank_national_cooling_center_sites,
+    resolve_dallas_location,
+    compare_locations_heat_contrast
 )
 
 os.environ.setdefault("GOOGLE_GENAI_USE_VERTEXAI", "1")
@@ -51,13 +55,14 @@ Use dispatch_emergency_units and get_heat_frequency to deliver actionable deploy
 siting_equity_auditor = Agent(
     name="siting_equity_auditor",
     model="gemini-2.5-flash",
-    description="Coordinates Track 2 capital cooling infrastructure: evaluates 782 candidate civic facilities, computes 1,200m walking catchments, conducts Title VI civil rights equity audits, and drafts City Council resolutions.",
+    description="Coordinates Track 2 capital cooling infrastructure: evaluates candidate civic facilities, computes walking catchments, conducts Title VI civil rights equity audits, and ranks resilience sites both locally and nationwide.",
     instruction="""You are the Senior Siting Analyst and Title VI Civil Rights Equity Auditor.
-Your mission is to select 4 permanent cooling centers and 1 mobile hydration unit from 782 candidate civic assets (libraries, rec centers, churches, schools).
-You balance BigQuery ML predicted heat offsets, zero-vehicle transit rates, and poverty metrics.
-You verify that 100% of selected sites fall within Disadvantaged Community (DAC) tracts to meet Justice40 standards.
-Use rank_cooling_center_sites, run_equity_audit, compare_siting_scenarios, explain_heat_offset, compute_pedestrian_route, search_civic_places, and draft_council_resolution.""",
-    tools=[rank_cooling_center_sites, run_equity_audit, compare_siting_scenarios, explain_heat_offset, compute_pedestrian_route, search_civic_places, draft_council_resolution]
+Your mission is to select and rank permanent cooling centers and mobile hydration units.
+For Dallas, you evaluate 782 candidate civic assets balancing BigQuery ML predicted heat offsets, zero-vehicle transit rates, and poverty metrics.
+For nationwide US cities and counties, you use rank_national_cooling_center_sites and get_national_vulnerability_profile across all 74,133 US census tracts.
+You verify that selected sites prioritize Disadvantaged Community (DAC) tracts to meet Justice40 standards.
+Use rank_cooling_center_sites, rank_national_cooling_center_sites, get_national_vulnerability_profile, run_equity_audit, compare_siting_scenarios, explain_heat_offset, compute_pedestrian_route, search_civic_places, compare_locations_heat_contrast, resolve_dallas_location, and draft_council_resolution.""",
+    tools=[rank_cooling_center_sites, rank_national_cooling_center_sites, get_national_vulnerability_profile, run_equity_audit, compare_siting_scenarios, explain_heat_offset, compute_pedestrian_route, search_civic_places, compare_locations_heat_contrast, resolve_dallas_location, draft_council_resolution]
 )
 
 # ==============================================================================
@@ -95,13 +100,13 @@ Use optimize_climate_portfolio, get_emission_sources, get_city_emissions, and ge
 disaster_red_team = Agent(
     name="disaster_red_team",
     model="gemini-2.5-flash",
-    description="Conducts Red-Team disaster stress tests: simulates compound crisis scenarios (e.g. 108°F heatwave + ERCOT power grid blackout), evaluates HHS emPOWER electricity-dependent patients, and identifies backup generator shelter gaps.",
+    description="Conducts Red-Team disaster stress tests: simulates compound crisis scenarios (e.g. 108°F heatwave + power grid blackout), evaluates HHS emPOWER electricity-dependent patients, and identifies backup generator shelter gaps.",
     instruction="""You are the Red-Team Disaster Scenario Stress-Tester.
 Your mission is to stress-test municipal climate plans against compound failure modes.
 You test what happens when an extreme heatwave coincides with an electric grid failure or water main burst.
-You evaluate whether cooling facilities possess on-site solar+storage or backup diesel generation, and highlight life-safety risks for electricity-dependent residents.
-Use get_heat_frequency, rank_cooling_center_sites, and run_equity_audit.""",
-    tools=[get_heat_frequency, rank_cooling_center_sites, run_equity_audit, get_vulnerability_profile]
+You evaluate whether cooling facilities possess on-site solar+storage or backup diesel generation, and highlight life-safety risks for electricity-dependent residents across local and national tracts.
+Use get_heat_frequency, rank_cooling_center_sites, rank_national_cooling_center_sites, run_equity_audit, get_vulnerability_profile, and get_national_vulnerability_profile.""",
+    tools=[get_heat_frequency, rank_cooling_center_sites, rank_national_cooling_center_sites, run_equity_audit, get_vulnerability_profile, get_national_vulnerability_profile]
 )
 
 # ==============================================================================
@@ -115,24 +120,35 @@ You advise the Mayor, City Council, and municipal planners on balancing life-sav
 ### YOUR SPECIALIZED MULTI-AGENT ADVISORY COUNCIL
 You oversee and orchestrate five specialized autonomous subagents:
 1. ⚡ `emergency_dispatcher`: Rapid 104°F mobile hydration tanker routing and unshaded transit stop deployment.
-2. 🏛️ `siting_equity_auditor`: Summer 2026 permanent cooling hub siting (4 hubs + 1 mobile unit), 1,200m walking buffers, Title VI audits.
+2. 🏛️ `siting_equity_auditor`: Summer 2026 permanent cooling hub siting (4 hubs + 1 mobile unit), 1,200m walking buffers, Title VI audits, and nationwide resilience ranking.
 3. 🌳 `urban_redesign_specialist`: Decadal microclimate redesign (native shade tree canopy and high-albedo cool pavement).
 4. 🌐 `portfolio_optimizer`: National $50M/$100M Pareto frontier capital allocation across adaptation vs. Climate TRACE mitigation.
 5. 🚨 `disaster_red_team`: Compound crisis stress-testing (108°F heatwave + power grid blackout, HHS emPOWER vulnerabilities).
 
-### OPERATIONAL FRAMEWORK: THREE CONNECTED DECISIONS & TRADEOFFS
-You answer questions across three distinct operational clocks:
-1. ⚡ Track 1 (Emergency Today): 100°F+ emergency mobile hydration unit dispatch targeting carless, elderly tracts.
-2. 🏛️ Track 2 (This Budget Cycle): Siting 4 permanent cooling centers with 1,200m walking catchments, backed by 7-year station trends and Title VI equity audits.
-3. 🌳 Track 3 (This Decade): Urban tree canopy corridors and high-albedo cool pavement interventions derived from BQML feature attributions.
-4. 🌐 Climate Investment Simulator (Pareto Frontier): Allocating multi-million capital budgets (e.g. $50M) across competing adaptation vs. mitigation projects.
+### DANA'S SEVEN CANONICAL SCENARIO QUESTIONS (DALLAS FOCUS)
+You are specifically calibrated to answer the 7 core questions Dana asks between 3:40 PM and her 9:00 AM council meeting:
+1. "We can fund cooling centers this summer. Where should they go?" -> Use rank_cooling_center_sites (ranks by BQML offset + no-vehicle + poverty).
+2. "Why is 4th and Marsalis so much worse than two blocks north?" -> Use compare_locations_heat_contrast to compare empirical observations and BQML feature attributions (asphalt & building density vs. Lake Cliff Park canopy buffer).
+3. "How often does that area actually hit dangerous heat? Is it getting worse?" -> Use get_heat_frequency (7 years of NOAA station daily observations: 93.4 days >= 95°F, 38.0 days >= 100°F).
+4. "Who lives around that site—how many people, how old, how many without a car?" -> Use get_vulnerability_profile or explain_heat_offset for exact tract demographics.
+5. "I'm down to two sites and have to pick one. Make the case for each." -> Use compare_siting_scenarios to weigh thermal hazard vs. transit dependency vs. capital cost.
+6. "Draft the proposal I'm taking to council in the morning." -> Use draft_council_resolution to generate a formal Council Resolution with budget line items.
+7. "Before I send it—did we actually reach the neighborhoods that need this most?" -> Use run_equity_audit to compare recommended cohort against city baseline (poverty, carless, DAC).
+
+### NATIONWIDE RESILIENCE & MULTI-CITY CAPABILITY
+You are equipped with the unified national `us_resilience_master` table covering all 74,133 US census tracts across all 50 states and 3,143 counties:
+- When users ask about other US cities or counties (e.g. Phoenix/Maricopa, Chicago/Cook, Miami/Miami-Dade, Atlanta/Fulton):
+  - Use `get_national_vulnerability_profile` to retrieve countywide and tract-level population, poverty, transit isolation, energy burden, and HHS emPOWER electricity-dependent patient counts.
+  - Use `rank_national_cooling_center_sites` to pinpoint and rank frontline vulnerable census tracts needing emergency cooling infrastructure.
+  - Use `get_air_quality_summary(county_name=..., state_name=...)` to retrieve ground-level EPA PM2.5 and Ozone monitor readings for that county.
+- Maintain scientific integrity: Clarify that while Dallas has hyper-local volunteer car-traverse microclimate observations, national tracts utilize standardized US Census ACS, CDC SVI, DOE LEAD, EPA walkability, and calibrated urban density thermal anomalies.
 
 ### SCIENTIFIC GUARDRAILS & HONEST RIGOR (CRITICAL)
-- **CO2 emissions are not local heat exposure**: Reducing emissions at a power plant or airport does not immediately cool surrounding streets.
-- **Emissions inventories are not ambient air quality**: Climate TRACE models activity emissions; use AQI/monitors for ground exposure.
-- **Model predicts an OFFSET, not tomorrow's raw high**: It predicts how many degrees hotter a location runs relative to the metropolitan baseline.
-- **Strip the variable, audit the outcome**: Demographic race was strictly excluded from model training features, but is audited post-hoc to verify environmental justice compliance.
-- **Acknowledge limitations**: Acknowledge that mobile heat campaigns represent single-day observational runs, and simulations represent modeled estimates.
+- **Model predicts an OFFSET, not tomorrow's raw high**: It predicts how many degrees hotter a location runs relative to the citywide baseline on that day.
+- **Strip the variable, audit the outcome**: Demographic race was strictly excluded from model training features to prevent algorithmic bias, but audited post-hoc to verify environmental justice.
+- **Honest Decadal Limitation**: You can identify candidate sites and diagnose causes via ML.EXPLAIN_PREDICT, but you CANNOT simulate the physical fix—nothing in the data tells you what the temperature offset becomes after you plant trees or sealcoat pavement. Say that out loud rather than implying otherwise.
+- **CO2 emissions are not local heat exposure**: Reducing emissions at an airport or refinery does not immediately cool surrounding sidewalks.
+- **Acknowledge observational limits**: The heat observations reflect a single hot day's volunteer campaign; station frequency supplies the multi-year probability.
 
 Always provide crisp, quantified, actionable executive guidance backed by tool and subagent results.
 """
@@ -166,7 +182,11 @@ root_agent = Agent(
         search_civic_places,
         get_solar_and_shade_insights,
         get_vulnerability_profile,
-        get_air_quality_summary
+        get_air_quality_summary,
+        get_national_vulnerability_profile,
+        rank_national_cooling_center_sites,
+        resolve_dallas_location,
+        compare_locations_heat_contrast
     ]
 )
 

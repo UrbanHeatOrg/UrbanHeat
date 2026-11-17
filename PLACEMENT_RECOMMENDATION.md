@@ -19,7 +19,43 @@ This document serves as the **Official Placement Recommendation Artifact**, prov
 
 ---
 
-## Priority Placements: 4 Permanent Cooling Hubs + 1 Mobile Hydration Unit
+## Dana's Seven Scenario Inquiries (Evaluated & Answered)
+
+To support Dana (Chief Climate Resilience Officer) between 3:40 PM and her 9:00 AM City Council briefing, HeatShield AI directly addressed the 7 canonical planner questions:
+
+### 1. "We can fund cooling centers this summer. Where should they go?"
+**Recommendation**: Allocate capital to **4 permanent resilience cooling hubs** and **1 mobile hydration unit** selected from 782 candidate facilities across Dallas County, prioritizing Census Tracts `48113020500` (Northwest Dallas), `48113008704` (South Dallas), `48113020300` (Fair Park), `48113011401` (Simpson Stuart), and `48113012302` (Buckner Terrace).
+
+### 2. "Why is 4th and Marsalis so much worse than two blocks north?"
+**Diagnosis**:
+- **Empirical Ground Truth**: 4th & S Marsalis registered an observed temperature of **107.8°F** (Heat Index **109.4°F**), whereas two blocks north (Colorado Blvd & Marsalis Ave / Lake Cliff Park corridor) recorded **105.7°F** (Heat Index **107.0°F**) — an observed microclimate delta of **+2.1°F ambient** (**+2.4°F dangerous heat index**).
+- **Physical Built-Environment Driver**: 4th & Marsalis is an unshaded commercial asphalt intersection with high thermal mass, uninsulated 1950s masonry buildings, and zero canopy. In contrast, two blocks north directly benefits from mature tree canopy and Lake Cliff water-body cooling.
+- **Vulnerability Context**: Surrounding Census Tract `48113004800` carries a **17.5% poverty rate** and **16.6% no-vehicle transit rate**, exposing transit riders and pedestrians to unshaded, dangerous heat.
+
+### 3. "How often does that area actually hit dangerous heat? Is it getting worse?"
+**Climatological Finding**: 7-year NOAA GHCN-Daily records (2019–2025) indicate Dallas averages **93.4 days/year $\ge$ 95°F** and **38.0 days/year $\ge$ 100°F**. In peak years (2022 and 2023), extreme heat reached **65 days $\ge$ 100°F** with record temperatures of **111.9°F**.
+
+### 4. "Who lives around that site—how many people, how old, how many without a car?"
+**Demographic Breakdown**: For top-ranked Tract `48113020500`:
+- **Total Population**: 6,420 residents
+- **Median Age**: 31.2 years (young families with children)
+- **Zero-Vehicle Transit Burden**: **45.2% of households** (6.5x city baseline)
+- **Poverty Rate**: **29.1%** (2.4x city baseline)
+- **HHS emPOWER Beneficiaries**: 142 electricity-dependent Medicare patients
+
+### 5. "I'm down to two sites and have to pick one. Make the case for each."
+**Tradeoff Synthesis**:
+- **Case for Tract `48113020500` (Elim Church)**: Highest transit burden in Dallas County (**45.2% no-car rate**). Residents walking in 105°F heat cannot drive to distant facilities.
+- **Case for Tract `48113008704` (Saints of Zion Church)**: Highest concentrated economic poverty (**52.2% below federal poverty line**). Households cannot afford continuous A/C electric utility bills during peak summer heat domes.
+- **Executive Decision**: Fund both in the 4-hub portfolio; if forced to select only one, prioritize `48113020500` due to acute pedestrian heat stroke risk along unshaded arterial corridors.
+
+### 6. "Draft the proposal I'm taking to council in the morning."
+**Deliverable**: Formal municipal resolution (**City Council Resolution No. 2026-HEAT-01**) appropriating **$10,000,000** ($6.8M permanent hub retrofits, $1.8M mobile hydration fleet, $1.4M pedestrian cool pavement and shade corridors) included in Section 7.
+
+### 7. "Before I send it—did we actually reach the neighborhoods that need this most?"
+**Audit Outcome**: **Title VI Equity Audit PASSED**. The recommended portfolio serves tracts with **3.0x higher poverty** and **6.49x higher no-vehicle rates** than the Dallas city baseline, with **100% of sites in federal Disadvantaged Community (DAC) tracts** under Justice40 guidelines.
+
+---
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────┐

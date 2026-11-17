@@ -603,13 +603,24 @@
           <i class="fa-solid fa-robot"></i>
         </div>
         <div>
-          <h4 class="font-bold text-sm text-white">Commander Dana</h4>
-          <p class="text-[10px] text-slate-400">Chief Climate Resilience Officer • Gemini 2.5 Flash</p>
+          <h4 class="font-bold text-sm text-white flex items-center gap-2">
+            Commander Dana
+            <span id="voice-live-badge" class="hidden text-[9px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> LIVE VOICE
+            </span>
+          </h4>
+          <p class="text-[10px] text-slate-400">Chief Climate Resilience Officer • Gemini 3.8 Live</p>
         </div>
       </div>
-      <button onclick="toggleCopilot()" class="text-slate-400 hover:text-white p-1 cursor-pointer">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
+      <div class="flex items-center gap-1.5">
+        <button id="voice-top-toggle-btn" onclick="toggleLiveVoice()" title="Toggle Realtime Voice" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-cyan-400 text-[11px] font-semibold flex items-center gap-1.5 transition cursor-pointer">
+          <i class="fa-solid fa-microphone text-xs" id="top-mic-icon"></i>
+          <span id="top-mic-label">Voice Call</span>
+        </button>
+        <button onclick="toggleCopilot()" class="text-slate-400 hover:text-white p-1 cursor-pointer">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
     </div>
 
     <!-- Quick Prompt Chips -->
@@ -644,9 +655,37 @@
       </div>
     </div>
 
+    <!-- Live Voice Status Banner (Active during voice session) -->
+    <div id="live-voice-banner" class="hidden px-3.5 py-2.5 bg-gradient-to-r from-cyan-950/60 to-blue-950/60 border-t border-cyan-500/30 flex items-center justify-between text-xs backdrop-blur-md">
+      <div class="flex items-center gap-2.5">
+        <!-- Animated Voice Wave Bars -->
+        <div class="flex items-center gap-0.5 h-3.5" id="voice-bars">
+          <span class="w-1 h-2 bg-cyan-400 rounded-full animate-pulse"></span>
+          <span class="w-1 h-3.5 bg-cyan-400 rounded-full animate-pulse" style="animation-delay: 100ms;"></span>
+          <span class="w-1 h-2 bg-cyan-400 rounded-full animate-pulse" style="animation-delay: 200ms;"></span>
+          <span class="w-1 h-4 bg-cyan-400 rounded-full animate-pulse" style="animation-delay: 150ms;"></span>
+          <span class="w-1 h-1.5 bg-cyan-400 rounded-full animate-pulse" style="animation-delay: 250ms;"></span>
+        </div>
+        <div>
+          <span id="voice-status-text" class="text-cyan-300 font-mono text-[11px] font-semibold block">Connected • Listening...</span>
+          <span class="text-slate-400 text-[9px] block">Speak naturally (Gemini 3.8 Live 24kHz)</span>
+        </div>
+      </div>
+      <button onclick="stopLiveVoice()" class="px-2 py-1 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-rose-300 hover:text-white text-[10px] font-bold flex items-center gap-1 transition cursor-pointer">
+        <i class="fa-solid fa-phone-slash"></i>
+        <span>End</span>
+      </button>
+    </div>
+
     <!-- Input Footer -->
     <div class="p-3 border-t border-white/10 bg-obsidian-900/40 flex items-center gap-2">
-      <input type="text" id="copilot-input" onkeydown="if(event.key==='Enter') sendDanaMessage()" placeholder="Ask Dana about DUCT X-Ray, equity, or microclimate..." class="flex-1 bg-obsidian-900 border border-white/15 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400">
+      <input type="text" id="copilot-input" onkeydown="if(event.key==='Enter') sendDanaMessage()" placeholder="Ask Dana or click the mic to speak..." class="flex-1 bg-obsidian-900 border border-white/15 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400">
+      
+      <!-- Real-Time Voice Mic Button -->
+      <button id="voice-mic-btn" onclick="toggleLiveVoice()" title="Toggle Realtime Voice (Gemini 3.8 Live)" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-cyan-400 font-bold flex items-center justify-center transition border border-white/10 cursor-pointer shadow-md">
+        <i class="fa-solid fa-microphone text-xs" id="voice-mic-icon"></i>
+      </button>
+
       <button onclick="sendDanaMessage()" class="w-9 h-9 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-obsidian-950 font-bold flex items-center justify-center transition shadow-lg shadow-cyan-500/20 cursor-pointer">
         <i class="fa-solid fa-paper-plane text-xs"></i>
       </button>
@@ -2404,6 +2443,383 @@
         document.getElementById(loadId).remove();
         container.innerHTML += `<div class="text-rose-400 text-xs">Error communicating with Dana.</div>`;
       }
+    }
+
+    // =========================================================================
+    // GEMINI 3.8 LIVE API REALTIME VOICE MANAGER (WebSockets + Web Audio API)
+    // =========================================================================
+    let liveVoiceWs = null;
+    let recAudioCtx = null;
+    let playAudioCtx = null;
+    let micStream = null;
+    let recorderNode = null;
+    let isVoiceActive = false;
+    let isDanaSpeaking = false;
+    let activeSources = [];
+    let nextAudioStartTime = 0;
+    let currentUserBubble = null;
+    let currentDanaBubble = null;
+
+    async function toggleLiveVoice() {
+      if (isVoiceActive) {
+        stopLiveVoice();
+      } else {
+        await startLiveVoice();
+      }
+    }
+
+    async function startLiveVoice() {
+      const micBtn = document.getElementById('voice-mic-btn');
+      const micIcon = document.getElementById('voice-mic-icon');
+      const topBtn = document.getElementById('voice-top-toggle-btn');
+      const topLabel = document.getElementById('top-mic-label');
+      const topIcon = document.getElementById('top-mic-icon');
+      const banner = document.getElementById('live-voice-banner');
+      const badge = document.getElementById('voice-live-badge');
+      const statusText = document.getElementById('voice-status-text');
+
+      // Request microphone access
+      try {
+        micStream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            channelCount: 1,
+            sampleRate: 16000,
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true
+          }
+        });
+      } catch (err) {
+        console.warn("Microphone access denied or unavailable:", err);
+        alert("⚠️ Microphone access required for Gemini 3.8 Live Voice. Please grant microphone permissions in your browser.");
+        return;
+      }
+
+      // UI Connecting State
+      statusText.innerText = "Connecting to Gemini 3.8 Live...";
+      banner.classList.remove('hidden');
+      badge.classList.remove('hidden');
+      badge.classList.add('flex');
+      micBtn.className = "w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 font-bold flex items-center justify-center transition border border-amber-500/40 animate-pulse cursor-pointer shadow-md";
+      micIcon.className = "fa-solid fa-spinner fa-spin text-xs";
+      topBtn.className = "px-2.5 py-1 rounded-lg bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[11px] font-semibold flex items-center gap-1.5 transition cursor-pointer";
+      topIcon.className = "fa-solid fa-spinner fa-spin text-xs";
+      topLabel.innerText = "Connecting...";
+
+      // Setup WebSocket
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${protocol}//${window.location.host}/ws/live`;
+      liveVoiceWs = new WebSocket(wsUrl);
+
+      liveVoiceWs.onopen = async () => {
+        isVoiceActive = true;
+        statusText.innerText = "Connected • Speak to Dana...";
+        micBtn.className = "w-9 h-9 rounded-xl bg-cyan-500/20 text-cyan-400 font-bold flex items-center justify-center transition border border-cyan-500/40 animate-pulse cursor-pointer shadow-lg shadow-cyan-500/20";
+        micIcon.className = "fa-solid fa-microphone-lines text-xs";
+        topBtn.className = "px-2.5 py-1 rounded-lg bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-[11px] font-semibold flex items-center gap-1.5 transition cursor-pointer";
+        topIcon.className = "fa-solid fa-phone text-xs";
+        topLabel.innerText = "Connected";
+
+        // Initialize Audio Playback Context
+        playAudioCtx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 24000 });
+        if (playAudioCtx.state === 'suspended') {
+          await playAudioCtx.resume();
+        }
+        nextAudioStartTime = playAudioCtx.currentTime;
+
+        // Initialize Audio Recording Pipeline (16kHz PCM mono)
+        initMicRecording();
+      };
+
+      liveVoiceWs.onmessage = (event) => {
+        try {
+          const msg = JSON.parse(event.data);
+          handleLiveVoiceMessage(msg);
+        } catch (e) {
+          console.error("Error parsing Live WS message:", e);
+        }
+      };
+
+      liveVoiceWs.onerror = (err) => {
+        console.error("Live Voice WS error:", err);
+        statusText.innerText = "Connection error. Retrying...";
+      };
+
+      liveVoiceWs.onclose = () => {
+        stopLiveVoice();
+      };
+    }
+
+    function initMicRecording() {
+      recAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const source = recAudioCtx.createMediaStreamSource(micStream);
+      const bufferSize = 4096;
+      recorderNode = recAudioCtx.createScriptProcessor(bufferSize, 1, 1);
+      const nativeSampleRate = recAudioCtx.sampleRate;
+
+      recorderNode.onaudioprocess = (e) => {
+        if (!liveVoiceWs || liveVoiceWs.readyState !== WebSocket.OPEN) return;
+        const inputData = e.inputBuffer.getChannelData(0);
+        
+        // Downsample to 16,000Hz
+        const downsampled = downsampleBuffer(inputData, nativeSampleRate, 16000);
+        
+        // Convert to 16-bit PCM (little endian)
+        const pcm16 = new Int16Array(downsampled.length);
+        for (let i = 0; i < downsampled.length; i++) {
+          pcm16[i] = Math.max(-1, Math.min(1, downsampled[i])) * 0x7FFF;
+        }
+
+        // Base64 encode
+        const bytes = new Uint8Array(pcm16.buffer);
+        let binary = '';
+        for (let i = 0; i < bytes.byteLength; i++) {
+          binary += String.fromCharCode(bytes[i]);
+        }
+        const b64 = btoa(binary);
+
+        liveVoiceWs.send(JSON.stringify({
+          type: 'audio',
+          data: b64
+        }));
+      };
+
+      source.connect(recorderNode);
+      recorderNode.connect(recAudioCtx.destination);
+    }
+
+    function downsampleBuffer(buffer, inputSampleRate, targetSampleRate = 16000) {
+      if (inputSampleRate === targetSampleRate) return buffer;
+      const sampleRateRatio = inputSampleRate / targetSampleRate;
+      const newLength = Math.round(buffer.length / sampleRateRatio);
+      const result = new Float32Array(newLength);
+      let offsetResult = 0;
+      let offsetBuffer = 0;
+      while (offsetResult < result.length) {
+        const nextOffsetBuffer = Math.round((offsetResult + 1) * sampleRateRatio);
+        let accum = 0, count = 0;
+        for (let i = offsetBuffer; i < nextOffsetBuffer && i < buffer.length; i++) {
+          accum += buffer[i];
+          count++;
+        }
+        result[offsetResult] = count > 0 ? (accum / count) : 0;
+        offsetResult++;
+        offsetBuffer = nextOffsetBuffer;
+      }
+      return result;
+    }
+
+    function handleLiveVoiceMessage(msg) {
+      const container = document.getElementById('chat-stream');
+      const statusText = document.getElementById('voice-status-text');
+
+      // 1. Barge-in / Interruption
+      if (msg.type === 'interrupted') {
+        stopAllAudioPlayback();
+        isDanaSpeaking = false;
+        statusText.innerText = "Interrupted • Listening to you...";
+        currentDanaBubble = null;
+        return;
+      }
+
+      // 2. User Live Transcription
+      if (msg.type === 'user_transcription') {
+        if (!currentUserBubble) {
+          const bubbleId = 'voice-user-' + Date.now();
+          container.innerHTML += `
+            <div id="${bubbleId}" class="flex gap-2.5 justify-end">
+              <div class="bg-cyan-600/90 rounded-2xl p-3 text-white max-w-[85%] leading-relaxed shadow-md border border-cyan-400/30">
+                <div class="text-[9px] text-cyan-200 font-mono mb-1 flex items-center gap-1">
+                  <i class="fa-solid fa-microphone-lines animate-pulse"></i> Spoken Input
+                </div>
+                <span class="user-text">${msg.text}</span>
+              </div>
+            </div>
+          `;
+          currentUserBubble = document.getElementById(bubbleId);
+        } else {
+          const textEl = currentUserBubble.querySelector('.user-text');
+          if (textEl) textEl.innerText = msg.text;
+        }
+        if (msg.is_final) {
+          currentUserBubble = null;
+        }
+        container.scrollTop = container.scrollHeight;
+      }
+
+      // 3. Dana Live Spoken Transcription
+      if (msg.type === 'dana_transcription') {
+        statusText.innerText = "Commander Dana is speaking...";
+        if (!currentDanaBubble) {
+          const bubbleId = 'voice-dana-' + Date.now();
+          container.innerHTML += `
+            <div id="${bubbleId}" class="flex gap-2.5">
+              <div class="w-7 h-7 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex-shrink-0 flex items-center justify-center text-white text-xs shadow-md">
+                <i class="fa-solid fa-robot"></i>
+              </div>
+              <div class="trace-card rounded-2xl p-3.5 max-w-[85%] border border-cyan-500/30 text-slate-200 leading-relaxed shadow-lg">
+                <div class="flex items-center justify-between text-[9px] text-slate-400 mb-1 border-b border-white/10 pb-1">
+                  <span class="text-cyan-300 font-bold"><i class="fa-solid fa-volume-high text-cyan-400 animate-pulse"></i> Dana (Voice Stream)</span>
+                  <span class="text-purple-300"><i class="fa-solid fa-shield-cat"></i> Model Armor Guarded</span>
+                </div>
+                <div class="dana-text text-xs leading-relaxed whitespace-pre-wrap">${msg.text}</div>
+              </div>
+            </div>
+          `;
+          currentDanaBubble = document.getElementById(bubbleId);
+        } else {
+          const textEl = currentDanaBubble.querySelector('.dana-text');
+          if (textEl) textEl.innerText += msg.text;
+        }
+        container.scrollTop = container.scrollHeight;
+      }
+
+      // 4. Model Audio Chunks (24kHz PCM)
+      if (msg.type === 'audio' && msg.data) {
+        isDanaSpeaking = true;
+        const binaryStr = atob(msg.data);
+        const len = binaryStr.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) {
+          bytes[i] = binaryStr.charCodeAt(i);
+        }
+        schedulePcmAudioChunk(bytes, msg.rate || 24000);
+      }
+
+      // 5. Turn Complete
+      if (msg.type === 'turn_complete') {
+        currentDanaBubble = null;
+        currentUserBubble = null;
+        setTimeout(() => {
+          if (isVoiceActive && !isDanaSpeaking) {
+            statusText.innerText = "Connected • Listening...";
+          }
+        }, 800);
+      }
+
+      // 6. Model Armor Rejection on Spoken/Transcribed text
+      if (msg.type === 'armor_blocked') {
+        stopAllAudioPlayback();
+        container.innerHTML += `
+          <div class="flex gap-2.5">
+            <div class="w-7 h-7 rounded-xl bg-rose-600 flex-shrink-0 flex items-center justify-center text-white text-xs">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <div class="bg-rose-950/60 border border-rose-800 text-rose-200 rounded-2xl p-3.5 max-w-[85%] leading-relaxed">
+              <div class="text-[9px] text-rose-400 font-bold mb-1 border-b border-rose-800/40 pb-1">Model Armor Alert</div>
+              ${msg.message}
+            </div>
+          </div>
+        `;
+        container.scrollTop = container.scrollHeight;
+      }
+    }
+
+    function schedulePcmAudioChunk(pcmBytes, sampleRate = 24000) {
+      if (!playAudioCtx) return;
+      if (playAudioCtx.state === 'suspended') {
+        playAudioCtx.resume();
+      }
+
+      // Convert 16-bit PCM bytes to Float32Array
+      const int16 = new Int16Array(pcmBytes.buffer, pcmBytes.byteOffset, pcmBytes.byteLength / 2);
+      const float32 = new Float32Array(int16.length);
+      for (let i = 0; i < int16.length; i++) {
+        float32[i] = int16[i] / 32768.0;
+      }
+
+      const audioBuf = playAudioCtx.createBuffer(1, float32.length, sampleRate);
+      audioBuf.getChannelData(0).set(float32);
+
+      const source = playAudioCtx.createBufferSource();
+      source.buffer = audioBuf;
+      source.connect(playAudioCtx.destination);
+
+      const currentTime = playAudioCtx.currentTime;
+      if (nextAudioStartTime < currentTime) {
+        nextAudioStartTime = currentTime;
+      }
+      source.start(nextAudioStartTime);
+      nextAudioStartTime += audioBuf.duration;
+
+      activeSources.push(source);
+      source.onended = () => {
+        const idx = activeSources.indexOf(source);
+        if (idx !== -1) activeSources.splice(idx, 1);
+        if (activeSources.length === 0) {
+          isDanaSpeaking = false;
+        }
+      };
+    }
+
+    function stopAllAudioPlayback() {
+      for (const src of activeSources) {
+        try { src.stop(); } catch (e) {}
+      }
+      activeSources = [];
+      if (playAudioCtx) {
+        nextAudioStartTime = playAudioCtx.currentTime;
+      }
+      isDanaSpeaking = false;
+    }
+
+    function stopLiveVoice() {
+      isVoiceActive = false;
+      isDanaSpeaking = false;
+      stopAllAudioPlayback();
+
+      // Clean up mic
+      if (recorderNode) {
+        try { recorderNode.disconnect(); } catch (e) {}
+        recorderNode = null;
+      }
+      if (recAudioCtx) {
+        try { recAudioCtx.close(); } catch (e) {}
+        recAudioCtx = null;
+      }
+      if (micStream) {
+        micStream.getTracks().forEach(track => track.stop());
+        micStream = null;
+      }
+
+      // Close WebSocket
+      if (liveVoiceWs) {
+        try { liveVoiceWs.close(); } catch (e) {}
+        liveVoiceWs = null;
+      }
+
+      // Reset UI
+      const micBtn = document.getElementById('voice-mic-btn');
+      const micIcon = document.getElementById('voice-mic-icon');
+      const topBtn = document.getElementById('voice-top-toggle-btn');
+      const topLabel = document.getElementById('top-mic-label');
+      const topIcon = document.getElementById('top-mic-icon');
+      const banner = document.getElementById('live-voice-banner');
+      const badge = document.getElementById('voice-live-badge');
+
+      if (banner) banner.classList.add('hidden');
+      if (badge) {
+        badge.classList.remove('flex');
+        badge.classList.add('hidden');
+      }
+      if (micBtn) {
+        micBtn.className = "w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-cyan-400 font-bold flex items-center justify-center transition border border-white/10 cursor-pointer shadow-md";
+      }
+      if (micIcon) {
+        micIcon.className = "fa-solid fa-microphone text-xs";
+      }
+      if (topBtn) {
+        topBtn.className = "px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-cyan-400 text-[11px] font-semibold flex items-center gap-1.5 transition cursor-pointer";
+      }
+      if (topIcon) {
+        topIcon.className = "fa-solid fa-microphone text-xs";
+      }
+      if (topLabel) {
+        topLabel.innerText = "Voice Call";
+      }
+
+      currentUserBubble = null;
+      currentDanaBubble = null;
     }
 
     // Modals
