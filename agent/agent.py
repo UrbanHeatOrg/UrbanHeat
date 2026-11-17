@@ -22,7 +22,14 @@ from agent.tools import (
     run_equity_audit,
     optimize_climate_portfolio,
     draft_council_resolution,
-    get_reduction_strategies
+    get_reduction_strategies,
+    rank_national_cooling_center_sites,
+    get_national_vulnerability_profile,
+    get_us_county_directory,
+    dispatch_emergency_units,
+    recommend_urban_retrofits,
+    compare_siting_scenarios,
+    get_emission_sources
 )
 
 os.environ["GOOGLE_GENAI_USE_VERTEXAI"] = "1"
@@ -120,7 +127,7 @@ Use optimize_climate_portfolio, draft_council_resolution, and get_reduction_stra
 # ROOT ORCHESTRATOR: DANA (CHIEF CLIMATE RESILIENCE OFFICER)
 # ==============================================================================
 SYSTEM_INSTRUCTION = """
-You are Dana, the Senior Climate Resilience Planning Analyst for the City of Dallas Office of Emergency Management and Environmental Quality.
+You are Dana, the Chief Climate Resilience & Investment Officer for HeatShield AI, serving municipal resilience offices nationwide across all 68 NOAA Heat Watch Campaign cities, with the City of Dallas Office of Emergency Management and Environmental Quality as your Tier-1 reference flagship.
 
 You orchestrate five specialized domain subagents:
 1. ⚡ `emergency_dispatch_agent` (Track 1: Today Emergency Response)
@@ -191,11 +198,14 @@ Elected officials and dispatchers often pose broad questions like *"Where is it 
 
 To maintain civil service credibility and prevent hallucination, you must strictly uphold the following boundaries:
 
-1. **Geographic Scope (Dallas Only)**:
-   - Your data, BigQuery ML models, and municipal mandate cover the **City of Dallas and Dallas County (Texas FIPS 48113)**.
-   - If asked about other cities (e.g., Austin, Houston, Chicago, New York, Phoenix, Miami, San Antonio, Los Angeles):
-     - **POLITELY REFUSE TO ANSWER OR SPECULATE.**
-     - State clearly: *"I am CoolAid, Climate Resilience Analyst specifically for the City of Dallas. Our high-resolution street campaign data, 7-year station temperature records, and BigQuery ML models cover Dallas County only. I do not have street-level urban heat campaign data or demographic models for [City]. Please consult [City]'s Office of Resilience or NOAA Heat Watch campaign archives."*
+1. **Geographic Scope (Nationwide 68-City NOAA Network & Dallas Flagship)**:
+   - Your platform covers all 68 NOAA Heat Watch Campaign cities and all 3,227 US counties (84,000+ census tracts) in BigQuery (`us_resilience_master` and `multi_city_heat_offset_model`), with the City of Dallas as your Tier-1 reference flagship.
+   - When advising on the City of Dallas, utilize local street campaign traverse data (22,224 observations), local candidate facilities, and local models.
+   - When advising on any other city or county nationwide (e.g. Phoenix, Chicago, Houston, Atlanta, Seattle, Miami, Los Angeles, San Jose, Austin, etc.):
+     - Dynamically assume that municipality's resilience mandate.
+     - Seamlessly invoke national tools: `rank_national_cooling_center_sites`, `get_national_vulnerability_profile`, `get_us_county_directory`, `get_emission_sources`, `dispatch_emergency_units`, `recommend_urban_retrofits`, and `draft_council_resolution`.
+     - Provide authentic, data-backed municipal guidance citing local census tract IDs, poverty rates, zero-vehicle transit deficits, and modeled heat offsets.
+   - If asked about an international location or an area outside US Census jurisdiction, politely clarify that your models and NOAA data cover US cities and counties.
 
 2. **Unmeasured Historical Dates & Clock Times**:
    - The street-level traverse data represents a single-day summer campaign measuring spatial temperature **offsets** (how much hotter a block runs than the citywide average at that peak hour), NOT continuous minute-by-minute historical records.
@@ -287,7 +297,7 @@ You are fully prepared to answer all 3 challenge tracks and municipal workflows:
 root_agent = Agent(
     name="dallas_heat_orchestrator",
     model="gemini-2.5-flash",
-    description="CoolAid: Chief Climate Resilience & 3-Track Multi-Agent Orchestrator for the City of Dallas.",
+    description="HeatShield AI: Chief Climate Resilience & 3-Track Multi-Agent Orchestrator across all 68 NOAA Heat Watch cities with Dallas Flagship.",
     instruction=SYSTEM_INSTRUCTION,
     sub_agents=[
         emergency_dispatch_agent,
@@ -304,7 +314,13 @@ root_agent = Agent(
         get_tract_canopy_planting_sites,
         assess_grid_vulnerability_and_medical_risk,
         get_heat_frequency,
-        run_equity_audit
+        run_equity_audit,
+        rank_national_cooling_center_sites,
+        get_national_vulnerability_profile,
+        dispatch_emergency_units,
+        recommend_urban_retrofits,
+        compare_siting_scenarios,
+        get_emission_sources
     ]
 )
 

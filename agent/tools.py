@@ -74,8 +74,12 @@ def _resolve_city_state_county(city: Optional[str] = None, state: Optional[str] 
 VERIFIED_TOP_SITES = [
     {
         "rank": 1,
+        "facility_name": "Bachman Lake Branch Library & Recreation Center",
+        "name": "Bachman Lake Branch Library & Recreation Center",
         "facility_type": "Permanent Cooling Center #1",
         "census_tract": "48113020500",
+        "tract_geoid": "48113020500",
+        "geo_id": "48113020500",
         "latitude": 32.7834,
         "longitude": -96.8623,
         "population": 6420,
@@ -91,12 +95,21 @@ VERIFIED_TOP_SITES = [
             "no_vehicle_rate (+0.42°F)",
             "building_age_vintage (+0.28°F)",
             "latitude (-0.15°F)"
+        ],
+        "key_drivers": [
+            "no_vehicle_rate (+0.42°F)",
+            "building_age_vintage (+0.28°F)",
+            "latitude (-0.15°F)"
         ]
     },
     {
         "rank": 2,
+        "facility_name": "Martin Luther King Jr. Community Center",
+        "name": "Martin Luther King Jr. Community Center",
         "facility_type": "Permanent Cooling Center #2",
         "census_tract": "48113008704",
+        "tract_geoid": "48113008704",
+        "geo_id": "48113008704",
         "latitude": 32.6912,
         "longitude": -96.8155,
         "population": 4500,
@@ -112,12 +125,21 @@ VERIFIED_TOP_SITES = [
             "poverty_rate (+0.58°F)",
             "no_vehicle_rate (+0.31°F)",
             "housing_units (-0.22°F)"
+        ],
+        "key_drivers": [
+            "poverty_rate (+0.58°F)",
+            "no_vehicle_rate (+0.31°F)",
+            "housing_units (-0.22°F)"
         ]
     },
     {
         "rank": 3,
+        "facility_name": "West Dallas Multipurpose Center",
+        "name": "West Dallas Multipurpose Center",
         "facility_type": "Permanent Cooling Center #3",
         "census_tract": "48113020300",
+        "tract_geoid": "48113020300",
+        "geo_id": "48113020300",
         "latitude": 32.7441,
         "longitude": -96.8290,
         "population": 2258,
@@ -133,12 +155,21 @@ VERIFIED_TOP_SITES = [
             "structure_built_year (+0.38°F)",
             "no_vehicle_rate (+0.35°F)",
             "longitude (-0.11°F)"
+        ],
+        "key_drivers": [
+            "structure_built_year (+0.38°F)",
+            "no_vehicle_rate (+0.35°F)",
+            "longitude (-0.11°F)"
         ]
     },
     {
         "rank": 4,
+        "facility_name": "Forest Green Branch Library & Resilience Hub",
+        "name": "Forest Green Branch Library & Resilience Hub",
         "facility_type": "Permanent Cooling Center #4",
         "census_tract": "48113019213",
+        "tract_geoid": "48113019213",
+        "geo_id": "48113019213",
         "latitude": 32.8955,
         "longitude": -96.7682,
         "population": 3599,
@@ -154,12 +185,21 @@ VERIFIED_TOP_SITES = [
             "housing_density (+0.64°F)",
             "impervious_surface (+0.41°F)",
             "poverty_rate (+0.25°F)"
+        ],
+        "key_drivers": [
+            "housing_density (+0.64°F)",
+            "impervious_surface (+0.41°F)",
+            "poverty_rate (+0.25°F)"
         ]
     },
     {
         "rank": 5,
+        "facility_name": "Dallas Mobile Hydration & Rapid Refuge Unit #1",
+        "name": "Dallas Mobile Hydration & Rapid Refuge Unit #1",
         "facility_type": "Mobile Hydration Dispatch Unit",
         "census_tract": "48085031720",
+        "tract_geoid": "48085031720",
+        "geo_id": "48085031720",
         "latitude": 32.9984,
         "longitude": -96.7121,
         "population": 4087,
@@ -172,6 +212,11 @@ VERIFIED_TOP_SITES = [
         "priority_score": 10.2,
         "decision_driver": "Peak urban heat hazard (+1.24°F offset) ideal for rapid mobile hydration deployment",
         "top_driving_factors": [
+            "latitude_corridor (+0.72°F)",
+            "housing_units (+0.39°F)",
+            "poverty_rate (+0.21°F)"
+        ],
+        "key_drivers": [
             "latitude_corridor (+0.72°F)",
             "housing_units (+0.39°F)",
             "poverty_rate (+0.21°F)"
@@ -980,14 +1025,17 @@ def rank_cooling_center_sites(top_n: int = 5, prioritize_vulnerability: bool = T
                 f"{item.get('feature')} ({float(item.get('attribution', 0)):+.2f}°F)"
                 for item in row.top_feature_attributions
             ]
-            facility_type = "Permanent Cooling Center" if i <= 4 else "Mobile Hydration Dispatch Unit"
+            raw_fac_name = getattr(row, 'facility_name', None) or f"Municipal Cooling Center #{i}"
+            raw_fac_type = getattr(row, 'facility_type', None)
+            fac_type = raw_fac_type.replace('_', ' ').title() if raw_fac_type else (f"Permanent Cooling Center #{i}" if i <= 4 else "Mobile Hydration Dispatch Unit")
             sites.append({
                 "rank": i,
-                "facility_type": f"{facility_type} #{i}" if i <= 4 else facility_type,
+                "facility_name": raw_fac_name,
+                "name": raw_fac_name,
+                "facility_type": fac_type,
                 "census_tract": row.geo_id,
-                "facility_name": row.facility_name,
-                "facility_type": row.facility_type.replace('_', ' ').title(),
                 "tract_geoid": row.geo_id,
+                "geo_id": row.geo_id,
                 "latitude": row.lat,
                 "longitude": row.lon,
                 "coordinates": {"latitude": row.lat, "longitude": row.lon},
@@ -998,7 +1046,8 @@ def rank_cooling_center_sites(top_n: int = 5, prioritize_vulnerability: bool = T
                 "no_vehicle_rate_pct": row.no_vehicle_pct,
                 "dist_to_park_m": row.dist_to_park_m,
                 "priority_score": row.priority_score,
-                "key_drivers": attributions
+                "key_drivers": attributions,
+                "top_driving_factors": attributions
             })
         if sites:
             return {
@@ -2566,6 +2615,7 @@ def dispatch_emergency_units(forecast_temp_f: float = 102.0, num_trucks: int = 2
             "status_level": severity,
             "activated_trucks": len(routes),
             "dispatch_routes": routes,
+            "dispatched_units": routes,
             "tactical_directive": (
                 f"With forecast temperatures reaching {forecast_temp_f}°F in {city_name}, {len(routes)} mobile hydration units "
                 "are assigned to high-density pedestrian corridors where car ownership is below city averages. "
@@ -2590,9 +2640,13 @@ def recommend_urban_retrofits(tract_geoid: Optional[str] = "48113019213", budget
     """
     client = get_bq_client()
     city_name, state_name, county_name = _resolve_city_state_county(city, state, county)
-    
+    is_dallas = city_name.lower() == "dallas" and (not county or county.lower() == "dallas")
+
+    if not is_dallas and tract_geoid in ["48113019213", "48113020500"]:
+        tract_geoid = None
+
     row = None
-    if tract_geoid and tract_geoid.startswith("48113"):
+    if is_dallas and tract_geoid and tract_geoid.startswith("48113"):
         q_dallas = f"""
         SELECT
           geo_id, tract_lat, tract_lon, total_pop, poverty_rate, no_vehicle_rate, median_year_structure_built
@@ -2660,18 +2714,28 @@ def recommend_urban_retrofits(tract_geoid: Optional[str] = "48113019213", budget
     pavement_cooling_offset_f = min(round((pavement_sqft / 100000) * 0.45, 2), 1.6)
     total_projected_cooling_f = round(tree_cooling_offset_f + pavement_cooling_offset_f, 2)
 
-    tree_species = "native drought-tolerant shade trees (Live Oak, Cedar Elm)" if state_name in ["Texas", "Arizona", "Nevada", "New Mexico"] else "native canopy shade trees (Red Maple, Bur Oak, Honey Locust)"
+    tree_species_name = "native drought-tolerant shade trees (Live Oak, Cedar Elm)" if state_name in ["Texas", "Arizona", "Nevada", "New Mexico"] else "native canopy shade trees (Red Maple, Bur Oak, Honey Locust)"
+    species_list = [
+        {"common_name": "Cedar Elm", "scientific_name": "Ulmus crassifolia", "canopy_spread_ft": 45, "water_need": "Low"},
+        {"common_name": "Live Oak", "scientific_name": "Quercus virginiana", "canopy_spread_ft": 60, "water_need": "Moderate"}
+    ] if state_name in ["Texas", "Arizona", "Nevada", "New Mexico"] else [
+        {"common_name": "Bur Oak", "scientific_name": "Quercus macrocarpa", "canopy_spread_ft": 55, "water_need": "Moderate"},
+        {"common_name": "Red Maple", "scientific_name": "Acer rubrum", "canopy_spread_ft": 40, "water_need": "Moderate"}
+    ]
     
     return {
         "retrofit_protocol": f"Track 3: Long-Term Urban Climate Infrastructure ({city_name})",
         "city": city_name,
+        "county": county_name,
+        "state": state_name,
         "target_tract": target_tract,
         "capital_budget_usd": budget_dollars,
+        "recommended_tree_species": species_list,
         "recommended_interventions": [
             {
                 "intervention": "Urban Shade Canopy Expansion",
                 "budget_allocated_usd": tree_budget,
-                "volume": f"{trees_planted:,} {tree_species}",
+                "volume": f"{trees_planted:,} {tree_species_name}",
                 "target_corridors": "Primary pedestrian walking routes to transit stops",
                 "estimated_offset_reduction_f": f"-{tree_cooling_offset_f}°F at maturity"
             },

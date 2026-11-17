@@ -47,3 +47,22 @@ Follow Anthropic's core frontend design principles to avoid generic, "on-distrib
   - High data density without clutter (well-proportioned padding, clear groupings, and contextual tooltips).
   - Vector maps with high-contrast layer toggles (buffers, census tracts, heat hazards).
 - Verify responsiveness across viewport widths (desktop widescreen, standard laptop, and tablet viewports) using automated headless browser testing (Playwright).
+
+---
+
+## 6. Mobile-First & Touch Usability Standards
+- **Minimum Tap Targets**:
+  - All interactive touch targets (buttons, dock tabs, filter pills, close icons, links) MUST have at least `44px` height and touch area (`min-h-[44px]`, `min-w-[44px]`, or adequate tap-padding).
+- **Legible Typography Scale**:
+  - Readable text, card content, and form inputs MUST be at least `12px` (`text-xs` / `0.75rem`).
+  - Reserve monospaced subtext strictly for FIPS IDs, telemetry, and numerical coordinates. Avoid micro-fonts (8–10px) that cause eye strain in sunlight.
+- **Viewport & Scrolling**:
+  - **Zero Horizontal Overflow**: Interfaces must never produce horizontal scrollbars (`document.documentElement.scrollWidth <= window.innerWidth`).
+  - **Dynamic Viewport Height**: Always use `100dvh` (`h-[100dvh]`) rather than fixed `100vh` to avoid browser chrome clipping on iOS Safari and mobile Chrome.
+  - **Accessible Zoom**: Never disable viewport scaling (`user-scalable=no` or `maximum-scale=1.0` are strictly forbidden).
+  - **Single Active Panel**: Never stack multiple full-screen overlay panels simultaneously on mobile; enforce clean dismissals and distinct dock/tab views.
+- **Responsive Testing Matrix**:
+  - Test and assert across at least three mobile viewports:
+    - Small compact mobile: `360×640`
+    - Standard mobile (iPhone 12/13/14): `390×844`
+    - Large mobile (Max/Plus): `430×932`

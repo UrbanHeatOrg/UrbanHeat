@@ -1,0 +1,52 @@
+name: Mobile Responsive & Usability CI
+
+on:
+  push:
+    branches: [ main, agent-deploy-update ]
+  pull_request:
+    branches: [ main, agent-deploy-update ]
+
+jobs:
+  mobile-responsive-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Codebase
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Application & Test Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install fastapi uvicorn pydantic requests pillow playwright pytest
+          playwright install --with-deps chromium
+
+      - name: Start HeatShield AI Web Server
+        run: |
+          python -m uvicorn web.server:app --host 0.0.0.0 --port 8000 &
+          echo "Waiting for web server to initialize..."
+          for i in {1..30}; do
+            if curl -s http://localhost:8000/ > /dev/null; then
+              echo "Server is live on port 8000!"
+              break
+            fi
+            sleep 1
+          done
+
+      - name: Run Playwright Responsive Test Suite (360px, 390px, 430px, 768px, 1440px)
+        run: |
+          python test_mobile_responsive.py
+
+      - name: Upload Responsive Screenshots
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: responsive-screenshots
+          path: screenshot_*.png
+          retention-days: 7

@@ -28,8 +28,11 @@ from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai import types
 
+from starlette.middleware.gzip import GZipMiddleware
+
 app = FastAPI(title="Dallas Urban Heat Resilience Planning System")
 
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -44,6 +47,9 @@ runner = Runner(app_name="dallas_heat_orchestrator", agent=ag.root_agent, sessio
 class ChatRequest(BaseModel):
     message: str
     session_id: str = "web_session"
+    city: Optional[str] = None
+    state: Optional[str] = None
+    county: Optional[str] = None
 
 # ================= RESIDENT "FIND COOL NOW" PORTAL DIRECTORY =================
 RESIDENT_COOLING_HUBS = [
@@ -799,8 +805,22 @@ def get_resident_cooling_centers(
 
 
 @app.get("/api/sites")
-def get_sites():
-
+def get_sites(city: Optional[str] = None, state: Optional[str] = None, county: Optional[str] = None):
+    if city and city.strip().lower() != "dallas":
+        res = tools._resolve_city_state_county(city, state, county)
+        nat_data = tools.rank_national_cooling_center_sites(res[1], res[2], top_n=5)
+        sites = nat_data.get("priority_cooling_sites", [])
+        return {
+            "status": "success",
+            "city": res[0],
+            "state": res[1],
+            "county": res[2],
+            "ranked_sites": sites,
+            "priority_cooling_sites": sites,
+            "recommendations": sites,
+            "ranking_methodology": nat_data.get("ranking_methodology"),
+            "source": nat_data.get("source")
+        }
     return tools.rank_cooling_center_sites(top_n=5, prioritize_vulnerability=True)
 
 @app.get("/api/hydration")
@@ -828,16 +848,22 @@ def compare(tract_a: str = "48113020500", tract_b: str = "48113008704"):
     return tools.compare_siting_scenarios(tract_a, tract_b)
 
 @app.get("/api/dispatch")
-def dispatch(temp: float = 104.5, trucks: int = 2):
-    return tools.dispatch_emergency_units(temp, trucks)
+def dispatch(temp: float = 104.5, trucks: int = 2, city: Optional[str] = None, state: Optional[str] = None, county: Optional[str] = None):
+    return tools.dispatch_emergency_units(temp, trucks, city=city, state=state, county=county)
 
 @app.get("/api/retrofits")
-def retrofits(tract_id: str = "48113020500", budget: float = 1000000.0):
-    return tools.recommend_urban_retrofits(tract_id, budget)
+def retrofits(tract_id: Optional[str] = None, budget: float = 1000000.0, city: Optional[str] = None, state: Optional[str] = None, county: Optional[str] = None):
+    if city and city.strip().lower() != "dallas":
+        if not tract_id or tract_id in ["48113020500", "48113019213"]:
+            tract_id = None
+    else:
+        if not tract_id:
+            tract_id = "48113020500"
+    return tools.recommend_urban_retrofits(tract_id, budget, city=city, state=state, county=county)
 
 @app.get("/api/resolution")
-def resolution(budget: float = 10000000.0):
-    return tools.draft_council_resolution(budget_dollars=budget)
+def resolution(budget: float = 10000000.0, city: Optional[str] = None, state: Optional[str] = None, county: Optional[str] = None):
+    return tools.draft_council_resolution(budget_dollars=budget, city_name=city or "Dallas", state_name=state or "Texas", county_name=county or "Dallas")
 
 @app.get("/api/climate-trace/assets")
 def climate_assets(city: str = "Dallas", sector: str = None, min_emissions: float = 0.0):
@@ -1442,9 +1468,18 @@ async def chat(req: ChatRequest):
             
         now_dt = datetime.now(timezone.utc)
         time_str = now_dt.strftime("%A, %B %d, %Y %H:%M UTC")
+        city_ctx = ""
+        if req.city and req.city.strip() and req.city.lower() != "dallas":
+            city_ctx = (
+                f"[Active Municipal Jurisdiction: {req.city}, {req.state or ''} (County: {req.county or 'Local'}) across 68 NOAA campaign network. "
+                f"You are advising this municipality. Use national resilience tools (rank_national_cooling_center_sites, "
+                f"get_national_vulnerability_profile, get_us_county_directory, dispatch_emergency_units, "
+                f"recommend_urban_retrofits, draft_council_resolution) to provide exact census tract data, heat offsets, and actionable guidance.]\n\n"
+            )
         prompt_with_time = (
             f"[Current Real-World Time: {time_str}. Current Season: Late Fall / Municipal budget & off-season capital planning. "
             f"Note: Summer heatwave scenarios (e.g. 108°F–112°F, July 21 ephemeris) are hazard simulation benchmarks for stress-testing resilience allocations.]\n\n"
+            f"{city_ctx}"
             f"{armor['sanitized_prompt']}"
         )
         msg = types.Content(role="user", parts=[types.Part.from_text(text=prompt_with_time)])
@@ -1481,7 +1516,13 @@ async def chat(req: ChatRequest):
 async def websocket_live_endpoint(websocket: WebSocket):
     """Bidirectional real-time voice streaming endpoint via Gemini 3.8 Live API."""
     await websocket.accept()
-    client = genai.Client()
+    
+    project_id = os.environ.get("GOOGLE_CLOUD_PROJECT") or os.environ.get("GCP_PROJECT") or "qwiklabs-gcp-04-4753f87c7a64"
+    try:
+        client = genai.Client(vertexai=True, project=project_id, location="us-central1")
+    except Exception as e:
+        print(f"Failed to initialize Vertex AI client with project {project_id}: {e}, using default client")
+        client = genai.Client()
     
     config = types.LiveConnectConfig(
         response_modalities=[types.Modality.AUDIO],
@@ -1508,49 +1549,51 @@ async def websocket_live_endpoint(websocket: WebSocket):
 
             async def receive_from_gemini():
                 try:
-                    async for response in session.receive():
-                        sc = response.server_content
-                        if not sc:
-                            continue
-                        
-                        # Real-time barge-in interruption detection
-                        if sc.interrupted:
-                            await websocket.send_json({"type": "interrupted"})
-                        
-                        # User speech transcription
-                        if sc.interim_input_transcription and sc.interim_input_transcription.text:
-                            await websocket.send_json({
-                                "type": "user_transcription",
-                                "text": sc.interim_input_transcription.text,
-                                "is_final": False
-                            })
-                        elif sc.input_transcription and sc.input_transcription.text:
-                            await websocket.send_json({
-                                "type": "user_transcription",
-                                "text": sc.input_transcription.text,
-                                "is_final": True
-                            })
-                        
-                        # CoolAid speech transcription
-                        if sc.output_transcription and sc.output_transcription.text:
-                            await websocket.send_json({
-                                "type": "dana_transcription",
-                                "text": sc.output_transcription.text
-                            })
-                        
-                        # Audio chunks (24kHz PCM)
-                        if sc.model_turn and sc.model_turn.parts:
-                            for part in sc.model_turn.parts:
-                                if part.inline_data and part.inline_data.data:
-                                    audio_b64 = base64.b64encode(part.inline_data.data).decode("utf-8")
-                                    await websocket.send_json({
-                                        "type": "audio",
-                                        "data": audio_b64,
-                                        "rate": 24000
-                                    })
-                        
-                        if sc.turn_complete:
-                            await websocket.send_json({"type": "turn_complete"})
+                    while True:
+                        async for response in session.receive():
+                            sc = response.server_content
+                            if not sc:
+                                continue
+                            
+                            # Real-time barge-in interruption detection
+                            if sc.interrupted:
+                                await websocket.send_json({"type": "interrupted"})
+                            
+                            # User speech transcription
+                            if sc.interim_input_transcription and sc.interim_input_transcription.text:
+                                await websocket.send_json({
+                                    "type": "user_transcription",
+                                    "text": sc.interim_input_transcription.text,
+                                    "is_final": False
+                                })
+                            elif sc.input_transcription and sc.input_transcription.text:
+                                await websocket.send_json({
+                                    "type": "user_transcription",
+                                    "text": sc.input_transcription.text,
+                                    "is_final": True
+                                })
+                            
+                            # CoolAid speech transcription
+                            if sc.output_transcription and sc.output_transcription.text:
+                                await websocket.send_json({
+                                    "type": "coolaid_transcription",
+                                    "text": sc.output_transcription.text
+                                })
+                            
+                            # Audio chunks (24kHz PCM)
+                            if sc.model_turn and sc.model_turn.parts:
+                                for part in sc.model_turn.parts:
+                                    if part.inline_data and part.inline_data.data:
+                                        audio_b64 = base64.b64encode(part.inline_data.data).decode("utf-8")
+                                        await websocket.send_json({
+                                            "type": "audio",
+                                            "data": audio_b64,
+                                            "rate": 24000
+                                        })
+                            
+                            if sc.turn_complete:
+                                await websocket.send_json({"type": "turn_complete"})
+                                break
                 except asyncio.CancelledError:
                     pass
                 except Exception as e:
@@ -1560,44 +1603,48 @@ async def websocket_live_endpoint(websocket: WebSocket):
                 try:
                     while True:
                         msg = await websocket.receive_text()
-                        data = json.loads(msg)
+                        try:
+                            data = json.loads(msg)
+                        except Exception:
+                            continue
                         mtype = data.get("type")
                         
-                        if mtype == "audio":
-                            audio_b64 = data.get("data", "")
-                            if audio_b64:
-                                audio_bytes = base64.b64decode(audio_b64)
-                                await session.send_realtime_input(
-                                    audio=types.Blob(data=audio_bytes, mime_type="audio/pcm;rate=16000")
-                                )
-                        elif mtype == "text":
-                            user_text = data.get("text", "")
-                            armor = inspect_prompt_armor(user_text)
-                            if not armor["safe"]:
-                                await websocket.send_json({
-                                    "type": "armor_blocked",
-                                    "message": armor["rejection_message"]
-                                })
-                            else:
-                                await session.send_realtime_input(text=armor["sanitized_prompt"])
-                        elif mtype == "stream_end":
-                            await session.send_realtime_input(audio_stream_end=True)
-                except asyncio.CancelledError:
-                    pass
-                except WebSocketDisconnect:
+                        try:
+                            if mtype == "audio":
+                                audio_b64 = data.get("data", "")
+                                if audio_b64:
+                                    audio_bytes = base64.b64decode(audio_b64)
+                                    await session.send_realtime_input(
+                                        audio=types.Blob(data=audio_bytes, mime_type="audio/pcm;rate=16000")
+                                    )
+                            elif mtype == "text":
+                                user_text = data.get("text", "")
+                                armor = inspect_prompt_armor(user_text)
+                                if not armor["safe"]:
+                                    await websocket.send_json({
+                                        "type": "armor_blocked",
+                                        "message": armor["rejection_message"]
+                                    })
+                                else:
+                                    await session.send_realtime_input(text=armor["sanitized_prompt"])
+                            elif mtype == "stream_end":
+                                await session.send_realtime_input(audio_stream_end=True)
+                        except Exception as send_err:
+                            print("Error sending realtime input to Gemini:", send_err)
+                except (asyncio.CancelledError, WebSocketDisconnect):
                     pass
                 except Exception as e:
                     print("Error receiving from client WebSocket:", e)
 
             gemini_task = asyncio.create_task(receive_from_gemini())
-            client_task = asyncio.create_task(receive_from_client())
-
-            done, pending = await asyncio.wait(
-                [gemini_task, client_task],
-                return_when=asyncio.FIRST_COMPLETED
-            )
-            for t in pending:
-                t.cancel()
+            try:
+                await receive_from_client()
+            finally:
+                gemini_task.cancel()
+                try:
+                    await gemini_task
+                except asyncio.CancelledError:
+                    pass
     except WebSocketDisconnect:
         pass
     except Exception as e:
@@ -1618,7 +1665,7 @@ async def websocket_live_endpoint(websocket: WebSocket):
                         })
                     else:
                         resp_text = "Commander CoolAid online. Monitoring extreme heat microclimates and dispatching cooling units."
-                        await websocket.send_json({"type": "dana_transcription", "text": resp_text})
+                        await websocket.send_json({"type": "coolaid_transcription", "text": resp_text})
                         # 24kHz PCM mono comfort audio buffer
                         audio_pcm = b"\x00" * 4800
                         await websocket.send_json({
@@ -1628,9 +1675,7 @@ async def websocket_live_endpoint(websocket: WebSocket):
                         })
                         await websocket.send_json({"type": "turn_complete"})
                 elif mtype == "audio":
-                    resp_text = "Commander CoolAid receiving telemetry audio."
-                    await websocket.send_json({"type": "dana_transcription", "text": resp_text})
-                    await websocket.send_json({"type": "turn_complete"})
+                    pass
         except WebSocketDisconnect:
             pass
         except Exception as inner_e:
@@ -1647,12 +1692,6 @@ def serve_index():
 def serve_sources():
     return FileResponse(STATIC_DIR / "sources.html")
 
-if __name__ == "__main__":
-    import uvicorn
-    port = int(os.environ.get("PORT", 8000))
-    uvicorn.run(app, host="0.0.0.0", port=port)
-
-
 @app.get("/api/forestry")
 def forestry(top_n: int = 5, budget: float = 100000.0):
     return tools.evaluate_urban_forestry_roi(top_n=top_n, budget_per_tract=budget)
@@ -1668,3 +1707,8 @@ def grid_vulnerability(top_n: int = 5, census_tract: str = None):
 @app.get("/api/dispatch")
 def emergency_dispatch(forecast_temp: float = 102.0, top_n: int = 5, ercot_alert: bool = True):
     return tools.dispatch_emergency_wellness_checks(forecast_temp_f=forecast_temp, top_n=top_n, ercot_grid_alert=ercot_alert)
+
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)

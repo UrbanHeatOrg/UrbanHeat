@@ -28,6 +28,9 @@ __pycache__/
 
 *.duckdb*
 
+# Backup originals
+*_orig.*
+
 # Agent skills cache
 .agents/skills/
 skills-lock.json

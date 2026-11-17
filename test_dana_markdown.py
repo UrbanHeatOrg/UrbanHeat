@@ -60,7 +60,7 @@ import httpx
 response = httpx.post("http://localhost:8000/api/dispatch", json={"trucks": 2, "temp": 104.5})
 print(response.json())
 ```
-Reference: [HeatShield API Docs](http://localhost:8000/docs) with Census Tract `48113020500`.
+Reference: [HeatShield API Docs](http://localhost:8000/docs) with parameter `status=200` and Census Tract `48113020500`.
 """
         
         eval_result = await page.evaluate("""(md) => {
@@ -180,10 +180,10 @@ Reference: [HeatShield API Docs](http://localhost:8000/docs) with Census Tract `
                 </div>
                 <div class="trace-card border-white/10 text-slate-200 rounded-2xl p-3.5 max-w-[85%] border leading-relaxed shadow-lg">
                   <div class="flex items-center justify-between text-[9px] text-slate-400 mb-1.5 border-b border-white/10 pb-1">
-                    <span class="font-semibold text-slate-300 flex items-center gap-1.5"><i class="fa-solid fa-robot text-cyan-400"></i> Commander Dana</span>
+                    <span class="font-semibold text-slate-300 flex items-center gap-1.5"><i class="fa-solid fa-robot text-cyan-400"></i> Commander CoolAid</span>
                     <span class="text-purple-400 font-mono flex items-center gap-1"><i class="fa-solid fa-shield-cat"></i> Model Armor Verified</span>
                   </div>
-                  <div class="dana-markdown text-xs">
+                  <div class="dana-markdown coolaid-markdown text-xs">
                     ${rendered}
                   </div>
                 </div>
