@@ -14,7 +14,8 @@ LOCATION = os.environ.get("GOOGLE_CLOUD_LOCATION", "us-central1")
 # High-risk adversarial prompt injection patterns
 INJECTION_PATTERNS = [
     r"ignore\s+(all\s+)?(previous|prior|above)\s+(instructions|prompts|directives)",
-    r"disregard\s+(all\s+)?(previous|prior|system)\s+rules",
+    r"disregard\s+(all\s+)?(previous|prior|system|above)\s+(rules|instructions|prompts|directives)",
+    r"give\s+me\s+root\s+access",
     r"you\s+are\s+no\s+longer\s+dana",
     r"you\s+are\s+now\s+in\s+(developer|dan|jailbreak|unrestricted)\s+mode",
     r"print\s+your\s+(system\s+prompt|initial\s+instructions|hidden\s+rules)",
@@ -25,6 +26,7 @@ INJECTION_PATTERNS = [
     r"delete\s+from\s+`?a4i_climate`?",
     r"override\s+all\s+safety\s+filters"
 ]
+
 
 def inspect_prompt_armor(user_prompt: str) -> Dict[str, Any]:
     """Inspects an incoming user prompt using Google Cloud Model Armor rules.
