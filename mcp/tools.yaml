@@ -1,0 +1,162 @@
+# MCP Toolbox for Databases (https://github.com/googleapis/mcp-toolbox)
+# HeatShield AI: Google Cloud BigQuery & Vertex AI ML Tool Definitions
+
+sources:
+  dallas-climate-bq:
+    kind: bigquery
+    project: qwiklabs-gcp-04-4753f87c7a64
+
+tools:
+  explain_heat_offset_bqml:
+    kind: bigquery-sql
+    source: dallas-climate-bq
+    description: "Run ML.EXPLAIN_PREDICT against Vertex AI / BigQuery ML linear regression model to predict microclimate temperature offset and extract feature attributions for a candidate facility or coordinates."
+    parameters:
+      - name: latitude
+        type: float
+        description: "Latitude coordinate of the location (e.g. 32.7767)."
+      - name: longitude
+        type: float
+        description: "Longitude coordinate of the location (e.g. -96.7970)."
+      - name: total_pop
+        type: integer
+        description: "Total tract population (e.g. 5000)."
+      - name: pop_density_per_sqmi
+        type: float
+        description: "Population density per square mile (e.g. 4500.0)."
+      - name: poverty_rate
+        type: float
+        description: "Poverty rate as a decimal proportion (e.g. 0.35 for 35%)."
+      - name: no_vehicle_rate
+        type: float
+        description: "Zero-vehicle rate as a decimal proportion (e.g. 0.25 for 25%)."
+      - name: dist_to_park_m
+        type: float
+        description: "Distance in meters to nearest public cooling park (e.g. 600.0)."
+    statement: |
+      SELECT
+        predicted_temp_offset_f,
+        top_feature_attributions
+      FROM ML.EXPLAIN_PREDICT(
+        MODEL `qwiklabs-gcp-04-4753f87c7a64.a4i_climate.heat_offset_model`,
+        (
+          SELECT
+            @latitude AS latitude,
+            @longitude AS longitude,
+            @total_pop AS total_pop,
+            @pop_density_per_sqmi AS pop_density_per_sqmi,
+            33.5 AS median_age,
+            2400 AS housing_units,
+            1978.0 AS median_year_structure_built,
+            @poverty_rate AS poverty_rate,
+            @no_vehicle_rate AS no_vehicle_rate,
+            @dist_to_park_m AS dist_to_park_m
+        ),
+        STRUCT(4 AS top_k_features)
+      );
+
+  get_tract_resilience_profile:
+    kind: bigquery-sql
+    source: dallas-climate-bq
+    description: "Retrieve comprehensive socio-demographic, thermal vulnerability, and infrastructure resilience indicators for a specific Dallas Census tract."
+    parameters:
+      - name: geo_id
+        type: string
+        description: "11-digit Census Tract FIPS GEOID (e.g. '48113020500')."
+    statement: |
+      SELECT 
+        geo_id,
+        tract_lat,
+        tract_lon,
+        total_pop,
+        poverty_rate_pct,
+        no_vehicle_rate_pct,
+        pop_density_per_sqmi,
+        predicted_heat_offset_f,
+        svi_overall_pctile,
+        svi_vulnerability_category,
+        empower_beneficiaries_count,
+        grid_outage_risk_tier,
+        median_energy_burden_pct,
+        national_walkability_index,
+        afternoon_lst_f,
+        resilience_deficit_score
+      FROM `qwiklabs-gcp-04-4753f87c7a64.a4i_climate.dallas_resilience_master`
+      WHERE geo_id = @geo_id;
+
+  rank_cooling_centers_mcp:
+    kind: bigquery-sql
+    source: dallas-climate-bq
+    description: "Rank top priority candidate cooling center facilities by poverty rate, zero-vehicle transit burden, and population density."
+    parameters:
+      - name: limit_count
+        type: integer
+        description: "Number of candidate facilities to return (e.g. 5 or 10)."
+    statement: |
+      SELECT 
+        facility_name,
+        facility_type,
+        latitude,
+        longitude,
+        geo_id,
+        total_pop,
+        poverty_rate,
+        no_vehicle_rate,
+        pop_density_per_sqmi,
+        dist_to_park_m
+      FROM `qwiklabs-gcp-04-4753f87c7a64.a4i_climate.candidate_facilities_scored`
+      ORDER BY (poverty_rate * 0.4 + no_vehicle_rate * 0.4 + (pop_density_per_sqmi / 15000.0) * 0.2) DESC
+      LIMIT @limit_count;
+
+  query_climate_trace_emitters:
+    kind: bigquery-sql
+    source: dallas-climate-bq
+    description: "Query point-source industrial greenhouse gas emitters from Climate TRACE with annual CO2e tonnes and abatement costs."
+    parameters:
+      - name: min_emissions_tonnes
+        type: float
+        description: "Minimum annual emissions in tonnes of CO2e (e.g. 100000.0)."
+    statement: |
+      SELECT 
+        asset_id,
+        asset_name,
+        sector,
+        subsector,
+        gas,
+        annual_emissions_tonnes,
+        latitude,
+        longitude,
+        reduction_potential_pct,
+        abatement_cost_per_tonne
+      FROM `qwiklabs-gcp-04-4753f87c7a64.a4i_climate.dallas_emissions_assets`
+      WHERE annual_emissions_tonnes >= @min_emissions_tonnes
+      ORDER BY annual_emissions_tonnes DESC;
+
+  get_noaa_station_extremes:
+    kind: bigquery-sql
+    source: dallas-climate-bq
+    description: "Calculate historical temperature exposure, counting days exceeding 95°F and 100°F across Dallas NOAA stations."
+    parameters:
+      - name: start_year
+        type: integer
+        description: "Starting 4-digit calendar year (e.g. 2019)."
+    statement: |
+      SELECT 
+        EXTRACT(YEAR FROM observation_date) AS year,
+        COUNT(*) AS total_observations,
+        COUNTIF(max_temp_f >= 95.0) AS days_ge_95,
+        COUNTIF(max_temp_f >= 100.0) AS days_ge_100,
+        MAX(max_temp_f) AS peak_temp_f,
+        ROUND(AVG(max_temp_f), 1) AS avg_max_temp_f
+      FROM `qwiklabs-gcp-04-4753f87c7a64.a4i_climate.station_daily_temps`
+      WHERE EXTRACT(YEAR FROM observation_date) >= @start_year
+      GROUP BY year
+      ORDER BY year DESC;
+
+toolsets:
+  climate-resilience:
+    - explain_heat_offset_bqml
+    - get_tract_resilience_profile
+    - rank_cooling_centers_mcp
+    - query_climate_trace_emitters
+    - get_noaa_station_extremes
