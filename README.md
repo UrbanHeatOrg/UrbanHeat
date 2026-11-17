@@ -1,7 +1,7 @@
 # City of Dallas: Urban Heat Island Resilience & Cooling Center Allocation Tool
 ### Agents for Impact 2026 — Challenge 1: Walkability & Urban Heat
 
-An autonomous climate resilience decision support system and interactive web dashboard built with **Google ADK (Agent Development Kit)**, **Gemini 2.5 Flash on Vertex AI**, and **BigQuery ML**.
+An autonomous climate resilience decision support system and interactive web dashboard built with **Google ADK (Agent Development Kit)**, **Gemini 2.5 Flash on Vertex AI**, and **BigQuery ML**!
 
 ---
 
