@@ -10,7 +10,9 @@ An autonomous climate resilience decision support system, nationwide equity allo
 
 - **Live Cloud Run Deployment**: [https://dallas-heat-app-447063751013.us-central1.run.app](https://dallas-heat-app-447063751013.us-central1.run.app)
 - **System Architecture & Cloud Topology**: [ARCHITECTURE.md](ARCHITECTURE.md) (Enterprise 4-Tier Architecture, Cloud Run Topology & Hackathon Demo Anchors)
+- **Target Users & Human-in-the-Loop Governance**: [TARGET_USERS_AND_HITL.md](TARGET_USERS_AND_HITL.md) (Executive overview, municipal user personas, and two-tier HITL framework)
 - **Comprehensive Walkthrough**: [WALKTHROUGH.md](WALKTHROUGH.md) (Complete verification, architecture, and live screenshots)
+
 
 - **System Implementation Blueprint**: [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) (Multi-agent council design & $50M Pareto engine)
 - **Official Placement Recommendation Artifact**: [PLACEMENT_RECOMMENDATION.md](PLACEMENT_RECOMMENDATION.md) (Council Resolution No. 2026-HEAT-01)
