@@ -991,16 +991,6 @@ def rank_cooling_center_sites(top_n: int = 5, prioritize_vulnerability: bool = T
         "data_source": "bigquery_ml_verified_benchmark"
     }
 
-        return {
-            "city": "Dallas",
-            "total_candidates_evaluated": 618,
-            "sites_returned": len(sites),
-            "recommendations": sites,
-            "ranked_sites": sites
-        }
-    except Exception as e:
-        return {"error": str(e)}
-
 def get_heat_frequency() -> Dict[str, Any]:
     """Retrieves 7 years of station temperature history for Dallas.
     
@@ -2186,8 +2176,6 @@ def assess_grid_and_medically_fragile_risk(top_n: int = 5) -> Dict[str, Any]:
         "high_risk_zones": RISK_ZONES[:limit_n],
         "data_source": "municipal_grid_vulnerability"
     }
-    except Exception as e:
-        return {"error": str(e)}
 
 def compare_siting_scenarios(tract_a_geoid: str, tract_b_geoid: str) -> Dict[str, Any]:
     """Compares two candidate census tracts head-to-head for cooling center placement.

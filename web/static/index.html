@@ -999,12 +999,12 @@
       <div onclick="toggleDataSourcesModal(true)" class="trace-card rounded-2xl p-2.5 px-3 border border-white/10 flex items-center justify-between cursor-pointer hover:border-teal-500/40 transition group bg-slate-950/80 shadow-lg">
         <div class="flex items-center gap-2">
           <div class="flex -space-x-1.5 overflow-hidden items-center">
-            <img src="/static/logos/noaa.svg" class="inline-block h-4 w-4 rounded-full bg-white/10 p-0.5 object-contain" alt="NOAA">
-            <img src="/static/logos/epa.svg" class="inline-block h-4 w-4 rounded-full bg-white/10 p-0.5 object-contain" alt="EPA">
-            <img src="/static/logos/cdc.svg" class="inline-block h-4 w-4 rounded-full bg-white/10 p-0.5 object-contain" alt="CDC">
-            <img src="/static/logos/nasa.svg" class="inline-block h-4 w-4 rounded-full bg-white/10 p-0.5 object-contain" alt="NASA">
-            <img src="/static/logos/climatetrace.svg" class="inline-block h-4 w-4 rounded-full bg-white/10 p-0.5 object-contain" alt="Climate TRACE">
-            <img src="/static/logos/bigquery.svg" class="inline-block h-4 w-4 rounded-full bg-white/10 p-0.5 object-contain" alt="BigQuery">
+            <img src="/static/logos/noaa.svg" onerror="this.style.display='none'" class="inline-block h-4 w-4 rounded-full bg-white/10 p-0.5 object-contain" alt="NOAA">
+            <img src="/static/logos/epa.svg" onerror="this.style.display='none'" class="inline-block h-4 w-4 rounded-full bg-white/10 p-0.5 object-contain" alt="EPA">
+            <img src="/static/logos/cdc.svg" onerror="this.style.display='none'" class="inline-block h-4 w-4 rounded-full bg-white/10 p-0.5 object-contain" alt="CDC">
+            <img src="/static/logos/nasa.svg" onerror="this.style.display='none'" class="inline-block h-4 w-4 rounded-full bg-white/10 p-0.5 object-contain" alt="NASA">
+            <img src="/static/logos/climatetrace.svg" onerror="this.style.display='none'" class="inline-block h-4 w-4 rounded-full bg-white/10 p-0.5 object-contain" alt="Climate TRACE">
+            <img src="/static/logos/bigquery.svg" onerror="this.style.display='none'" class="inline-block h-4 w-4 rounded-full bg-white/10 p-0.5 object-contain" alt="BigQuery">
           </div>
           <span class="text-[10px] font-mono text-slate-400 group-hover:text-teal-300 transition">12 Data Provenance Streams</span>
         </div>
@@ -2188,7 +2188,7 @@
               <div>
                 <div class="flex items-start justify-between gap-3 mb-3">
                   <div class="h-12 w-28 bg-white/10 rounded-xl p-2 flex items-center justify-center border border-white/10 group-hover:border-teal-400/30 transition">
-                    <img src="${src.logo}" alt="${src.id}" class="max-h-full max-w-full object-contain filter drop-shadow">
+                    <img src="${src.logo}" alt="${src.id}" onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\\'text-xs font-mono font-bold text-teal-400 uppercase tracking-wider\\'>' + src.id + '</span>'" class="max-h-full max-w-full object-contain filter drop-shadow">
                   </div>
                   <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-teal-300 border border-white/10">${src.category}</span>
                 </div>
