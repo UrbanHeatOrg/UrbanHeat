@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json.schemastore.org/mcp.json",
+  "mcpServers": {
+    "urban-heat-toolbox": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@toolbox-sdk/server",
+        "--tools-file=mcp/tools.yaml",
+        "--stdio"
+      ],
+      "env": {
+        "GOOGLE_CLOUD_PROJECT": "qwiklabs-gcp-04-4753f87c7a64"
+      }
+    },
+    "bigquery-explorer": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@toolbox-sdk/server",
+        "--prebuilt=bigquery",
+        "--stdio"
+      ],
+      "env": {
+        "GOOGLE_CLOUD_PROJECT": "qwiklabs-gcp-04-4753f87c7a64"
+      }
+    }
+  }
+}

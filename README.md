@@ -11,6 +11,7 @@ An autonomous climate resilience decision support system and interactive web das
 - **Official Placement Recommendation Artifact**: [PLACEMENT_RECOMMENDATION.md](PLACEMENT_RECOMMENDATION.md) (Council Resolution No. 2026-HEAT-01)
 - **Interactive Command Center**: Real-time Google Maps Dark Vector styling, 1,200m walkability buffers, and Dana AI copilot.
 - **BigQuery ML Model**: `a4i_climate.heat_offset_model` (Linear regression with `ML.EXPLAIN_PREDICT` on Vertex AI `us-central1`).
+- **Google MCP Toolbox for Databases**: Declarative [`mcp/tools.yaml`](mcp/tools.yaml) & [`mcp.json`](mcp.json) for [`googleapis/mcp-toolbox`](https://github.com/googleapis/mcp-toolbox).
 - **Security Gateway**: Google Cloud Model Armor prompt injection, jailbreak, and SQL/DDL injection interceptor (`agent/model_armor.py`).
 - **Decarbonization Layer**: Climate TRACE v5.12 monitored point-source assets (`a4i_climate.dallas_emissions_assets`).
 - **Climate Investment Simulator**: $50M Multi-Objective Pareto Frontier (Heat Adaptation vs. CO2e Mitigation).
@@ -60,8 +61,27 @@ Analysis of 27,187 Dallas weather station observations:
 - [`agent/requirements.txt`](agent/requirements.txt): Python dependencies for the agent and tools.
 - [`web/static/index.html`](web/static/index.html): Interactive municipal resilience web dashboard with Leaflet map, Chart.js metrics, and embedded AI analyst copilot.
 - [`web/server.py`](web/server.py): FastAPI backend providing REST endpoints and streaming chat.
-- [`web/vercel.json`](web/vercel.json): Vercel configuration for static/frontend deployment.
+- [`mcp/tools.yaml`](mcp/tools.yaml): Google MCP Toolbox for Databases configuration exposing BigQuery & Vertex AI BQML tools.
+- [`mcp.json`](mcp.json): Standard MCP client configuration for Antigravity, Claude Code, and Gemini CLI.
+- [`mcp/README.md`](mcp/README.md): Detailed usage guide for running the MCP server with Docker or NPX.
 - [`test_planner_scenarios.py`](test_planner_scenarios.py): Automated test runner validating all municipal planning workflows.
+- [`test_system_endpoints.py`](test_system_endpoints.py): Automated verification test suite validating all 17 REST API endpoints.
+
+---
+
+## 🧰 Google MCP Toolbox Integration (`googleapis/mcp-toolbox`)
+
+The repository includes a ready-to-use configuration for **Google's official MCP Toolbox for Databases** ([`googleapis/mcp-toolbox`](https://github.com/googleapis/mcp-toolbox)), enabling any MCP client to query our BigQuery warehouse and BigQuery ML models via standardized tools:
+
+```bash
+export GOOGLE_CLOUD_PROJECT="qwiklabs-gcp-04-4753f87c7a64"
+
+# 1. Run HeatShield AI's custom BigQuery ML & climate resilience tools
+npx -y @toolbox-sdk/server --tools-file=mcp/tools.yaml --stdio
+
+# 2. Or explore BigQuery schemas dynamically with prebuilt tools
+npx -y @toolbox-sdk/server --prebuilt=bigquery --stdio
+```
 
 ---
 
@@ -81,4 +101,5 @@ Analysis of 27,187 Dallas weather station observations:
 3. **Run Automated Test Scenarios**:
    ```bash
    python3 test_planner_scenarios.py
+   python3 test_system_endpoints.py
    ```
