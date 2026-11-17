@@ -57,7 +57,8 @@ graph LR
     classDef managed fill:#1e1e38,stroke:#a855f7,stroke-width:1.5px,color:#f8fafc;
 
     User([Planner / Evaluator]) --> CDN[Cloud CDN & Armor Edge]:::edge
-    CDN --> Run[<b>Google Cloud Run: dallas-heat-app</b><br/>Region: us-central1 | Revision 15<br/>FastAPI + Google ADK + Uvicorn]:::compute
+    CDN --> Run["<b>Google Cloud Run: dallas-heat-app</b><br/>Region: us-central1 - Revision 15<br/>FastAPI + Google ADK + Uvicorn"]:::compute
+
 
     subgraph GCPManaged ["Managed Google Cloud Services (us-central1)"]
         Run --> Vertex[<b>Vertex AI</b><br/>Gemini 2.5 Flash]:::managed
