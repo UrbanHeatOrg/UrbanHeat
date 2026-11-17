@@ -4889,6 +4889,198 @@
       document.body.removeChild(ta);
     }
 
+    // =========================================================================
+    // DANA IN-CHAT GIS MINI-MAP, NEIGHBORHOOD GROUNDING & CLICKABLE TRACT PILLS
+    // =========================================================================
+
+    const DALLAS_CHAT_CATALOG = {
+      "48113020500": {
+        tract_id: "48113020500",
+        name: "Igelisia de Cristo Elim Church (West Dallas)",
+        category: "cooling_center",
+        lat: 32.7834,
+        lng: -96.8623,
+        offset: "+0.43°F",
+        poverty: "29.1%",
+        no_car: "45.2%",
+        details: "West Dallas / Elm Thicket Corridor. Severe transit dependency (45.2% no-car)."
+      },
+      "48113008704": {
+        tract_id: "48113008704",
+        name: "Anita Martinez Recreation Center (South Oak Cliff)",
+        category: "cooling_center",
+        lat: 32.6952,
+        lng: -96.7815,
+        offset: "-1.05°F",
+        poverty: "52.2%",
+        no_car: "33.5%",
+        details: "South Oak Cliff. Concentrated poverty (52.2%) requiring emergency utility relief."
+      },
+      "48113020300": {
+        tract_id: "48113020300",
+        name: "Martin Luther King Jr Community Center (Fair Park)",
+        category: "cooling_center",
+        lat: 32.7600,
+        lng: -96.7600,
+        offset: "+0.09°F",
+        poverty: "30.1%",
+        no_car: "38.5%",
+        details: "Fair Park / South Dallas. Vital civic hub for elderly and pedestrian heat safety."
+      },
+      "48113019213": {
+        tract_id: "48113019213",
+        name: "Pleasant Grove Branch Library",
+        category: "cooling_center",
+        lat: 32.7300,
+        lng: -96.7000,
+        offset: "+0.96°F",
+        poverty: "36.1%",
+        no_car: "28.5%",
+        details: "Southeast Dallas park desert with severe afternoon asphalt heat retention."
+      },
+      "48085031720": {
+        tract_id: "48085031720",
+        name: "Coit Rd & Frankford Rd (Hydration Unit Alpha)",
+        category: "hydration",
+        lat: 32.9984,
+        lng: -96.7121,
+        offset: "+1.24°F",
+        poverty: "35.3%",
+        no_car: "26.2%",
+        details: "Peak microclimate heat hotspot (+1.24°F offset). Rapid mobile hydration staging."
+      },
+      "48113011401": {
+        tract_id: "48113011401",
+        name: "Simpson Stuart / Paul Quinn Corridor",
+        category: "cooling_center",
+        lat: 32.6840,
+        lng: -96.7530,
+        offset: "+1.05°F",
+        poverty: "34.8%",
+        no_car: "31.2%",
+        details: "Southern Dallas transit corridor with high afternoon foot traffic."
+      },
+      "48113012302": {
+        tract_id: "48113012302",
+        name: "Buckner Terrace / Urban Park",
+        category: "cooling_center",
+        lat: 32.7910,
+        lng: -96.6980,
+        offset: "+0.82°F",
+        poverty: "28.4%",
+        no_car: "22.1%",
+        details: "East Dallas residential heat island with elderly transit vulnerability."
+      },
+      "48113010101": {
+        tract_id: "48113010101",
+        name: "Vickery Meadow / Skillman Corridor",
+        category: "canopy",
+        lat: 32.8720,
+        lng: -96.7610,
+        offset: "+0.91°F",
+        poverty: "32.5%",
+        no_car: "38.0%",
+        details: "Dense multi-family apartment corridor with extreme pedestrian bus ridership."
+      },
+      "48113015303": {
+        tract_id: "48113015303",
+        name: "Elmwood / Wynnewood Park Corridor",
+        category: "cooling_center",
+        lat: 32.7160,
+        lng: -96.8370,
+        offset: "+0.57°F",
+        poverty: "16.7%",
+        no_car: "5.4%",
+        details: "Oak Cliff park desert corridor with high building density heat retention."
+      }
+    };
+
+    const DALLAS_TRACT_NEIGHBORHOODS = {
+      "48113020500": { name: "West Dallas / Singleton", lat: 32.7834, lng: -96.8623 },
+      "48113008704": { name: "South Oak Cliff / Marsalis", lat: 32.6952, lng: -96.7815 },
+      "48113020300": { name: "Fair Park / MLK Jr Blvd", lat: 32.7600, lng: -96.7600 },
+      "48113019213": { name: "Pleasant Grove / Lake June", lat: 32.7300, lng: -96.7000 },
+      "48085031720": { name: "North Dallas / Coit & Frankford", lat: 32.9984, lng: -96.7121 },
+      "48113011401": { name: "Simpson Stuart / Paul Quinn", lat: 32.6840, lng: -96.7530 },
+      "48113012302": { name: "Buckner Terrace / Urban Park", lat: 32.7910, lng: -96.6980 },
+      "48113010101": { name: "Vickery Meadow / Skillman", lat: 32.8720, lng: -96.7610 },
+      "48113015303": { name: "Elmwood / Wynnewood Park", lat: 32.7160, lng: -96.8370 }
+    };
+
+    function focusTractLocation(tid, lng, lat, name) {
+      if (typeof flyCesiumTo === 'function') {
+        flyCesiumTo(lng, lat, 650, -32, 40);
+      }
+      if (typeof citizenMap !== 'undefined' && citizenMap && citizenMap.setView) {
+        try {
+          citizenMap.setView([lat, lng], 15);
+        } catch (e) {}
+      }
+      showTractFocusToast(tid, name);
+    }
+
+    function showTractFocusToast(tid, name) {
+      let toast = document.getElementById('tract-focus-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'tract-focus-toast';
+        toast.className = 'fixed top-20 right-8 z-[9999] bg-obsidian-900/95 border border-cyan-500/40 shadow-2xl rounded-2xl p-3.5 flex items-center gap-3 backdrop-blur-xl transition-all duration-300 transform translate-y-[-10px] opacity-0 pointer-events-none';
+        document.body.appendChild(toast);
+      }
+      toast.innerHTML = `
+        <div class="w-8 h-8 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
+          <i class="fa-solid fa-crosshairs animate-pulse text-sm"></i>
+        </div>
+        <div>
+          <div class="text-[10px] uppercase font-mono tracking-wider text-cyan-400 font-bold">Spatial Digital Twin Synced</div>
+          <div class="text-xs font-bold text-white">${escapeHtml(name)} <span class="font-mono text-cyan-300 text-[10px]">(Tract ${escapeHtml(tid)})</span></div>
+        </div>
+      `;
+      toast.classList.remove('opacity-0', 'translate-y-[-10px]');
+      toast.classList.add('opacity-100', 'translate-y-0');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', 'translate-y-[-10px]');
+      }, 3500);
+    }
+
+    function transformCensusTractPills(html) {
+      if (!html) return '';
+
+      // Preserve <pre><code> blocks and existing buttons/links from pill transformation
+      const preservedBlocks = [];
+      let sanitizedHtml = html.replace(/<(pre|button|a)[\s\S]*?<\/\1>/gi, (match) => {
+        preservedBlocks.push(match);
+        return `<!--PRESERVED_BLOCK_${preservedBlocks.length - 1}-->`;
+      });
+
+      // Match Census Tract GEOIDs (e.g. "Census Tract 48113020500", "Tract 48113020500", or standalone "48113020500")
+      // Handles optional <code> or <strong> tags wrapped around the number
+      const tractPattern = /(?:(?:Census\s+Tract|Tract)\s*(?:<code>|<strong>)?\s*\b(48113\d{6}|48085\d{6})\b(?:<\/strong>|<\/code>)?|\b(48113\d{6}|48085\d{6})\b)/gi;
+
+      sanitizedHtml = sanitizedHtml.replace(tractPattern, (match, tid1, tid2) => {
+        const tid = tid1 || tid2;
+        if (!tid) return match;
+
+        const info = (typeof DALLAS_TRACT_NEIGHBORHOODS !== 'undefined' && DALLAS_TRACT_NEIGHBORHOODS[tid]) 
+          ? DALLAS_TRACT_NEIGHBORHOODS[tid] 
+          : ((typeof DALLAS_CHAT_CATALOG !== 'undefined' && DALLAS_CHAT_CATALOG[tid]) ? DALLAS_CHAT_CATALOG[tid] : null);
+
+        const name = info ? info.name : `Dallas Tract ${tid}`;
+        const lat = info ? info.lat : 32.7767;
+        const lng = info ? info.lng : -96.7970;
+
+        return `<button type="button" class="tract-pill" onclick="focusTractLocation('${tid}', ${lng}, ${lat}, '${escapeHtml(name)}')" title="Click to fly 3D Map to ${escapeHtml(name)}"><i class="fa-solid fa-location-dot"></i><span>${escapeHtml(name)}</span><span class="tract-geoid">${tid}</span></button>`;
+      });
+
+      // Restore preserved blocks
+      sanitizedHtml = sanitizedHtml.replace(/<!--PRESERVED_BLOCK_(\d+)-->/g, (match, idx) => {
+        return preservedBlocks[parseInt(idx, 10)] || '';
+      });
+
+      return sanitizedHtml;
+    }
+
     function renderDanaMarkdown(text) {
       if (!text) return '';
 
@@ -4935,6 +5127,9 @@
             `;
           });
 
+          // Transform Census Tract mentions into interactive 3D fly-to pills
+          html = transformCensusTractPills(html);
+
           return html;
         } catch (err) {
           console.warn('Error parsing markdown with marked:', err);
@@ -4942,7 +5137,8 @@
       }
 
       // Safe fallback markdown renderer
-      return fallbackMarkdown(text);
+      const fbHtml = fallbackMarkdown(text);
+      return transformCensusTractPills(fbHtml);
     }
 
     function fallbackMarkdown(text) {

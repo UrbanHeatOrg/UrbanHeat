@@ -1157,7 +1157,7 @@ def list_data_sources():
                 "category": "Enterprise AI & Security",
                 "logo": "/static/logos/google_cloud.svg",
                 "datasets": ["Gemini 2.5 Flash Foundation Model", "Google Cloud Model Armor Gateway"],
-                "role": "Powers HeatShield Commander (Dana) and domain subagents with prompt injection & jailbreak defense."
+                "role": "Powers HeatShield Commander (CoolAid) and domain subagents with prompt injection & jailbreak defense."
             },
             {
                 "id": "google_maps",
@@ -1489,7 +1489,7 @@ async def websocket_live_endpoint(websocket: WebSocket):
         output_audio_transcription=types.AudioTranscriptionConfig(),
         system_instruction=types.Content(
             parts=[types.Part(text=(
-                "You are Commander Dana, Chief Climate Resilience AI for the City of Dallas. "
+                "You are Commander CoolAid, Chief Climate Resilience AI for the City of Dallas. "
                 "You speak clearly, warmly, and concisely in real-time conversation. "
                 "You have live knowledge of Dallas heat vulnerability, cooling centers, and climate data: "
                 "West Dallas (Tract 48113020500) is the priority heat hotspot at 104.5°F with 31.4% poverty; "
@@ -1531,7 +1531,7 @@ async def websocket_live_endpoint(websocket: WebSocket):
                                 "is_final": True
                             })
                         
-                        # Dana speech transcription
+                        # CoolAid speech transcription
                         if sc.output_transcription and sc.output_transcription.text:
                             await websocket.send_json({
                                 "type": "dana_transcription",
