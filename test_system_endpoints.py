@@ -163,7 +163,7 @@ def main():
             got_live_data = False
             for _ in range(10):
                 msg = ws.receive_json()
-                if msg.get("type") in ("audio", "dana_transcription", "turn_complete"):
+                if msg.get("type") in ("audio", "dana_transcription", "coolaid_transcription", "turn_complete"):
                     got_live_data = True
                     break
             if status_msg.get("type") == "status" and got_live_data:
