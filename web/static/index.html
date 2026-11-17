@@ -551,7 +551,7 @@
       </button>
     </nav>
 
-    <!-- Right: Telemetry & CoolAid Copilot Trigger -->
+    <!-- Right: Telemetry & Dana Copilot Trigger -->
     <div class="flex items-center gap-1.5 sm:gap-2 pointer-events-auto shrink-0">
       <!-- City Selector Dropdown (Planner Mode) -->
       <div id="planner-city-container" class="relative flex items-center">
@@ -577,8 +577,8 @@
 
       <button id="btn-open-copilot" onclick="toggleCopilot()" class="px-2.5 sm:px-3 py-1.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-lg shadow-cyan-500/25 border border-white/20 transition cursor-pointer whitespace-nowrap">
         <i class="fa-solid fa-robot text-cyan-200"></i>
-        <span class="hidden xs:inline sm:inline">CoolAid AI Copilot</span>
-        <span class="inline xs:hidden sm:hidden">CoolAid</span>
+        <span class="hidden xs:inline sm:inline">Dana AI Copilot</span>
+        <span class="inline xs:hidden sm:hidden">Dana</span>
       </button>
     </div>
   </header>
@@ -761,7 +761,7 @@
           </div>
           <button onclick="startResidentVoiceHelp()" class="px-3 py-1.5 bg-gradient-to-r from-purple-600/30 to-indigo-600/30 hover:from-purple-600/50 hover:to-indigo-600/50 text-purple-200 border border-purple-400/40 rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer">
             <i class="fa-solid fa-microphone text-purple-300"></i>
-            <span>Ask CoolAid Live</span>
+            <span>Ask Dana Live</span>
           </button>
         </div>
 
@@ -1301,7 +1301,7 @@
         </button>
         <button id="dock-btn-copilot" onclick="toggleCopilot()" class="flex-1 flex flex-col items-center gap-0.5 py-1 px-1 rounded-xl text-[10px] font-bold text-slate-400 hover:text-cyan-300 transition cursor-pointer">
           <i class="fa-solid fa-robot text-xs"></i>
-          <span>CoolAid</span>
+          <span>Dana</span>
         </button>
       </div>
 
@@ -1325,14 +1325,14 @@
         </a>
         <button id="dock-btn-res-dana" onclick="toggleCopilot()" class="flex-1 flex flex-col items-center gap-0.5 py-1 px-1 rounded-xl text-[10px] font-bold text-purple-400 hover:text-purple-300 transition cursor-pointer">
           <i class="fa-solid fa-microphone text-xs"></i>
-          <span>Ask CoolAid</span>
+          <span>Ask Dana</span>
         </button>
       </div>
     </nav>
 
   </main>
 
-  <!-- ================= COOLAID AI COPILOT SLIDE-OVER DRAWER ================= -->
+  <!-- ================= DANA AI COPILOT SLIDE-OVER DRAWER ================= -->
   <aside id="copilot-drawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-obsidian-950/95 backdrop-blur-2xl border-l border-white/10 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col">
     <!-- Header -->
     <div class="p-4 border-b border-white/10 flex items-center justify-between bg-obsidian-900/60">
@@ -1342,7 +1342,7 @@
         </div>
         <div>
           <h4 class="font-bold text-sm text-white flex items-center gap-2">
-            Commander CoolAid
+            Commander Dana
             <span id="voice-live-badge" class="hidden text-[9px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 items-center gap-1.5">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> LIVE VOICE
             </span>
@@ -1382,19 +1382,19 @@
         <i class="fa-solid fa-magnifying-glass text-slate-400"></i> Explain Tract 48113020500
     <!-- Quick Prompt Chips -->
     <div class="p-3 border-b border-white/10 bg-obsidian-900/30 flex flex-wrap gap-1.5">
-      <button onclick="askCoolAid('Explain the DUCT 3D Heat X-Ray thermal entrapment in Downtown Dallas canyons')" class="text-[10px] bg-white/5 hover:bg-white/10 text-slate-300 px-2.5 py-1 rounded-full border border-white/10 transition cursor-pointer">
+      <button onclick="askDana('Explain the DUCT 3D Heat X-Ray thermal entrapment in Downtown Dallas canyons')" class="text-[10px] bg-white/5 hover:bg-white/10 text-slate-300 px-2.5 py-1 rounded-full border border-white/10 transition cursor-pointer">
         🔥 DUCT Heat X-Ray
       </button>
-      <button onclick="askCoolAid('Audit Title VI civil rights compliance for South Dallas sites')" class="text-[10px] bg-white/5 hover:bg-white/10 text-slate-300 px-2.5 py-1 rounded-full border border-white/10 transition cursor-pointer">
+      <button onclick="askDana('Audit Title VI civil rights compliance for South Dallas sites')" class="text-[10px] bg-white/5 hover:bg-white/10 text-slate-300 px-2.5 py-1 rounded-full border border-white/10 transition cursor-pointer">
         ⚖️ Title VI Audit
       </button>
-      <button onclick="askCoolAid('Optimize $50M capital allocation for 235k residents')" class="text-[10px] bg-white/5 hover:bg-white/10 text-slate-300 px-2.5 py-1 rounded-full border border-white/10 transition cursor-pointer">
+      <button onclick="askDana('Optimize $50M capital allocation for 235k residents')" class="text-[10px] bg-white/5 hover:bg-white/10 text-slate-300 px-2.5 py-1 rounded-full border border-white/10 transition cursor-pointer">
         📊 $50M Portfolio
       </button>
-      <button onclick="askCoolAid('Dispatch mobile hydration tankers to unshaded bus stops')" class="text-[10px] bg-white/5 hover:bg-white/10 text-slate-300 px-2.5 py-1 rounded-full border border-white/10 transition cursor-pointer">
+      <button onclick="askDana('Dispatch mobile hydration tankers to unshaded bus stops')" class="text-[10px] bg-white/5 hover:bg-white/10 text-slate-300 px-2.5 py-1 rounded-full border border-white/10 transition cursor-pointer">
         ⚡ 104°F Dispatch
       </button>
-      <button onclick="askCoolAid('Compare cooling center priorities for Phoenix, Chicago, and Miami using the national resilience master table')" class="text-[10px] bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 px-2.5 py-1 rounded-full border border-cyan-500/30 transition cursor-pointer">
+      <button onclick="askDana('Compare cooling center priorities for Phoenix, Chicago, and Miami using the national resilience master table')" class="text-[10px] bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 px-2.5 py-1 rounded-full border border-cyan-500/30 transition cursor-pointer">
         🌐 US Resilience Engine
       </button>
     </div>
@@ -1407,11 +1407,11 @@
         </div>
         <div class="trace-card rounded-2xl p-3.5 text-slate-300 leading-relaxed max-w-[85%] border border-white/10">
           <div class="text-[10px] text-cyan-300 font-bold mb-1.5 flex items-center justify-between border-b border-white/10 pb-1">
-            <span class="flex items-center gap-1.5"><i class="fa-solid fa-robot text-cyan-400"></i> Commander CoolAid</span>
+            <span class="flex items-center gap-1.5"><i class="fa-solid fa-robot text-cyan-400"></i> Commander Dana</span>
             <span class="text-purple-300 font-mono"><i class="fa-solid fa-shield-cat"></i> Model Armor Guarded</span>
           </div>
-          <div class="dana-markdown coolaid-markdown text-xs">
-            Greetings from <strong>Team CoolAid</strong> (Climate Orchestration and Optimization Lab — Artificial Intelligence Deployment). I am Commander CoolAid, connected live to the <strong>Singapore DUCT 3D Heat X-Ray Engine</strong>, <strong>BigQuery ML Heat Offset Model</strong>, <strong>74,133-Tract US Resilience Master</strong>, and <strong>Climate TRACE Point Sources</strong>. What microclimate scenario can I simulate?
+          <div class="dana-markdown text-xs">
+            Greetings from <strong>Team CoolAid</strong> (Climate Orchestration and Optimization Lab — Artificial Intelligence Deployment). I am Commander Dana, connected live to the <strong>Singapore DUCT 3D Heat X-Ray Engine</strong>, <strong>BigQuery ML Heat Offset Model</strong>, <strong>74,133-Tract US Resilience Master</strong>, and <strong>Climate TRACE Point Sources</strong>. What microclimate scenario can I simulate?
           </div>
         </div>
       </div>
@@ -1441,14 +1441,14 @@
 
     <!-- Input Footer -->
     <div class="p-3 border-t border-white/10 bg-obsidian-900/40 flex items-center gap-2">
-      <input type="text" id="copilot-input" onkeydown="if(event.key==='Enter') sendCoolAidMessage()" placeholder="Ask CoolAid or click the mic to speak..." class="flex-1 bg-obsidian-900 border border-white/15 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400">
+      <input type="text" id="copilot-input" onkeydown="if(event.key==='Enter') sendDanaMessage()" placeholder="Ask Dana or click the mic to speak..." class="flex-1 bg-obsidian-900 border border-white/15 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400">
       
       <!-- Real-Time Voice Mic Button -->
       <button id="voice-mic-btn" onclick="toggleLiveVoice()" title="Toggle Realtime Voice (Gemini 3.8 Live)" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-cyan-400 font-bold flex items-center justify-center transition border border-white/10 cursor-pointer shadow-md">
         <i class="fa-solid fa-microphone text-xs" id="voice-mic-icon"></i>
       </button>
 
-      <button onclick="sendCoolAidMessage()" class="w-9 h-9 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-obsidian-950 font-bold flex items-center justify-center transition shadow-lg shadow-cyan-500/20 cursor-pointer">
+      <button onclick="sendDanaMessage()" class="w-9 h-9 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-obsidian-950 font-bold flex items-center justify-center transition shadow-lg shadow-cyan-500/20 cursor-pointer">
         <i class="fa-solid fa-paper-plane text-xs"></i>
       </button>
     </div>
@@ -1597,7 +1597,7 @@
         </div>
 
         <div class="bg-blue-950/40 border border-blue-500/30 p-3.5 rounded-2xl text-[11px] text-blue-200">
-          <strong>CoolAid Recommendation:</strong> Scenario A shields 14,330 more residents and targets tracts with severe transit poverty (45.2% zero-vehicle ownership), preventing fatal heat stroke at unshaded DART bus stops.
+          <strong>Dana Recommendation:</strong> Scenario A shields 14,330 more residents and targets tracts with severe transit poverty (45.2% zero-vehicle ownership), preventing fatal heat stroke at unshaded DART bus stops.
         </div>
       </div>
       <div class="p-4 border-t border-white/10 flex justify-end">
@@ -1738,7 +1738,7 @@
       <div id="res-hero-banner" class="px-4 py-3 bg-gradient-to-r from-red-950/70 via-amber-950/40 to-slate-950 border-b border-red-500/20 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
         <div class="flex items-center gap-3">
           <div class="flex items-baseline gap-1 text-red-400 font-mono">
-            <span class="text-2xl sm:text-3xl font-black" id="modal-res-temp-display">104.5°F</span>
+            <span class="text-2xl sm:text-3xl font-black" id="res-temp-display">104.5°F</span>
             <span class="text-xs uppercase font-semibold text-red-300/80">Ambient</span>
           </div>
           <div class="h-8 w-px bg-white/10 hidden sm:block"></div>
@@ -1746,11 +1746,11 @@
             <div class="flex items-center gap-2">
               <span class="inline-flex items-center gap-1 text-xs font-extrabold text-amber-300 bg-amber-500/20 px-2 py-0.5 rounded-full border border-amber-400/40 animate-pulse">
                 <i class="fa-solid fa-triangle-exclamation text-[10px]"></i>
-                <span id="modal-res-advisory-badge">Excessive Heat Warning</span>
+                <span id="res-advisory-badge">Excessive Heat Warning</span>
               </span>
-              <span id="modal-res-metro-badge" class="text-xs font-semibold text-slate-300">Dallas, TX</span>
+              <span id="res-metro-badge" class="text-xs font-semibold text-slate-300">Dallas, TX</span>
             </div>
-            <p id="modal-res-advisory-text" class="text-[11px] sm:text-xs text-slate-300 mt-0.5 line-clamp-1 sm:line-clamp-none">
+            <p id="res-advisory-text" class="text-[11px] sm:text-xs text-slate-300 mt-0.5 line-clamp-1 sm:line-clamp-none">
               Dangerously hot conditions. Drink plenty of fluids, stay in an air-conditioned room, and check up on relatives and neighbors.
             </p>
           </div>
@@ -1759,7 +1759,7 @@
         <div class="flex items-center gap-2 self-stretch md:self-auto justify-between md:justify-end">
           <a href="tel:311" class="px-3 py-1.5 bg-red-600/30 hover:bg-red-600/40 text-red-200 border border-red-500/40 rounded-xl text-xs font-bold flex items-center gap-1.5 transition">
             <i class="fa-solid fa-phone text-xs"></i>
-            <span id="modal-res-dial-311">Free Ride: Dial 311</span>
+            <span id="res-dial-311">Free Ride: Dial 311</span>
           </a>
           <span class="text-[10px] font-mono text-slate-400 hidden lg:inline">Text <b>COOL</b> to 311-CITY</span>
         </div>
@@ -1771,7 +1771,7 @@
           
           <!-- City / Metro Selector -->
           <div class="relative min-w-[170px]">
-            <select id="modal-res-city-select" onchange="changeResidentCity(this.value)" class="w-full text-xs font-mono font-bold bg-slate-950 text-cyan-300 border border-cyan-500/40 rounded-xl pl-3 pr-8 py-2.5 cursor-pointer hover:bg-slate-900 transition focus:outline-none focus:ring-1 focus:ring-cyan-400 appearance-none shadow-sm">
+            <select id="res-city-select" onchange="changeResidentCity(this.value)" class="w-full text-xs font-mono font-bold bg-slate-950 text-cyan-300 border border-cyan-500/40 rounded-xl pl-3 pr-8 py-2.5 cursor-pointer hover:bg-slate-900 transition focus:outline-none focus:ring-1 focus:ring-cyan-400 appearance-none shadow-sm">
               <option value="dallas" selected>📍 Dallas, TX</option>
               <option value="phoenix">📍 Phoenix, AZ</option>
               <option value="houston">📍 Houston, TX</option>
@@ -1787,27 +1787,27 @@
           <!-- GPS Current Location Button -->
           <button onclick="getResidentCurrentLocation()" class="px-3 py-2.5 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/40 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer whitespace-nowrap">
             <i class="fa-solid fa-location-crosshairs text-xs"></i>
-            <span id="modal-res-gps-btn-text">Use My Location</span>
+            <span id="res-gps-btn-text">Use My Location</span>
           </button>
 
           <!-- Text Search Input -->
           <div class="relative flex-1">
             <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
-            <input id="modal-res-search-input" oninput="debounceResidentSearch()" type="text" placeholder="Search by street, park, library, or neighborhood..." class="w-full bg-slate-950 text-white placeholder-slate-400 text-xs rounded-xl pl-9 pr-8 py-2.5 border border-white/15 focus:outline-none focus:border-cyan-400 transition">
-            <button onclick="clearResidentSearch()" id="modal-res-search-clear" class="absolute right-3 top-2.5 text-slate-400 hover:text-white hidden">
+            <input id="res-search-input" oninput="debounceResidentSearch()" type="text" placeholder="Search by street, park, library, or neighborhood..." class="w-full bg-slate-950 text-white placeholder-slate-400 text-xs rounded-xl pl-9 pr-8 py-2.5 border border-white/15 focus:outline-none focus:border-cyan-400 transition">
+            <button onclick="clearResidentSearch()" id="res-search-clear" class="absolute right-3 top-2.5 text-slate-400 hover:text-white hidden">
               <i class="fa-solid fa-circle-xmark text-xs"></i>
             </button>
           </div>
 
-          <!-- 1-Tap Voice Help Button (CoolAid Live API) -->
+          <!-- 1-Tap Voice Help Button (Dana Live API) -->
           <button onclick="startResidentVoiceHelp()" class="px-3.5 py-2.5 bg-gradient-to-r from-purple-600/30 to-indigo-600/30 hover:from-purple-600/50 hover:to-indigo-600/50 text-purple-200 border border-purple-400/40 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer whitespace-nowrap shadow-sm">
             <i class="fa-solid fa-microphone text-purple-300 animate-pulse"></i>
-            <span id="modal-res-voice-btn-text">Voice Assistant</span>
+            <span id="res-voice-btn-text">Voice Assistant</span>
           </button>
         </div>
 
         <!-- Amenity Quick Filter Chips -->
-        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 text-[11px]" id="modal-res-quick-chips">
+        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 text-[11px]" id="res-quick-chips">
           <button onclick="filterResidentChip('all')" class="px-2.5 py-1 rounded-lg bg-cyan-500 text-white font-semibold transition cursor-pointer flex-shrink-0" data-filter="all">All Cool Spots</button>
           <button onclick="filterResidentChip('water')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 font-semibold border border-white/10 transition cursor-pointer flex-shrink-0" data-filter="water">💧 Free Cold Water</button>
           <button onclick="filterResidentChip('ac')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 font-semibold border border-white/10 transition cursor-pointer flex-shrink-0" data-filter="ac">❄️ 70°F AC</button>
@@ -1819,15 +1819,15 @@
       </div>
 
       <!-- Cooling Centers Results Feed -->
-      <div class="p-3 sm:p-5 overflow-y-auto flex-1 space-y-3.5 bg-slate-950/70" id="modal-res-centers-container">
-        <div id="modal-res-loading-spinner" class="py-12 flex flex-col items-center justify-center text-slate-400 gap-3">
+      <div class="p-3 sm:p-5 overflow-y-auto flex-1 space-y-3.5 bg-slate-950/70" id="res-centers-container">
+        <div id="res-loading-spinner" class="py-12 flex flex-col items-center justify-center text-slate-400 gap-3">
           <i class="fa-solid fa-snowflake text-3xl text-cyan-400 animate-spin"></i>
           <span class="text-xs font-mono">Finding nearest air-conditioned cooling centers...</span>
         </div>
-        <div id="modal-res-centers-list" class="space-y-3 hidden">
+        <div id="res-centers-list" class="space-y-3 hidden">
           <!-- Rendered dynamically via JavaScript -->
         </div>
-        <div id="modal-res-empty-state" class="py-12 text-center text-slate-400 hidden">
+        <div id="res-empty-state" class="py-12 text-center text-slate-400 hidden">
           <i class="fa-solid fa-map-location-dot text-3xl mb-2 text-slate-500"></i>
           <p class="text-sm font-semibold text-slate-300">No cooling centers found matching that search.</p>
           <p class="text-xs text-slate-500 mt-1">Try searching a different street or click "All Cool Spots".</p>
@@ -1906,10 +1906,7 @@
         advisory: "Excessive Heat Warning",
         sunlightBtn: "Sunlight",
         gpsBtn: "My GPS",
-        gpsActive: "📍 GPS Active",
-        gpsLocating: "Locating...",
-        currentLocation: "Current Location",
-        voiceBtn: "Ask CoolAid Live",
+        voiceBtn: "Ask Dana Live",
         searchPlaceholder: "Search address, park, library, or neighborhood...",
         emptyTitle: "No cooling centers found matching that search.",
         emptySub: "Try searching a different street or click 'All Cool Spots'.",
@@ -1938,10 +1935,7 @@
         advisory: "Advertencia de Calor Extremo",
         sunlightBtn: "Luz Solar",
         gpsBtn: "Mi GPS",
-        gpsActive: "📍 GPS Activo",
-        gpsLocating: "Buscando GPS...",
-        currentLocation: "Ubicación Actual",
-        voiceBtn: "Hablar con CoolAid",
+        voiceBtn: "Hablar con Dana",
         searchPlaceholder: "Buscar dirección, parque, biblioteca o colonia...",
         emptyTitle: "No se encontraron refugios con esa búsqueda.",
         emptySub: "Intente buscar otra calle o presione 'Todos los Refugios'.",
@@ -4339,9 +4333,9 @@
               <i class="fa-solid fa-soap text-[10px]"></i>
               <span>3D Bubble</span>
             </button>
-            <button onclick="askCoolAid('Simulate extreme 104°F impact at ${asset.facility_name}')" class="py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-[11px] font-bold transition flex items-center justify-center gap-1 cursor-pointer">
+            <button onclick="askDana('Simulate extreme 104°F impact at ${asset.facility_name}')" class="py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-[11px] font-bold transition flex items-center justify-center gap-1 cursor-pointer">
               <i class="fa-solid fa-comments text-[10px]"></i>
-              <span>Ask CoolAid</span>
+              <span>Ask Dana</span>
             </button>
           </div>
         `;
@@ -4730,7 +4724,7 @@
         let html = `
           <div class="bg-gradient-to-r from-blue-950/80 to-indigo-950/80 border border-blue-500/40 rounded-2xl p-3.5 mb-2">
             <div class="flex items-center justify-between mb-1">
-              <span class="font-bold text-xs text-white">Commander CoolAid (Root Orchestrator)</span>
+              <span class="font-bold text-xs text-white">Commander Dana (Root Orchestrator)</span>
               <span class="text-[9px] font-mono px-2 py-0.5 rounded bg-blue-500/20 text-blue-300">gemini-2.5-flash</span>
             </div>
             <p class="text-[10px] text-blue-200/80 leading-relaxed">${data.root_agent.role}</p>
@@ -4843,7 +4837,6 @@
       document.getElementById('copilot-input').value = prompt;
       sendDanaMessage();
     }
-    const askCoolAid = askDana;
 
     // =========================================================================
     // DANA COPILOT RICH MARKDOWN & ESCAPING UTILITIES (Anthropic Standard)
@@ -5184,7 +5177,100 @@
       return html;
     }
 
-    // (DALLAS_CHAT_CATALOG and GIS location helpers are defined above renderDanaMarkdown)
+    // =========================================================================
+    // DANA IN-CHAT GIS MINI-MAP & SCANNABLE GOOGLE MAPS QR NAVIGATION
+    // =========================================================================
+
+    const DALLAS_CHAT_CATALOG = {
+      "48113020500": {
+        tract_id: "48113020500",
+        name: "Igelisia de Cristo Elim Church (West Dallas)",
+        category: "cooling_center",
+        lat: 32.7834,
+        lng: -96.8623,
+        offset: "+0.43°F",
+        poverty: "29.1%",
+        no_car: "45.2%",
+        details: "West Dallas / Elm Thicket Corridor. Severe transit dependency (45.2% no-car)."
+      },
+      "48113008704": {
+        tract_id: "48113008704",
+        name: "Anita Martinez Recreation Center (South Oak Cliff)",
+        category: "cooling_center",
+        lat: 32.6952,
+        lng: -96.7815,
+        offset: "-1.05°F",
+        poverty: "52.2%",
+        no_car: "33.5%",
+        details: "South Oak Cliff. Concentrated poverty (52.2%) requiring emergency utility relief."
+      },
+      "48113020300": {
+        tract_id: "48113020300",
+        name: "Martin Luther King Jr Community Center (Fair Park)",
+        category: "cooling_center",
+        lat: 32.7600,
+        lng: -96.7600,
+        offset: "+0.09°F",
+        poverty: "30.1%",
+        no_car: "38.5%",
+        details: "Fair Park / South Dallas. Vital civic hub for elderly and pedestrian heat safety."
+      },
+      "48113019213": {
+        tract_id: "48113019213",
+        name: "Pleasant Grove Branch Library",
+        category: "cooling_center",
+        lat: 32.7300,
+        lng: -96.7000,
+        offset: "+0.96°F",
+        poverty: "36.1%",
+        no_car: "28.5%",
+        details: "Southeast Dallas park desert with severe afternoon asphalt heat retention."
+      },
+      "48085031720": {
+        tract_id: "48085031720",
+        name: "Coit Rd & Frankford Rd (Hydration Unit Alpha)",
+        category: "hydration",
+        lat: 32.9984,
+        lng: -96.7121,
+        offset: "+1.24°F",
+        poverty: "35.3%",
+        no_car: "26.2%",
+        details: "Peak microclimate heat hotspot (+1.24°F offset). Rapid mobile hydration staging."
+      },
+      "48113011401": {
+        tract_id: "48113011401",
+        name: "Simpson Stuart / Paul Quinn Corridor",
+        category: "cooling_center",
+        lat: 32.6840,
+        lng: -96.7530,
+        offset: "+1.05°F",
+        poverty: "34.8%",
+        no_car: "31.2%",
+        details: "Southern Dallas transit corridor with high afternoon foot traffic."
+      },
+      "48113012302": {
+        tract_id: "48113012302",
+        name: "Buckner Terrace / Urban Park",
+        category: "cooling_center",
+        lat: 32.7910,
+        lng: -96.6980,
+        offset: "+0.82°F",
+        poverty: "28.4%",
+        no_car: "22.1%",
+        details: "East Dallas residential heat island with elderly transit vulnerability."
+      },
+      "48113010101": {
+        tract_id: "48113010101",
+        name: "Vickery Meadow / Skillman Corridor",
+        category: "canopy",
+        lat: 32.8720,
+        lng: -96.7610,
+        offset: "+0.91°F",
+        poverty: "32.5%",
+        no_car: "38.0%",
+        details: "Dense multi-family apartment corridor with extreme pedestrian bus ridership."
+      }
+    };
 
     function extractClientLocations(text, serverLocations) {
       if (serverLocations && Array.isArray(serverLocations) && serverLocations.length > 0) {
