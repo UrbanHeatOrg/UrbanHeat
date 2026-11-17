@@ -60,6 +60,34 @@
     #map { height: 500px; border-radius: 0.75rem; z-index: 10; }
     .custom-scroll::-webkit-scrollbar { width: 6px; }
     .custom-scroll::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+    @media print {
+      body {
+        background-color: #ffffff !important;
+        color: #0f172a !important;
+      }
+      header, #chat-drawer, #crosslink-modal, #print-report-modal, .no-print {
+        display: none !important;
+      }
+      .bg-slate-900, .bg-slate-950, .bg-slate-800 {
+        background-color: #ffffff !important;
+        color: #0f172a !important;
+        border-color: #cbd5e1 !important;
+      }
+      .text-white, .text-slate-100, .text-slate-200, .text-slate-300 {
+        color: #0f172a !important;
+      }
+      .text-slate-400 {
+        color: #475569 !important;
+      }
+      main {
+        max-width: 100% !important;
+        padding: 0 !important;
+      }
+      #map {
+        height: 380px !important;
+        page-break-after: avoid;
+      }
+    }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
@@ -87,6 +115,10 @@
         <i class="fa-solid fa-sparkles"></i>
         Gemini 2.5 Flash
       </span>
+      <button onclick="openPrintReportModal()" class="px-3.5 py-2 bg-slate-800/90 hover:bg-slate-700 text-slate-200 border border-slate-700/80 hover:border-red-500/50 rounded-lg text-sm font-medium flex items-center gap-2 transition shadow-sm backdrop-blur-md">
+        <i class="fa-solid fa-file-pdf text-red-400"></i>
+        <span>Print Heat Report</span>
+      </button>
       <button onclick="toggleChat()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-sm font-medium flex items-center gap-2 transition shadow-lg shadow-blue-500/25">
         <i class="fa-solid fa-comments"></i>
         Ask Dana (AI Analyst)
@@ -760,6 +792,74 @@
     </div>
   </div>
 
+  <!-- Executive Print & PDF Report Modal -->
+  <div id="print-report-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700/80 rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative overflow-hidden flex flex-col max-h-[90vh]">
+      <!-- Header -->
+      <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-red-500/20 border border-red-500/30 flex items-center justify-center text-red-400">
+            <i class="fa-solid fa-file-pdf text-xl"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-lg text-white">Generate Executive Heat Report</h3>
+            <p class="text-xs text-slate-400">Print to physical printer or export official municipal PDF</p>
+          </div>
+        </div>
+        <button onclick="closePrintReportModal()" class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800 transition">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="py-5 space-y-4 overflow-y-auto custom-scroll pr-1 flex-1">
+        <!-- Report Configuration -->
+        <div class="p-4 bg-slate-800/50 rounded-xl border border-slate-700/50 space-y-3">
+          <div class="text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-sliders text-blue-400"></i> Report Configuration & Scope
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div>
+              <label class="block text-slate-400 mb-1">Capital Budget Allocation ($)</label>
+              <input type="number" id="report-budget-input" value="10000000" step="500000" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:border-blue-500 font-mono">
+            </div>
+            <div>
+              <label class="block text-slate-400 mb-1">Heatwave Forecast Ambient (°F)</label>
+              <input type="number" id="report-temp-input" value="102.0" step="0.5" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:border-blue-500 font-mono">
+            </div>
+          </div>
+        </div>
+
+        <!-- Contents Summary -->
+        <div class="p-4 bg-slate-950/60 rounded-xl border border-slate-800 space-y-2">
+          <div class="text-xs font-semibold text-slate-300 uppercase tracking-wider">Report Dossier Includes:</div>
+          <ul class="text-xs text-slate-300 space-y-1.5">
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Executive Climate & Equity KPIs (9.2°F Peak Spread, 20,864 residents protected)</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <strong>Track 1</strong>: 102°F Emergency Mobile Hydration & Wellness Dispatch Matrix (Alpha, Bravo, Charlie)</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <strong>Track 2</strong>: Summer 2026 Permanent Hub Siting & Title VI Four-Fifths Equity Audit</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <strong>Track 3</strong>: 2026–2036 Decadal Tree Canopy Corridors & Cool Pavement Allocations</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Formal City Council Legislative Resolution No. 2026-HEAT-01 with signature blocks</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Modal Footer Action Buttons -->
+      <div class="pt-4 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3">
+        <button onclick="printCurrentDashboard()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-desktop"></i> Print Current Dashboard
+        </button>
+        <div class="flex items-center gap-2">
+          <button onclick="openPrintView()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 transition border border-slate-700 hover:border-slate-500">
+            <i class="fa-solid fa-print"></i> Print to Printer (or Save PDF)
+          </button>
+          <button onclick="downloadOfficialPdf()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 transition shadow-lg shadow-blue-500/25">
+            <i class="fa-solid fa-download"></i> Download Official PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- AI Planner Copilot Drawer (Modal / Sidebar) -->
   <div id="chat-drawer" class="fixed inset-y-0 right-0 w-full sm:w-[480px] bg-slate-900 border-l border-slate-800 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col">
     <!-- Drawer Header -->
@@ -838,6 +938,39 @@
   </div>
 
   <script>
+    // Print & PDF Report Functions
+    function openPrintReportModal() {
+      const modal = document.getElementById('print-report-modal');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closePrintReportModal() {
+      const modal = document.getElementById('print-report-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function openPrintView() {
+      const budget = document.getElementById('report-budget-input')?.value || '10000000';
+      const temp = document.getElementById('report-temp-input')?.value || '102.0';
+      window.open(`/api/report/print?budget=${budget}&temp=${temp}&autoprint=1`, '_blank');
+    }
+
+    function downloadOfficialPdf() {
+      const budget = document.getElementById('report-budget-input')?.value || '10000000';
+      const temp = document.getElementById('report-temp-input')?.value || '102.0';
+      window.open(`/api/report/pdf?budget=${budget}&temp=${temp}`, '_blank');
+    }
+
+    function printCurrentDashboard() {
+      closePrintReportModal();
+      setTimeout(() => window.print(), 300);
+    }
+
+    // Close modal on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closePrintReportModal();
+    });
+
     // Track 2: Siting Data (3 Permanent Cooling Centers with >=8km Spatial Spacing)
     const sites = [
       {
