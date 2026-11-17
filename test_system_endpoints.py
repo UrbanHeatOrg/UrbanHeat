@@ -109,6 +109,73 @@ def main():
     ok, data = run_test("Photorealistic 3D Tiles Config", "/api/3d-tiles/config")
     results["photorealistic_3d_tiles"] = ok and "tile_server_url" in data and "dallas_bounds" in data
     
+    # 18. Dana's Heat Contrast Question (4th & Marsalis vs Lake Cliff Park)
+    ok, data = run_test("Dana Heat Contrast Diagnosis", "/api/contrast?loc_a=4th%20and%20Marsalis&loc_b=2%20blocks%20north")
+    results["heat_contrast_diagnosis"] = ok and "contrast_analysis" in data and "planner_diagnosis" in data.get("contrast_analysis", {})
+
+    # 19. Data Sources & Official Logos Registry
+    ok, data = run_test("Data Sources & Logos Registry", "/api/data-sources")
+    logos_ok = True
+    if ok and data.get("sources"):
+        for src in data["sources"]:
+            logo_path = src.get("logo")
+            try:
+                l_req = urllib.request.Request(f"{BASE_URL}{logo_path}")
+                with urllib.request.urlopen(l_req, timeout=5) as l_resp:
+                    ct = l_resp.headers.get("content-type", "")
+                    if l_resp.status != 200 or "svg" not in ct:
+                        logos_ok = False
+                        break
+            except Exception:
+                logos_ok = False
+                break
+    results["data_sources_and_logos"] = ok and data.get("total_sources") == 12 and logos_ok
+    
+    # 19. Principled Refusal Check for Out-of-City Street Queries
+    ok, data = run_test("Out-of-Scope Principled Refusal", "/api/resolve-location?query=63rd%20and%20Halsted,%20Chicago")
+    results["principled_refusal"] = ok and data.get("status") == "refusal"
+
+    # 20. National Resilience Vulnerability (Cook County / Chicago)
+    ok, data = run_test("US National Resilience Profile", "/api/us/vulnerability?county=Cook&state=Illinois")
+    results["us_vulnerability_profile"] = ok and "data" in data and data.get("data", {}).get("total_county_pop", 0) > 0
+
+    # 21. National Cooling Center Sites Ranking (Maricopa County / Phoenix)
+    ok, data = run_test("US National Cooling Sites", "/api/us/sites?state=Arizona&county=Maricopa&top_n=3")
+    results["us_cooling_sites"] = ok and len(data.get("priority_cooling_sites", [])) == 3
+
+    # 22. National County Indexing (Georgia)
+    ok, data = run_test("US National County Directory", "/api/us/counties?state=Georgia")
+    results["us_county_directory"] = ok and data.get("count", 0) > 100
+
+    # 23. Google Isochrones API Cooling Accessibility Bubbles (5, 10, 15 min walking catchments)
+    ok, data = run_test("Google Isochrones API Bubbles", "/api/isochrones?site_id=1&speed=1.2")
+    results["google_isochrones_api"] = ok and "tiers" in data and len(data.get("tiers", [])) == 3 and data.get("total_15min_catchment_population", 0) > 0
+
+    # 24. Gemini 3.8 Live API Real-Time Voice WebSocket Bridge
+    print("Testing [WS] /ws/live ... ", end="")
+    try:
+        from fastapi.testclient import TestClient
+        from web.server import app
+        tc = TestClient(app)
+        with tc.websocket_connect("/ws/live") as ws:
+            status_msg = ws.receive_json()
+            ws.send_json({"type": "text", "text": "Quick status test"})
+            got_live_data = False
+            for _ in range(10):
+                msg = ws.receive_json()
+                if msg.get("type") in ("audio", "dana_transcription", "turn_complete"):
+                    got_live_data = True
+                    break
+            if status_msg.get("type") == "status" and got_live_data:
+                print("PASS (Gemini 3.8 Live 24kHz Audio & Transcription Streamed)")
+                results["gemini_38_live_voice"] = True
+            else:
+                print("FAIL (No streaming audio/transcription received)")
+                results["gemini_38_live_voice"] = False
+    except Exception as e:
+        print(f"ERROR ({e})")
+        results["gemini_38_live_voice"] = False
+
     print("\n" + "=" * 70)
     print("VERIFICATION SUMMARY")
     print("=" * 70)

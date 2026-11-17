@@ -2,12 +2,17 @@
 
 import os
 import sys
+import asyncio
+import base64
+import json
 from pathlib import Path
-from fastapi import FastAPI, HTTPException
+from typing import Optional
+from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
+from google import genai
 
 # Add project root to path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -96,13 +101,54 @@ def nearby_places(lat: float, lon: float, radius: float = 3000.0, place_type: st
 def solar_insights(lat: float, lon: float):
     return tools.get_solar_and_shade_insights(lat, lon)
 
+@app.get("/api/isochrones")
+def cooling_isochrones(site_id: Optional[str] = None, lat: Optional[float] = None, lon: Optional[float] = None, speed: float = 1.2):
+    """Google Isochrones API cooling accessibility contours (5, 10, 15 min walking bubbles)."""
+    return tools.get_cooling_accessibility_isochrones(site_id=site_id, lat=lat, lon=lon, walking_speed_mps=speed)
+
+
 @app.get("/api/vulnerability")
 def vulnerability_profile(tract_id: str = "48113020500"):
     return tools.get_vulnerability_profile(tract_id)
 
 @app.get("/api/air-quality")
-def air_quality(pollutant: str = "PM2.5", days: int = 30):
-    return tools.get_air_quality_summary(pollutant, days)
+def air_quality(pollutant: str = "PM2.5", days: int = 30, county: str = "Dallas", state: str = "Texas"):
+    return tools.get_air_quality_summary(pollutant=pollutant, days=days, county_name=county, state_name=state)
+
+@app.get("/api/us/vulnerability")
+def us_vulnerability(geo_id: Optional[str] = None, county: Optional[str] = None, state: Optional[str] = None):
+    return tools.get_national_vulnerability_profile(geo_id=geo_id, county_name=county, state_name=state)
+
+@app.get("/api/us/sites")
+def us_priority_sites(state: str, county: str, top_n: int = 5):
+    return tools.rank_national_cooling_center_sites(state_name=state, county_name=county, top_n=top_n)
+
+@app.get("/api/us/counties")
+def us_counties_list(state: Optional[str] = None):
+    """Returns list of US counties or counties within a given state from us_resilience_master."""
+    client = tools.get_bq_client()
+    where = f"WHERE LOWER(state_name) = LOWER('{state}')" if state else ""
+    sql = f"""
+    SELECT state_name, county_name, COUNT(*) as tract_count, SUM(total_pop) as population
+    FROM `{tools.PROJECT_ID}.{tools.DATASET}.us_resilience_master`
+    {where}
+    GROUP BY state_name, county_name
+    ORDER BY state_name, county_name
+    """
+    try:
+        rows = [dict(r) for r in client.query(sql).result()]
+        return {"count": len(rows), "counties": rows}
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.get("/api/contrast")
+def heat_contrast(loc_a: str = "4th and Marsalis", loc_b: str = "2 blocks north of 4th and Marsalis"):
+    return tools.compare_locations_heat_contrast(loc_a, loc_b)
+
+@app.get("/api/resolve-location")
+def resolve_loc(query: str = "4th and Marsalis"):
+    return tools.resolve_dallas_location(query)
 
 
 from agent.model_armor import inspect_prompt_armor
@@ -117,6 +163,111 @@ def armor_status():
             "Jailbreak Prevention",
             "System Prompt Leak Shield",
             "SQL/DDL Injection Interception"
+        ]
+    }
+
+@app.get("/api/data-sources")
+def list_data_sources():
+    return {
+        "status": "SUCCESS",
+        "total_sources": 12,
+        "sources": [
+            {
+                "id": "noaa",
+                "name": "National Oceanic and Atmospheric Administration (NOAA)",
+                "category": "Microclimate & Heat Hazards",
+                "logo": "/static/logos/noaa.svg",
+                "datasets": ["heat_observations (19,491 traverses)", "station_daily_temps (27,187 daily)", "dallas_noaa_heatrisk"],
+                "role": "Ground-truth mobile thermal readings capturing 9.2°F spread, 7-year station trends, and Level 1-5 HeatRisk thresholds."
+            },
+            {
+                "id": "epa",
+                "name": "U.S. Environmental Protection Agency (EPA)",
+                "category": "Air Quality & Walkability",
+                "logo": "/static/logos/epa.svg",
+                "datasets": ["dallas_epa_air_quality (PM2.5 & Ozone)", "dallas_walkability_index (Smart Location Database)"],
+                "role": "Real-time/historical ambient air monitors and 15-minute pedestrian intersection density."
+            },
+            {
+                "id": "cdc",
+                "name": "Centers for Disease Control and Prevention (CDC)",
+                "category": "Civil Rights & Equity",
+                "logo": "/static/logos/cdc.svg",
+                "datasets": ["dallas_cdc_svi (618 Census tracts)"],
+                "role": "4-theme social vulnerability index used exclusively for post-hoc Title VI civil rights equity compliance."
+            },
+            {
+                "id": "hhs",
+                "name": "U.S. Department of Health and Human Services (HHS)",
+                "category": "Emergency & Life Safety",
+                "logo": "/static/logos/hhs.svg",
+                "datasets": ["dallas_hhs_empower"],
+                "role": "Medicare electricity-dependent registry (oxygen, dialysis, ventilators) for Disaster Red-Team simulations."
+            },
+            {
+                "id": "doe",
+                "name": "U.S. Department of Energy (DOE)",
+                "category": "Energy Burden & Cooling Poverty",
+                "logo": "/static/logos/doe.svg",
+                "datasets": ["dallas_doe_energy_burden (LEAD)"],
+                "role": "Utility expenditure as % of income identifying cooling poverty and inability to afford air conditioning."
+            },
+            {
+                "id": "census",
+                "name": "U.S. Census Bureau",
+                "category": "Demographics & Dynamics",
+                "logo": "/static/logos/census.svg",
+                "datasets": ["tract_demographics (ACS 5-Year)", "dallas_tract_boundaries (TIGER)", "dallas_lodes_daytime_population (LODES)"],
+                "role": "Poverty, carless transit dependency, population density, and daytime outdoor worker dynamics."
+            },
+            {
+                "id": "nasa",
+                "name": "National Aeronautics and Space Administration (NASA)",
+                "category": "Thermal Satellite Remote Sensing",
+                "logo": "/static/logos/nasa.svg",
+                "datasets": ["dallas_ecostress_lst"],
+                "role": "70-meter ECOSTRESS thermal infrared diurnal land surface temperature and thermal mass retention profiles."
+            },
+            {
+                "id": "dallas",
+                "name": "City of Dallas",
+                "category": "Civic Assets & Municipal Parks",
+                "logo": "/static/logos/dallas.svg",
+                "datasets": ["candidate_facilities_scored (782 buildings)", "dallas_parks (4,110 green polygons)"],
+                "role": "Official inventory of public libraries, rec centers, schools, and 68,000+ acres of park green space."
+            },
+            {
+                "id": "climatetrace",
+                "name": "Climate TRACE",
+                "category": "Industrial Point-Source Emissions",
+                "logo": "/static/logos/climatetrace.svg",
+                "datasets": ["dallas_emissions_assets (10 major emitters)", "Marginal abatement cost benchmarks"],
+                "role": "Facility-level emissions for aviation, power, cement, and landfills driving the $50M Pareto optimizer."
+            },
+            {
+                "id": "google_cloud",
+                "name": "Google Cloud & Vertex AI",
+                "category": "Enterprise AI & Security",
+                "logo": "/static/logos/google_cloud.svg",
+                "datasets": ["Gemini 2.5 Flash Foundation Model", "Google Cloud Model Armor Gateway"],
+                "role": "Powers HeatShield Commander (Dana) and domain subagents with prompt injection & jailbreak defense."
+            },
+            {
+                "id": "google_maps",
+                "name": "Google Maps Platform",
+                "category": "Live Geospatial & Environmental APIs",
+                "logo": "/static/logos/google_maps.svg",
+                "datasets": ["Routes API v2", "Places API New", "Solar API Building Insights", "Photorealistic 3D Tiles API"],
+                "role": "Real-time pedestrian heat stress routing, civic place discovery, rooftop solar/albedo, and 3D textured mesh."
+            },
+            {
+                "id": "bigquery",
+                "name": "Google Cloud BigQuery & BQML",
+                "category": "Spatial Data Warehouse & ML",
+                "logo": "/static/logos/bigquery.svg",
+                "datasets": ["a4i_climate schema (19 tables)", "a4i_climate.heat_offset_model"],
+                "role": "Serverless spatial joins, ML.EXPLAIN_PREDICT feature attribution, and petabyte-scale climate analytics."
+            }
         ]
     }
 
@@ -210,6 +361,137 @@ async def chat(req: ChatRequest):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.websocket("/ws/live")
+async def websocket_live_endpoint(websocket: WebSocket):
+    """Bidirectional real-time voice streaming endpoint via Gemini 3.8 Live API."""
+    await websocket.accept()
+    client = genai.Client()
+    
+    config = types.LiveConnectConfig(
+        response_modalities=[types.Modality.AUDIO],
+        input_audio_transcription=types.AudioTranscriptionConfig(),
+        output_audio_transcription=types.AudioTranscriptionConfig(),
+        system_instruction=types.Content(
+            parts=[types.Part(text=(
+                "You are Commander Dana, Chief Climate Resilience AI for the City of Dallas. "
+                "You speak clearly, warmly, and concisely in real-time conversation. "
+                "You have live knowledge of Dallas heat vulnerability, cooling centers, and climate data: "
+                "West Dallas (Tract 48113020500) is the priority heat hotspot at 104.5°F with 31.4% poverty; "
+                "Top cooling hubs include MLK Jr. Center, West Dallas Multipurpose Center, and Bachman Rec Center; "
+                "Track 1 mobile hydration tankers stage at unshaded DART bus stops along Hampton Rd and Singleton Blvd; "
+                "Singapore DUCT 3D microclimate physics shows tree canopy reduces ambient temperatures by 3.2°F, "
+                "while cool roofs and high-albedo pavements reduce surface heat by up to 12°F. "
+                "Keep responses conversational, concise, and brief (1-3 sentences) so the audio dialogue flows naturally."
+            ))]
+        )
+    )
+    
+    try:
+        async with client.aio.live.connect(model="gemini-3.8-live", config=config) as session:
+            await websocket.send_json({"type": "status", "status": "connected", "model": "gemini-3.8-live"})
+
+            async def receive_from_gemini():
+                try:
+                    async for response in session.receive():
+                        sc = response.server_content
+                        if not sc:
+                            continue
+                        
+                        # Real-time barge-in interruption detection
+                        if sc.interrupted:
+                            await websocket.send_json({"type": "interrupted"})
+                        
+                        # User speech transcription
+                        if sc.interim_input_transcription and sc.interim_input_transcription.text:
+                            await websocket.send_json({
+                                "type": "user_transcription",
+                                "text": sc.interim_input_transcription.text,
+                                "is_final": False
+                            })
+                        elif sc.input_transcription and sc.input_transcription.text:
+                            await websocket.send_json({
+                                "type": "user_transcription",
+                                "text": sc.input_transcription.text,
+                                "is_final": True
+                            })
+                        
+                        # Dana speech transcription
+                        if sc.output_transcription and sc.output_transcription.text:
+                            await websocket.send_json({
+                                "type": "dana_transcription",
+                                "text": sc.output_transcription.text
+                            })
+                        
+                        # Audio chunks (24kHz PCM)
+                        if sc.model_turn and sc.model_turn.parts:
+                            for part in sc.model_turn.parts:
+                                if part.inline_data and part.inline_data.data:
+                                    audio_b64 = base64.b64encode(part.inline_data.data).decode("utf-8")
+                                    await websocket.send_json({
+                                        "type": "audio",
+                                        "data": audio_b64,
+                                        "rate": 24000
+                                    })
+                        
+                        if sc.turn_complete:
+                            await websocket.send_json({"type": "turn_complete"})
+                except asyncio.CancelledError:
+                    pass
+                except Exception as e:
+                    print("Error receiving from Gemini Live:", e)
+
+            async def receive_from_client():
+                try:
+                    while True:
+                        msg = await websocket.receive_text()
+                        data = json.loads(msg)
+                        mtype = data.get("type")
+                        
+                        if mtype == "audio":
+                            audio_b64 = data.get("data", "")
+                            if audio_b64:
+                                audio_bytes = base64.b64decode(audio_b64)
+                                await session.send_realtime_input(
+                                    audio=types.Blob(data=audio_bytes, mime_type="audio/pcm;rate=16000")
+                                )
+                        elif mtype == "text":
+                            user_text = data.get("text", "")
+                            armor = inspect_prompt_armor(user_text)
+                            if not armor["safe"]:
+                                await websocket.send_json({
+                                    "type": "armor_blocked",
+                                    "message": armor["rejection_message"]
+                                })
+                            else:
+                                await session.send_realtime_input(text=armor["sanitized_prompt"])
+                        elif mtype == "stream_end":
+                            await session.send_realtime_input(audio_stream_end=True)
+                except asyncio.CancelledError:
+                    pass
+                except WebSocketDisconnect:
+                    pass
+                except Exception as e:
+                    print("Error receiving from client WebSocket:", e)
+
+            gemini_task = asyncio.create_task(receive_from_gemini())
+            client_task = asyncio.create_task(receive_from_client())
+
+            done, pending = await asyncio.wait(
+                [gemini_task, client_task],
+                return_when=asyncio.FIRST_COMPLETED
+            )
+            for t in pending:
+                t.cancel()
+    except WebSocketDisconnect:
+        pass
+    except Exception as e:
+        print("WebSocket live session error:", e)
+        try:
+            await websocket.send_json({"type": "error", "message": str(e)})
+            await websocket.close()
+        except Exception:
+            pass
 
 static_dir = Path(__file__).parent / "static"
 app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")

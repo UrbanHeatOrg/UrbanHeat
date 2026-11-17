@@ -8,8 +8,10 @@ An autonomous climate resilience decision support system and interactive web das
 ## 🌟 Live Deployments & Official Deliverables
 
 - **Live Cloud Run Deployment**: [https://dallas-heat-app-447063751013.us-central1.run.app](https://dallas-heat-app-447063751013.us-central1.run.app)
+- **Comprehensive Walkthrough**: [WALKTHROUGH.md](WALKTHROUGH.md) (Complete verification, architecture, and live screenshots)
+- **System Implementation Blueprint**: [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) (Multi-agent council design & $50M Pareto engine)
 - **Official Placement Recommendation Artifact**: [PLACEMENT_RECOMMENDATION.md](PLACEMENT_RECOMMENDATION.md) (Council Resolution No. 2026-HEAT-01)
-- **Interactive Command Center**: Real-time Google Maps Dark Vector styling, 1,200m walkability buffers, and Dana AI copilot.
+- **Interactive 3D Command Center**: Singapore DUCT 3D Heat X-Ray (CesiumJS) + Google Solar API Dynamic Sun & Shade Animator.
 - **BigQuery ML Model**: `a4i_climate.heat_offset_model` (Linear regression with `ML.EXPLAIN_PREDICT` on Vertex AI `us-central1`).
 - **Google MCP Toolbox for Databases**: Declarative [`mcp/tools.yaml`](mcp/tools.yaml) & [`mcp.json`](mcp.json) for [`googleapis/mcp-toolbox`](https://github.com/googleapis/mcp-toolbox).
 - **Security Gateway**: Google Cloud Model Armor prompt injection, jailbreak, and SQL/DDL injection interceptor (`agent/model_armor.py`).
@@ -103,3 +105,67 @@ npx -y @toolbox-sdk/server --prebuilt=bigquery --stdio
    python3 test_planner_scenarios.py
    python3 test_system_endpoints.py
    ```
+
+---
+
+## 🧭 Three Tracks, One Coherent Architecture
+
+HeatShield AI organizes municipal resilience across three connected operational clocks, reflecting real city governance:
+
+```mermaid
+graph TD
+    subgraph "Today (Hours / Days)"
+        T1["Track 1: Emergency Heat Dispatcher"] --> |104°F Alert| D1["Mobile Hydration Tankers staged at unshaded transit stops"]
+    end
+    subgraph "This Budget Cycle (Months / Year) — PRIMARY TRACK"
+        T2["Track 2: Siting & Title VI Auditor"] --> |BQML + Demographics| D2["4 Permanent Resilience Hubs + 1 Mobile Unit with 1,200m walking catchments"]
+        D2 --> CR["City Council Resolution No. 2026-HEAT-01"]
+    end
+    subgraph "This Decade (Years / Decades)"
+        T3["Track 3: Urban Redesign Specialist"] --> |ML.EXPLAIN_PREDICT Attributions| D3["Native Canopy Corridors & High-Albedo Cool Pavement"]
+    end
+    subgraph "National Portfolio Engine (Bonus Range)"
+        T4["Pareto Optimizer"] --> |Multi-Objective Optimization| D4["$50M Capital Tradeoffs: Heat Adaptation vs. Climate TRACE Decarbonization"]
+    end
+```
+
+---
+
+## 📜 Data Provenance & License Defense (Zero ODbL Trap)
+
+All datasets integrated into HeatShield AI and ingested into BigQuery comply strictly with the hackathon's commercial viability requirements. We intentionally avoided OpenStreetMap derivatives (ODbL share-alike) and NonCommercial (NC) data traps:
+
+| Dataset Name | Governing Agency / Source | Accession / Version | License Status | Commercial / Derivative Rights | Siting Utility |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Urban Heat Watch Dallas** | NOAA Climate Program Office / CAPA Strategies | 2019 Campaign (19,491 records) | **Public Domain** (17 U.S.C. § 105) | Full commercial, no share-alike | Ground-truth empirical surface heat |
+| **GHCN-Daily Climatology** | NOAA National Centers for Environmental Information (NCEI) | Station USW00013960 (2019–2025) | **Public Domain** (17 U.S.C. § 105) | Full commercial, no share-alike | 7-year multi-station heat frequency |
+| **ACS 5-Year Estimates** | U.S. Census Bureau | 2018–2022 (Dallas County Tracts) | **Public Domain** (17 U.S.C. § 105) | Full commercial, no share-alike | Poverty, carless households, age |
+| **TIGER/Line Boundaries** | U.S. Census Bureau | 2023 TIGER/Line Dallas County | **Public Domain** (17 U.S.C. § 105) | Full commercial, no share-alike | Geospatial polygons & centroids |
+| **Smart Location Database (SLD)** | U.S. Environmental Protection Agency (EPA) | Version 3.0 (2021) | **Public Domain** (17 U.S.C. § 105) | Full commercial, no share-alike | Walkability Index, transit access |
+| **Social Vulnerability Index (SVI)** | CDC / ATSDR | 2022 SVI Dallas County | **Public Domain** (17 U.S.C. § 105) | Full commercial, no share-alike | Multi-theme composite vulnerability |
+| **emPOWER Dataset** | U.S. Dept. of Health & Human Services (HHS) | 2024 Medicare Beneficiary Count | **Public Domain** (17 U.S.C. § 105) | Full commercial, no share-alike | Electricity-dependent medical patients |
+| **LEAD Tool Energy Burden** | U.S. Department of Energy (DOE) | 2022 LEAD Dallas County | **Public Domain** (17 U.S.C. § 105) | Full commercial, no share-alike | Household cooling energy poverty |
+| **ECOSTRESS Land Surface Temp** | NASA EOSDIS / JPL | 70m LST Spatial Grids | **Public Domain** (17 U.S.C. § 105) | Full commercial, no share-alike | Satellite thermal confirmation |
+| **Climate TRACE Asset Inventory** | Climate TRACE Coalition | Release v5.12 (Dallas Assets) | **CC BY 4.0** | Permissive with attribution, commercial permitted | Point-source emissions abatement |
+
+> [!NOTE]
+> **No ODbL / Share-Alike Contamination**: HeatShield AI does not ingest or distribute OpenStreetMap geometries under the Open Database License (ODbL). All geometries are derived directly from U.S. Census TIGER/Line and EPA National Walkability spatial layers.
+
+---
+
+## ⚖️ "Strip the Variable. Audit the Outcome."
+
+To eliminate disparate impact and preserve algorithmic fairness in accordance with **Title VI of the Civil Rights Act of 1964**:
+1. **Strip the Variable at Training**: Demographic race and ethnicity variables were strictly excluded from the BigQuery ML `heat_offset_model` feature set. The model trains purely on physical built-environment and socio-economic vulnerability indicators (`poverty_rate`, `no_vehicle_rate`, `distance_to_park`, `housing_density`, `building_age`).
+2. **Audit the Outcome Post-Hoc**: The final recommended siting cohort is subjected to a post-hoc equity audit (`agent/tools.py:run_equity_audit`), verifying that 100% of selected cooling hubs fall inside federal Disadvantaged Community (DAC) tracts to satisfy Justice40 guidelines.
+
+---
+
+## 🔍 Honest Limitations & Principled Refusals
+
+In accordance with rigorous public policy standards, HeatShield AI explicitly states what the model and data **cannot** do:
+1. **Single-Day Heat Campaign Snapshot**: The 19,491 NOAA Heat Watch readings reflect a single volunteer campaign day (August 2019). While highly granular (meter-scale), they capture a point-in-time meteorological synoptic setup. Multi-year station frequency (NOAA GHCN-Daily 2019–2025) is used in tandem to provide climatological probability.
+2. **Diagnosis vs. Physical Intervention Simulation**: Using BigQuery ML `ML.EXPLAIN_PREDICT`, our system accurately identifies candidate deficit zones and diagnoses the physical built-environment causes (e.g. unshaded asphalt vs. park proximity). **However, the data does not tell us what the temperature offset physically becomes after trees are planted or cool pavement is installed.** We state this out loud rather than misleading municipal planners with ungrounded post-planting simulations.
+3. **Emissions vs. Ambient Heat Exposure**: Climate TRACE models facility greenhouse gas emissions, not ground-level street heat. Reducing emissions at an airport or power plant does not immediately cool adjacent sidewalks.
+4. **Principled Refusal for Out-of-Scope Jurisdictions**: When prompted for locations outside Dallas County (e.g., *"What about 63rd and Halsted in Chicago?"*), HeatShield AI's spatial resolver (`resolve_dallas_location`) executes an honest, principled refusal rather than hallucinating predictions for unmodeled cities.
+

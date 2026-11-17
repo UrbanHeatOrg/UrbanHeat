@@ -25,3 +25,8 @@ Thumbs.db
 
 .adk/
 
+*.duckdb*
+
+# Agent skills cache
+.agents/skills/
+skills-lock.json
