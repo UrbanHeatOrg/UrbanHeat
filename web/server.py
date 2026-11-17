@@ -1617,7 +1617,7 @@ async def websocket_live_endpoint(websocket: WebSocket):
                             "message": armor["rejection_message"]
                         })
                     else:
-                        resp_text = "Commander Dana online. Monitoring extreme heat microclimates and dispatching cooling units."
+                        resp_text = "Commander CoolAid online. Monitoring extreme heat microclimates and dispatching cooling units."
                         await websocket.send_json({"type": "dana_transcription", "text": resp_text})
                         # 24kHz PCM mono comfort audio buffer
                         audio_pcm = b"\x00" * 4800
@@ -1628,7 +1628,7 @@ async def websocket_live_endpoint(websocket: WebSocket):
                         })
                         await websocket.send_json({"type": "turn_complete"})
                 elif mtype == "audio":
-                    resp_text = "Commander Dana receiving telemetry audio."
+                    resp_text = "Commander CoolAid receiving telemetry audio."
                     await websocket.send_json({"type": "dana_transcription", "text": resp_text})
                     await websocket.send_json({"type": "turn_complete"})
         except WebSocketDisconnect:

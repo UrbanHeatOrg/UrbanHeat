@@ -25,9 +25,11 @@ from agent.tools import (
     get_reduction_strategies
 )
 
-os.environ.setdefault("GOOGLE_GENAI_USE_VERTEXAI", "1")
-os.environ.setdefault("GOOGLE_CLOUD_PROJECT", "qwiklabs-gcp-04-4753f87c7a64")
-os.environ.setdefault("GOOGLE_CLOUD_LOCATION", "us-central1")
+os.environ["GOOGLE_GENAI_USE_VERTEXAI"] = "1"
+if os.environ.get("GOOGLE_CLOUD_PROJECT") in (None, "", "climate-heat-challenge"):
+    os.environ["GOOGLE_CLOUD_PROJECT"] = "qwiklabs-gcp-04-4753f87c7a64"
+if os.environ.get("GOOGLE_CLOUD_LOCATION") in (None, "", "global"):
+    os.environ["GOOGLE_CLOUD_LOCATION"] = "us-central1"
 
 # ==============================================================================
 # SUBAGENT 1: EMERGENCY HEAT & WELLNESS DISPATCHER (Track 1: Today)
