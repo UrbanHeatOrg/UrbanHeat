@@ -264,15 +264,24 @@
     </div>
 
     <!-- Quick Question Chips -->
-    <div class="p-3 bg-slate-900 border-b border-slate-800 overflow-x-auto whitespace-nowrap space-x-2 custom-scroll">
-      <button onclick="sendQuickPrompt('Where should the 4 cooling centers and 1 mobile unit go?')" class="text-xs px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-full border border-slate-700">
-        📍 Siting recommendations
+    <div class="p-3 bg-slate-900 border-b border-slate-800 overflow-x-auto whitespace-nowrap space-x-2 custom-scroll flex items-center">
+      <button onclick="sendQuickPrompt('Today it is 102° tomorrow. Where do the hydration trucks and wellness checks go?')" class="text-xs px-3 py-1 bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 rounded-full border border-amber-500/30 flex-shrink-0 font-medium flex items-center gap-1.5 transition">
+        <i class="fa-solid fa-bolt text-amber-400"></i> Track 1: 102° Hydration & Wellness
       </button>
-      <button onclick="sendQuickPrompt('Run an equity audit on our top sites compared to citywide Dallas')" class="text-xs px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-full border border-slate-700">
-        ⚖️ Equity audit
+      <button onclick="sendQuickPrompt('Identify the top Dallas neighborhoods facing acute electrical grid strain and medically fragile risk during extreme heat waves.')" class="text-xs px-3 py-1 bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 rounded-full border border-rose-500/30 flex-shrink-0 font-medium flex items-center gap-1.5 transition">
+        <i class="fa-solid fa-plug-circle-bolt text-rose-400"></i> Grid & Medically Fragile Risk
       </button>
-      <button onclick="sendQuickPrompt('Why is Tract 48113020500 hotter than average?')" class="text-xs px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-full border border-slate-700">
-        🔍 Explain Tract 48113020500
+      <button onclick="sendQuickPrompt('This decade, where does tree planting buy the most relief per dollar across Dallas corridors?')" class="text-xs px-3 py-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 rounded-full border border-emerald-500/30 flex-shrink-0 font-medium flex items-center gap-1.5 transition">
+        <i class="fa-solid fa-tree text-emerald-400"></i> Track 3: Tree Planting ROI
+      </button>
+      <button onclick="sendQuickPrompt('Where should the 4 cooling centers and 1 mobile unit go?')" class="text-xs px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-full border border-slate-700 flex-shrink-0 transition">
+        <i class="fa-solid fa-location-dot text-blue-400"></i> Siting recommendations
+      </button>
+      <button onclick="sendQuickPrompt('Run an equity audit on our top sites compared to citywide Dallas')" class="text-xs px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-full border border-slate-700 flex-shrink-0 transition">
+        <i class="fa-solid fa-scale-balanced text-cyan-400"></i> Equity audit
+      </button>
+      <button onclick="sendQuickPrompt('Why is Tract 48113020500 hotter than average?')" class="text-xs px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-full border border-slate-700 flex-shrink-0 transition">
+        <i class="fa-solid fa-magnifying-glass text-slate-400"></i> Explain Tract 48113020500
       </button>
     </div>
 
