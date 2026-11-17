@@ -113,11 +113,23 @@ def main():
     ok, data = run_test("Dana Heat Contrast Diagnosis", "/api/contrast?loc_a=4th%20and%20Marsalis&loc_b=2%20blocks%20north")
     results["heat_contrast_diagnosis"] = ok and "contrast_analysis" in data and "planner_diagnosis" in data.get("contrast_analysis", {})
     
-    # 19. Principled Refusal Check for Out-of-City Queries (Chicago)
+    # 19. Principled Refusal Check for Out-of-City Street Queries
     ok, data = run_test("Out-of-Scope Principled Refusal", "/api/resolve-location?query=63rd%20and%20Halsted,%20Chicago")
     results["principled_refusal"] = ok and data.get("status") == "refusal"
 
-    # 20. Gemini 3.8 Live API Real-Time Voice WebSocket Bridge
+    # 20. National Resilience Vulnerability (Cook County / Chicago)
+    ok, data = run_test("US National Resilience Profile", "/api/us/vulnerability?county=Cook&state=Illinois")
+    results["us_vulnerability_profile"] = ok and "data" in data and data.get("data", {}).get("total_county_pop", 0) > 0
+
+    # 21. National Cooling Center Sites Ranking (Maricopa County / Phoenix)
+    ok, data = run_test("US National Cooling Sites", "/api/us/sites?state=Arizona&county=Maricopa&top_n=3")
+    results["us_cooling_sites"] = ok and len(data.get("priority_cooling_sites", [])) == 3
+
+    # 22. National County Indexing (Georgia)
+    ok, data = run_test("US National County Directory", "/api/us/counties?state=Georgia")
+    results["us_county_directory"] = ok and data.get("count", 0) > 100
+
+    # 23. Gemini 3.8 Live API Real-Time Voice WebSocket Bridge
     print("Testing [WS] /ws/live ... ", end="")
     try:
         from fastapi.testclient import TestClient
