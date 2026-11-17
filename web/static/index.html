@@ -6,7 +6,9 @@
   <title>City of Dallas — Urban Heat Resilience & Climate Decision Support</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Leaflet CSS & JS -->
+  <!-- Google Maps JavaScript API -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAruft4_u7ERcieBTw1_gY7NPGyCbLyJxY&libraries=geometry,places"></script>
+  <!-- Leaflet Fallback CSS & JS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <!-- Chart.js -->
@@ -62,6 +64,10 @@
       <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
         BigQuery ML Active
+      </span>
+      <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30">
+        <i class="fa-solid fa-map-pin"></i>
+        Google Maps 3D Platform
       </span>
       <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/10 text-purple-400 border border-purple-500/30">
         <i class="fa-solid fa-sparkles"></i>
@@ -369,52 +375,161 @@
       }
     ];
 
-    // Initialize Map
-    const map = L.map('map').setView([32.8200, -96.8000], 11);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
-      subdomains: 'abcd',
-      maxZoom: 19
-    }).addTo(map);
+    // Google Maps Dark Vector Theme
+    const googleMapsDarkTheme = [
+      { "elementType": "geometry", "stylers": [{ "color": "#1d2c4d" }] },
+      { "elementType": "labels.text.fill", "stylers": [{ "color": "#8ec3b9" }] },
+      { "elementType": "labels.text.stroke", "stylers": [{ "color": "#1a3646" }] },
+      { "featureType": "administrative.country", "elementType": "geometry.stroke", "stylers": [{ "color": "#4b6878" }] },
+      { "featureType": "administrative.province", "elementType": "geometry.stroke", "stylers": [{ "color": "#4b6878" }] },
+      { "featureType": "landscape.man_made", "elementType": "geometry.stroke", "stylers": [{ "color": "#334e87" }] },
+      { "featureType": "landscape.natural", "elementType": "geometry", "stylers": [{ "color": "#021019" }] },
+      { "featureType": "poi", "elementType": "geometry", "stylers": [{ "color": "#283d6a" }] },
+      { "featureType": "poi", "elementType": "labels.text.fill", "stylers": [{ "color": "#6f9ba5" }] },
+      { "featureType": "poi", "elementType": "labels.text.stroke", "stylers": [{ "color": "#1d2c4d" }] },
+      { "featureType": "road", "elementType": "geometry", "stylers": [{ "color": "#304a7d" }] },
+      { "featureType": "road", "elementType": "labels.text.fill", "stylers": [{ "color": "#98a5be" }] },
+      { "featureType": "road", "elementType": "labels.text.stroke", "stylers": [{ "color": "#1d2c4d" }] },
+      { "featureType": "road.highway", "elementType": "geometry", "stylers": [{ "color": "#2c6675" }] },
+      { "featureType": "road.highway", "elementType": "geometry.stroke", "stylers": [{ "color": "#255462" }] },
+      { "featureType": "road.highway", "elementType": "labels.text.fill", "stylers": [{ "color": "#b0d5ce" }] },
+      { "featureType": "road.highway", "elementType": "labels.text.stroke", "stylers": [{ "color": "#023e58" }] },
+      { "featureType": "transit", "elementType": "labels.text.fill", "stylers": [{ "color": "#98a5be" }] },
+      { "featureType": "transit", "elementType": "labels.text.stroke", "stylers": [{ "color": "#1d2c4d" }] },
+      { "featureType": "transit.line", "elementType": "geometry.fill", "stylers": [{ "color": "#283d6a" }] },
+      { "featureType": "transit.station", "elementType": "geometry", "stylers": [{ "color": "#3a4762" }] },
+      { "featureType": "water", "elementType": "geometry", "stylers": [{ "color": "#0e1626" }] },
+      { "featureType": "water", "elementType": "labels.text.fill", "stylers": [{ "color": "#4e6d70" }] }
+    ];
 
-    // Markers and Heat Circles
-    sites.forEach(s => {
-      const isMobile = s.rank === 5;
-      const marker = L.circleMarker([s.lat, s.lon], {
-        radius: isMobile ? 11 : 9,
-        fillColor: s.color,
-        color: '#ffffff',
-        weight: 2,
-        opacity: 1,
-        fillOpacity: 0.9
-      }).addTo(map);
+    let gMap = null;
+    let leafletMap = null;
 
-      // Heat buffer circle
-      L.circle([s.lat, s.lon], {
-        radius: 1200,
-        color: isMobile ? '#f59e0b' : '#3b82f6',
-        fillColor: isMobile ? '#f59e0b' : '#3b82f6',
-        fillOpacity: 0.15,
-        weight: 1
-      }).addTo(map);
+    function initMap() {
+      // Try Google Maps first
+      if (typeof google !== 'undefined' && google.maps) {
+        try {
+          gMap = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: 32.8200, lng: -96.8000 },
+            zoom: 11,
+            styles: googleMapsDarkTheme,
+            mapTypeControl: true,
+            mapTypeControlOptions: {
+              style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+              position: google.maps.ControlPosition.TOP_RIGHT
+            },
+            zoomControl: true,
+            streetViewControl: true,
+            fullscreenControl: true
+          });
 
-      const popupContent = `
-        <div style="font-family: inherit; color: #0f172a; min-width: 200px;">
-          <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px; color: ${s.color};">
-            ${s.type}
+          const activeInfoWindow = new google.maps.InfoWindow();
+
+          sites.forEach(s => {
+            const isMobile = s.rank === 5;
+            
+            // Google Maps Marker
+            const marker = new google.maps.Marker({
+              position: { lat: s.lat, lng: s.lon },
+              map: gMap,
+              title: `${s.type} (Tract ${s.tract})`,
+              icon: {
+                path: google.maps.SymbolPath.CIRCLE,
+                scale: isMobile ? 11 : 9,
+                fillColor: s.color,
+                fillOpacity: 1,
+                strokeColor: '#ffffff',
+                strokeWeight: 2
+              }
+            });
+
+            // Walking buffer circle (1200 meters / ~15 min walk)
+            new google.maps.Circle({
+              strokeColor: isMobile ? '#f59e0b' : '#3b82f6',
+              strokeOpacity: 0.8,
+              strokeWeight: 1,
+              fillColor: isMobile ? '#f59e0b' : '#3b82f6',
+              fillOpacity: 0.18,
+              map: gMap,
+              center: { lat: s.lat, lng: s.lon },
+              radius: 1200
+            });
+
+            const contentStr = `
+              <div style="font-family: inherit; color: #0f172a; min-width: 220px; padding: 4px;">
+                <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px; color: ${s.color};">
+                  ${s.type}
+                </div>
+                <div style="font-size: 12px; margin-bottom: 6px;"><strong>Census Tract:</strong> ${s.tract}</div>
+                <div style="font-size: 11px; line-height: 1.4;">
+                  <div><strong>Predicted Offset:</strong> ${s.offset}</div>
+                  <div><strong>Zero-Vehicle Rate:</strong> ${s.noVehicle}</div>
+                  <div><strong>Poverty Rate:</strong> ${s.poverty}</div>
+                  <div><strong>Population:</strong> ${s.pop.toLocaleString()}</div>
+                  <div style="margin-top: 4px; color: #475569;"><em>Drivers: ${s.driver}</em></div>
+                </div>
+              </div>
+            `;
+
+            marker.addListener('click', () => {
+              activeInfoWindow.setContent(contentStr);
+              activeInfoWindow.open(gMap, marker);
+            });
+          });
+          return;
+        } catch (err) {
+          console.warn('Google Maps initialization failed, falling back to Leaflet:', err);
+        }
+      }
+
+      // Fallback to Leaflet
+      leafletMap = L.map('map').setView([32.8200, -96.8000], 11);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+        subdomains: 'abcd',
+        maxZoom: 19
+      }).addTo(leafletMap);
+
+      sites.forEach(s => {
+        const isMobile = s.rank === 5;
+        const marker = L.circleMarker([s.lat, s.lon], {
+          radius: isMobile ? 11 : 9,
+          fillColor: s.color,
+          color: '#ffffff',
+          weight: 2,
+          opacity: 1,
+          fillOpacity: 0.9
+        }).addTo(leafletMap);
+
+        L.circle([s.lat, s.lon], {
+          radius: 1200,
+          color: isMobile ? '#f59e0b' : '#3b82f6',
+          fillColor: isMobile ? '#f59e0b' : '#3b82f6',
+          fillOpacity: 0.15,
+          weight: 1
+        }).addTo(leafletMap);
+
+        const popupContent = `
+          <div style="font-family: inherit; color: #0f172a; min-width: 200px;">
+            <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px; color: ${s.color};">
+              ${s.type}
+            </div>
+            <div style="font-size: 12px; margin-bottom: 6px;"><strong>Census Tract:</strong> ${s.tract}</div>
+            <div style="font-size: 11px; line-height: 1.4;">
+              <div><strong>Predicted Offset:</strong> ${s.offset}</div>
+              <div><strong>Zero-Vehicle Rate:</strong> ${s.noVehicle}</div>
+              <div><strong>Poverty Rate:</strong> ${s.poverty}</div>
+              <div><strong>Population:</strong> ${s.pop.toLocaleString()}</div>
+              <div style="margin-top: 4px; color: #475569;"><em>Drivers: ${s.driver}</em></div>
+            </div>
           </div>
-          <div style="font-size: 12px; margin-bottom: 6px;"><strong>Census Tract:</strong> ${s.tract}</div>
-          <div style="font-size: 11px; line-height: 1.4;">
-            <div><strong>Predicted Offset:</strong> ${s.offset}</div>
-            <div><strong>Zero-Vehicle Rate:</strong> ${s.noVehicle}</div>
-            <div><strong>Poverty Rate:</strong> ${s.poverty}</div>
-            <div><strong>Population:</strong> ${s.pop.toLocaleString()}</div>
-            <div style="margin-top: 4px; color: #475569;"><em>Drivers: ${s.driver}</em></div>
-          </div>
-        </div>
-      `;
-      marker.bindPopup(popupContent);
-    });
+        `;
+        marker.bindPopup(popupContent);
+      });
+    }
+
+    // Call initMap
+    initMap();
 
     // Populate Sites List
     const sitesListEl = document.getElementById('sites-list');
@@ -422,7 +537,12 @@
       const card = document.createElement('div');
       card.className = "bg-slate-800/80 hover:bg-slate-800 p-3.5 rounded-xl border border-slate-700/60 transition cursor-pointer";
       card.onclick = () => {
-        map.flyTo([s.lat, s.lon], 13);
+        if (gMap) {
+          gMap.panTo({ lat: s.lat, lng: s.lon });
+          gMap.setZoom(14);
+        } else if (leafletMap) {
+          leafletMap.flyTo([s.lat, s.lon], 13);
+        }
       };
       card.innerHTML = `
         <div class="flex items-center justify-between mb-1.5">
