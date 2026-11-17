@@ -22,7 +22,9 @@ from agent.tools import (
     optimize_climate_portfolio,
     compute_pedestrian_route,
     search_civic_places,
-    get_solar_and_shade_insights
+    get_solar_and_shade_insights,
+    get_vulnerability_profile,
+    get_air_quality_summary
 )
 
 os.environ.setdefault("GOOGLE_GENAI_USE_VERTEXAI", "1")
@@ -99,7 +101,7 @@ Your mission is to stress-test municipal climate plans against compound failure 
 You test what happens when an extreme heatwave coincides with an electric grid failure or water main burst.
 You evaluate whether cooling facilities possess on-site solar+storage or backup diesel generation, and highlight life-safety risks for electricity-dependent residents.
 Use get_heat_frequency, rank_cooling_center_sites, and run_equity_audit.""",
-    tools=[get_heat_frequency, rank_cooling_center_sites, run_equity_audit]
+    tools=[get_heat_frequency, rank_cooling_center_sites, run_equity_audit, get_vulnerability_profile]
 )
 
 # ==============================================================================
@@ -162,7 +164,9 @@ root_agent = Agent(
         optimize_climate_portfolio,
         compute_pedestrian_route,
         search_civic_places,
-        get_solar_and_shade_insights
+        get_solar_and_shade_insights,
+        get_vulnerability_profile,
+        get_air_quality_summary
     ]
 )
 

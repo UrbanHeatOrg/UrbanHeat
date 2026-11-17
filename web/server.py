@@ -96,6 +96,14 @@ def nearby_places(lat: float, lon: float, radius: float = 3000.0, place_type: st
 def solar_insights(lat: float, lon: float):
     return tools.get_solar_and_shade_insights(lat, lon)
 
+@app.get("/api/vulnerability")
+def vulnerability_profile(tract_id: str = "48113020500"):
+    return tools.get_vulnerability_profile(tract_id)
+
+@app.get("/api/air-quality")
+def air_quality(pollutant: str = "PM2.5", days: int = 30):
+    return tools.get_air_quality_summary(pollutant, days)
+
 
 from agent.model_armor import inspect_prompt_armor
 

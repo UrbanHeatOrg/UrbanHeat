@@ -1204,4 +1204,130 @@ def get_solar_and_shade_insights(latitude: float, longitude: float) -> Dict[str,
             }
         }
 
+def get_vulnerability_profile(geo_id: str = "48113020500") -> Dict[str, Any]:
+    """Retrieves comprehensive multi-domain vulnerability and resilience indicators for a Dallas census tract.
+    
+    Queries dallas_resilience_master in BigQuery, combining demographics, BigQuery ML predicted heat offset,
+    CDC Social Vulnerability Index (SVI) percentiles, HHS emPOWER electricity-dependent medical beneficiaries,
+    DOE LEAD energy burden %, EPA walkability index, Census LODES daytime workers, and NASA ECOSTRESS diurnal heat retention.
+    
+    Args:
+        geo_id: Official 11-digit Census Tract GEOID (e.g. '48113020500').
+    """
+    client = get_bq_client()
+    query = f"""
+    SELECT *
+    FROM `{PROJECT_ID}.{DATASET}.dallas_resilience_master`
+    WHERE geo_id = '{geo_id}'
+    LIMIT 1
+    """
+    try:
+        job = client.query(query)
+        rows = list(job.result())
+        if not rows:
+            return {"error": f"Census tract {geo_id} not found in dallas_resilience_master."}
+        r = dict(rows[0])
+        return {
+            "census_tract_geoid": geo_id,
+            "coordinates": {"latitude": r.get("tract_lat"), "longitude": r.get("tract_lon")},
+            "population_and_density": {
+                "total_population": r.get("total_pop"),
+                "median_age": r.get("median_age"),
+                "land_area_sqmi": r.get("land_area_sqmi"),
+                "pop_density_per_sqmi": r.get("pop_density_per_sqmi")
+            },
+            "thermal_and_microclimate": {
+                "predicted_heat_offset_f": r.get("predicted_heat_offset_f"),
+                "afternoon_surface_temp_f": r.get("afternoon_lst_f"),
+                "diurnal_heat_retention_f": r.get("diurnal_heat_retention_f")
+            },
+            "public_health_and_equity": {
+                "poverty_rate_pct": r.get("poverty_rate_pct"),
+                "no_vehicle_rate_pct": r.get("no_vehicle_rate_pct"),
+                "cdc_svi_overall_pctile": r.get("svi_overall_pctile"),
+                "cdc_svi_category": r.get("svi_vulnerability_category"),
+                "hhs_empower_beneficiaries": r.get("empower_beneficiaries_count"),
+                "grid_outage_risk_tier": r.get("grid_outage_risk_tier"),
+                "doe_median_energy_burden_pct": r.get("median_energy_burden_pct"),
+                "energy_burden_category": r.get("energy_burden_category")
+            },
+            "mobility_and_daytime_workers": {
+                "national_walkability_index": r.get("national_walkability_index"),
+                "walkability_category": r.get("walkability_category"),
+                "workplace_daytime_population": r.get("workplace_daytime_population"),
+                "daytime_to_resident_ratio": r.get("daytime_to_resident_ratio"),
+                "outdoor_worker_estimate": r.get("outdoor_worker_estimate")
+            },
+            "composite_resilience_deficit_score": r.get("resilience_deficit_score"),
+            "data_provenance": "BigQuery: dallas_resilience_master (Census TIGER, BQML, CDC SVI, HHS emPOWER, DOE LEAD, EPA SLD, LODES, NASA ECOSTRESS)"
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+def get_air_quality_summary(pollutant: str = "PM2.5", days: int = 30) -> Dict[str, Any]:
+    """Retrieves real ground-level ambient air quality monitoring observations from EPA stations across Dallas County.
+    
+    Queries dallas_epa_air_quality in BigQuery (ingested from bigquery-public-data.epa_historical_air_quality),
+    providing empirical PM2.5 and Ozone AQI levels to separate localized ambient respiratory hazards
+    from macro Climate TRACE point-source emissions.
+    
+    Args:
+        pollutant: Air pollutant parameter ('PM2.5' or 'Ozone').
+        days: Number of recent observation records to summarize (default: 30).
+    """
+    client = get_bq_client()
+    param_filter = "%PM2.5%" if "pm" in pollutant.lower() else "%Ozone%"
+    query = f"""
+    SELECT 
+        date_local,
+        parameter_name,
+        site_num,
+        county_name,
+        city_name,
+        latitude,
+        longitude,
+        arithmetic_mean,
+        units_of_measure,
+        aqi,
+        aqi_category
+    FROM `{PROJECT_ID}.{DATASET}.dallas_epa_air_quality`
+    WHERE parameter_name LIKE '{param_filter}'
+    ORDER BY date_local DESC
+    LIMIT {days}
+    """
+    try:
+        job = client.query(query)
+        records = [dict(row) for row in job.result()]
+        if not records:
+            return {"error": f"No EPA air quality records found for {pollutant}."}
+            
+        values = [r["arithmetic_mean"] for r in records if r["arithmetic_mean"] is not None]
+        avg_val = round(sum(values) / len(values), 2) if values else 0.0
+        max_val = round(max(values), 2) if values else 0.0
+        aqi_categories = {}
+        for r in records:
+            cat = r.get("aqi_category", "Unknown")
+            aqi_categories[cat] = aqi_categories.get(cat, 0) + 1
+            
+        return {
+            "pollutant": pollutant,
+            "observations_count": len(records),
+            "recent_average_concentration": avg_val,
+            "peak_concentration": max_val,
+            "units_of_measure": records[0].get("units_of_measure"),
+            "aqi_breakdown": aqi_categories,
+            "latest_observation": {
+                "date": str(records[0].get("date_local")),
+                "site_num": records[0].get("site_num"),
+                "concentration": records[0].get("arithmetic_mean"),
+                "aqi": records[0].get("aqi"),
+                "category": records[0].get("aqi_category")
+            },
+            "scientific_guardrail": "Empirical EPA monitor data captures ambient surface air quality, distinct from Climate TRACE facility emissions inventories.",
+            "data_source": "BigQuery: a4i_climate.dallas_epa_air_quality (from bigquery-public-data.epa_historical_air_quality)"
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+
 
