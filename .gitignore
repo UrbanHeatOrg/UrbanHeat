@@ -24,6 +24,7 @@ Thumbs.db
 *.csv.gz
 
 .adk/
+__pycache__/
 
 *.duckdb*
 
