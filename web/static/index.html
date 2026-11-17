@@ -464,44 +464,44 @@
         <button id="mode-btn-citizen" onclick="switchAppMode('citizen')" class="px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 text-slate-400 hover:text-white cursor-pointer whitespace-nowrap">
           <i class="fa-solid fa-snowflake text-xs text-cyan-400 animate-spin-slow"></i>
           <span>Citizen Relief</span>
-          <span class="hidden md:inline-block text-[9px] font-mono px-1.5 py-0.2 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 font-bold uppercase">Live Map</span>
+          <span class="hidden 2xl:inline-block text-[9px] font-mono px-1.5 py-0.2 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 font-bold uppercase">Live Map</span>
         </button>
       </div>
     </div>
 
     <!-- Center: Segmented Navigation Pill (Planner Mode Tracks) -->
     <nav id="planner-nav-bar" class="hidden xl:flex trace-card rounded-2xl p-1 items-center gap-0.5 sm:gap-1 pointer-events-auto border border-white/10 shadow-2xl transition-all duration-300">
-      <button id="nav-cesium" onclick="setMode('cesium')" class="px-2 py-1 rounded-xl text-[11px] font-semibold flex items-center gap-1.5 transition active-flir-pill cursor-pointer whitespace-nowrap flex-shrink-0">
+      <button id="nav-cesium" onclick="setMode('cesium')" class="px-2 py-1 rounded-xl text-[11px] font-semibold flex items-center gap-1 transition active-flir-pill cursor-pointer whitespace-nowrap flex-shrink-0" title="3D Heat X-Ray">
         <i class="fa-solid fa-sun text-amber-400 text-xs animate-pulse"></i>
-        <span class="font-bold">3D Heat<span class="hidden 2xl:inline"> X-Ray</span></span>
+        <span class="font-bold">3D Heat</span>
       </button>
-      <button id="nav-track1" onclick="setMode('track1')" class="px-2 py-1 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1 transition cursor-pointer whitespace-nowrap flex-shrink-0">
+      <button id="nav-track1" onclick="setMode('track1')" class="px-2 py-1 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1 transition cursor-pointer whitespace-nowrap flex-shrink-0" title="Track 1: Emergency Mobile Dispatch">
         <i class="fa-solid fa-bolt text-amber-400 text-xs"></i>
-        <span>Track 1<span class="hidden 2xl:inline">: Dispatch</span></span>
+        <span><span class="hidden 2xl:inline">Track 1: </span>Dispatch</span>
       </button>
-      <button id="nav-track2" onclick="setMode('track2')" class="px-2 py-1 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1 transition cursor-pointer whitespace-nowrap flex-shrink-0">
+      <button id="nav-track2" onclick="setMode('track2')" class="px-2 py-1 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1 transition cursor-pointer whitespace-nowrap flex-shrink-0" title="Track 2: Siting Optimization">
         <i class="fa-solid fa-landmark text-blue-400 text-xs"></i>
-        <span>Track 2<span class="hidden 2xl:inline">: Siting</span></span>
+        <span><span class="hidden 2xl:inline">Track 2: </span>Siting</span>
       </button>
-      <button id="nav-track3" onclick="setMode('track3')" class="px-2 py-1 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1 transition cursor-pointer whitespace-nowrap flex-shrink-0">
+      <button id="nav-track3" onclick="setMode('track3')" class="px-2 py-1 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1 transition cursor-pointer whitespace-nowrap flex-shrink-0" title="Track 3: Urban Forest Redesign">
         <i class="fa-solid fa-tree text-emerald-400 text-xs"></i>
-        <span>Track 3<span class="hidden 2xl:inline">: Redesign</span></span>
+        <span><span class="hidden 2xl:inline">Track 3: </span>Redesign</span>
       </button>
-      <button id="nav-simulator" onclick="toggleBottomDrawer(true)" class="px-2 py-1 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1 transition cursor-pointer whitespace-nowrap flex-shrink-0">
+      <button id="nav-simulator" onclick="toggleBottomDrawer(true)" class="px-2 py-1 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1 transition cursor-pointer whitespace-nowrap flex-shrink-0" title="$50M Pareto Budget Allocation">
         <i class="fa-solid fa-chart-line text-cyan-400 text-xs"></i>
-        <span><span class="hidden 2xl:inline">$50M </span>Pareto</span>
+        <span class="hidden 2xl:inline">Pareto</span>
       </button>
-      <button id="nav-agents" onclick="setMode('agents')" class="px-2 py-1 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1 transition cursor-pointer whitespace-nowrap flex-shrink-0">
+      <button id="nav-agents" onclick="setMode('agents')" class="px-2 py-1 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1 transition cursor-pointer whitespace-nowrap flex-shrink-0" title="ADK Multi-Agent Council">
         <i class="fa-solid fa-users-gear text-purple-400 text-xs"></i>
-        <span><span class="hidden 2xl:inline">ADK </span>Council</span>
+        <span class="hidden 2xl:inline">Council</span>
       </button>
-      <button id="nav-armor" onclick="setMode('armor')" class="px-2 py-1 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1 transition cursor-pointer whitespace-nowrap flex-shrink-0">
+      <button id="nav-armor" onclick="setMode('armor')" class="px-2 py-1 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1 transition cursor-pointer whitespace-nowrap flex-shrink-0" title="Model Armor LLM Safety">
         <i class="fa-solid fa-shield-halved text-rose-400 text-xs"></i>
-        <span><span class="hidden 2xl:inline">Model </span>Armor</span>
+        <span class="hidden 2xl:inline">Armor</span>
       </button>
-      <button id="nav-sources" onclick="toggleDataSourcesModal(true)" class="px-2 py-1 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1 transition cursor-pointer whitespace-nowrap flex-shrink-0">
+      <button id="nav-sources" onclick="toggleDataSourcesModal(true)" class="px-2 py-1 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1 transition cursor-pointer whitespace-nowrap flex-shrink-0" title="12 Data Provenance Sources">
         <i class="fa-solid fa-database text-teal-400 text-xs"></i>
-        <span><span class="hidden 2xl:inline">Data </span>Sources</span>
+        <span class="hidden 2xl:inline">Sources</span>
       </button>
     </nav>
 
@@ -587,10 +587,10 @@
     <div id="cesiumContainer" class="w-full h-full absolute inset-0 hidden"></div>
 
     <!-- ================= CITIZEN HEAT RELIEF VIEWPORT (FULL-BLEED INTERACTIVE GIS MAP + SIDEBAR) ================= -->
-    <div id="view-citizen" class="w-full h-full absolute inset-0 hidden flex-col md:flex-row pt-[68px] sm:pt-[76px] bg-obsidian-950 z-30">
+    <div id="view-citizen" class="w-full h-full absolute inset-0 hidden flex-col md:flex-row pt-[56px] sm:pt-[64px] md:pt-[76px] pb-14 md:pb-0 bg-obsidian-950 z-30">
       
-      <!-- Left Column / Bottom Sheet on Mobile: Citizen Relief Directory & Navigation -->
-      <aside id="citizen-sidebar" class="w-full md:w-[460px] lg:w-[480px] h-[48vh] md:h-full flex flex-col border-r border-white/10 bg-slate-950/95 backdrop-blur-xl z-20 shadow-2xl overflow-hidden order-2 md:order-1 transition-all duration-300">
+      <!-- Left Column / Full Screen on Mobile: Citizen Relief Directory & Navigation -->
+      <aside id="citizen-sidebar" class="w-full md:w-[460px] lg:w-[480px] h-full flex flex-col border-r border-white/10 bg-slate-950/95 backdrop-blur-xl z-20 shadow-2xl overflow-hidden order-1 transition-all duration-300">
         
         <!-- Emergency Weather Alert Card -->
         <div id="res-hero-banner" class="px-3 sm:px-4 py-2.5 sm:py-3 bg-gradient-to-r from-red-950/80 via-amber-950/50 to-slate-950 border-b border-red-500/25 flex items-center justify-between gap-2.5 flex-shrink-0">
@@ -618,6 +618,18 @@
             <i class="fa-solid fa-phone text-[10px]"></i>
             <span id="res-dial-311">311 Free Ride</span>
           </a>
+        </div>
+
+        <!-- Mobile Segmented View Switcher (Cool Spots List vs Live Map) -->
+        <div class="md:hidden px-3 py-2 bg-slate-900/90 border-b border-white/10 flex items-center gap-2 flex-shrink-0">
+          <button id="mob-tab-btn-list" onclick="setCitizenMobileTab('list')" class="flex-1 py-1.5 rounded-xl text-xs font-bold bg-cyan-500 text-white shadow-md transition flex items-center justify-center gap-1.5 cursor-pointer">
+            <i class="fa-solid fa-list-check text-xs"></i>
+            <span>Cool Spots (<span id="mob-centers-count">7</span>)</span>
+          </button>
+          <button id="mob-tab-btn-map" onclick="setCitizenMobileTab('map')" class="flex-1 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5 cursor-pointer">
+            <i class="fa-solid fa-map-location-dot text-xs text-cyan-400"></i>
+            <span>Interactive Map</span>
+          </button>
         </div>
 
         <!-- Search Bar, City Selector & Controls -->
@@ -670,7 +682,7 @@
           </div>
 
           <!-- Quick Filter Chips -->
-          <div class="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5 text-[11px]" id="res-quick-chips">
+          <div class="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5 text-[11px] touch-momentum" id="res-quick-chips">
             <button onclick="filterResidentChip('all')" class="px-2.5 py-1 rounded-lg bg-cyan-500 text-white font-semibold transition cursor-pointer flex-shrink-0" data-filter="all">All Cool Spots</button>
             <button onclick="filterResidentChip('water')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 font-semibold border border-white/10 transition cursor-pointer flex-shrink-0" data-filter="water">💧 Cold Water</button>
             <button onclick="filterResidentChip('ac')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 font-semibold border border-white/10 transition cursor-pointer flex-shrink-0" data-filter="ac">❄️ 70°F AC</button>
@@ -682,7 +694,7 @@
         </div>
 
         <!-- Cooling Centers List Feed (Scrollable) -->
-        <div class="p-3 overflow-y-auto flex-1 space-y-2.5 bg-slate-950/80" id="res-centers-container">
+        <div class="p-3 overflow-y-auto flex-1 space-y-2.5 bg-slate-950/80 touch-momentum no-scrollbar pb-16 md:pb-3" id="res-centers-container">
           <div id="res-loading-spinner" class="py-12 flex flex-col items-center justify-center text-slate-400 gap-3">
             <i class="fa-solid fa-snowflake text-2xl text-cyan-400 animate-spin"></i>
             <span class="text-xs font-mono">Finding nearest air-conditioned cooling centers...</span>
@@ -710,22 +722,58 @@
       </aside>
 
       <!-- Right Column: Interactive Built-in Citizen Map (Leaflet.js) -->
-      <div class="flex-1 h-[52vh] md:h-full relative order-1 md:order-2">
+      <div id="citizen-map-container" class="w-full md:flex-1 h-full relative order-2 hidden md:block">
         <div id="citizen-map" class="w-full h-full z-10"></div>
 
         <!-- Floating Map Action Overlays -->
         <div class="absolute top-3 left-3 z-20 flex flex-wrap items-center gap-1.5 pointer-events-auto">
-          <button id="map-btn-shaded" onclick="toggleCitizenShadedRoutes()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900/90 text-emerald-300 border border-emerald-400/40 shadow-xl backdrop-blur-md flex items-center gap-1.5 hover:bg-slate-800 transition cursor-pointer">
-            <i class="fa-solid fa-tree text-emerald-400"></i>
-            <span id="map-shaded-btn-label">Tree-Shaded Routes: ON</span>
+          <!-- Mobile Back to List Button -->
+          <button onclick="setCitizenMobileTab('list')" class="md:hidden px-2.5 py-1.5 rounded-xl text-xs font-bold bg-cyan-500 text-white shadow-xl backdrop-blur-md flex items-center gap-1.5 transition cursor-pointer">
+            <i class="fa-solid fa-list-check text-xs"></i>
+            <span>List</span>
           </button>
-          <button id="map-btn-bubbles" onclick="toggleCitizenWalkingBubbles()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900/90 text-cyan-300 border border-cyan-400/40 shadow-xl backdrop-blur-md flex items-center gap-1.5 hover:bg-slate-800 transition cursor-pointer">
+          <button id="map-btn-shaded" onclick="toggleCitizenShadedRoutes()" class="px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900/90 text-emerald-300 border border-emerald-400/40 shadow-xl backdrop-blur-md flex items-center gap-1.5 hover:bg-slate-800 transition cursor-pointer">
+            <i class="fa-solid fa-tree text-emerald-400"></i>
+            <span id="map-shaded-btn-label"><span class="hidden sm:inline">Tree-</span>Shaded<span class="hidden sm:inline"> Routes</span>: ON</span>
+          </button>
+          <button id="map-btn-bubbles" onclick="toggleCitizenWalkingBubbles()" class="px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900/90 text-cyan-300 border border-cyan-400/40 shadow-xl backdrop-blur-md flex items-center gap-1.5 hover:bg-slate-800 transition cursor-pointer">
             <i class="fa-solid fa-person-walking text-cyan-400"></i>
-            <span id="map-bubbles-btn-label">Walking Bubbles: ON</span>
+            <span id="map-bubbles-btn-label"><span class="hidden sm:inline">Walking </span>Bubbles: ON</span>
           </button>
           <button onclick="recenterCitizenMap()" class="p-1.5 px-2.5 rounded-xl text-xs font-bold bg-slate-900/90 text-slate-300 border border-white/15 shadow-xl backdrop-blur-md hover:text-white transition cursor-pointer" title="Recenter Map">
             <i class="fa-solid fa-crosshairs text-cyan-400"></i>
           </button>
+        </div>
+
+        <!-- Floating Selected Cooling Center Card on Mobile Map -->
+        <div id="citizen-mobile-card" class="md:hidden absolute bottom-3 left-2 right-2 z-20 bg-slate-950/95 border border-cyan-500/40 rounded-2xl p-3 shadow-2xl backdrop-blur-md hidden transition-all duration-200">
+          <div class="flex items-start justify-between gap-2">
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">OPEN NOW</span>
+                <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-400/30" id="mob-card-temp">❄️ 68°F</span>
+                <span class="text-[10px] text-slate-300 font-mono" id="mob-card-dist">🚶 4 min (0.2 mi)</span>
+              </div>
+              <h4 class="text-xs font-black text-white mt-1 truncate" id="mob-card-title">J. Erik Jonsson Central Library</h4>
+              <p class="text-[10px] text-slate-400 truncate" id="mob-card-addr">1515 Young St, Downtown</p>
+            </div>
+            <button onclick="hideCitizenMobileCard()" class="text-slate-400 hover:text-white p-1 rounded-lg bg-white/5 cursor-pointer flex-shrink-0" title="Close">
+              <i class="fa-solid fa-xmark text-xs"></i>
+            </button>
+          </div>
+          <div class="mt-2 flex items-center gap-1.5">
+            <button id="mob-card-route-btn" onclick="drawCitizenShadedRoute(selectedCenterId)" class="flex-1 py-1.5 bg-emerald-600/30 hover:bg-emerald-600/40 text-emerald-300 border border-emerald-500/40 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer">
+              <i class="fa-solid fa-tree text-emerald-400"></i>
+              <span>Shaded Walk (-5.8°F)</span>
+            </button>
+            <a id="mob-card-call-btn" href="tel:311" class="px-3 py-1.5 bg-red-600/30 text-red-200 border border-red-500/40 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer">
+              <i class="fa-solid fa-phone text-xs"></i>
+              <span>311 Ride</span>
+            </a>
+            <button onclick="setCitizenMobileTab('list')" class="px-2.5 py-1.5 bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 rounded-xl text-xs font-bold flex items-center justify-center transition cursor-pointer" title="View details in list">
+              <i class="fa-solid fa-arrow-right text-xs"></i>
+            </button>
+          </div>
         </div>
 
         <!-- Floating Route Legend / Temperature Savings Badge -->
@@ -1926,10 +1974,9 @@
 
       L.control.zoom({ position: 'topright' }).addTo(citizenMap);
 
-      L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png', {
-        subdomains: 'abcd',
-        attribution: '&copy; CartoDB, OpenStreetMap contributors',
-        maxZoom: 19
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+        attribution: '&copy; Esri, DeLorme, NAVTEQ',
+        maxZoom: 16
       }).addTo(citizenMap);
 
       citizenBuffersLayer = L.layerGroup().addTo(citizenMap);
@@ -2330,10 +2377,14 @@
         const cLon = center.coordinates.longitude;
         bounds.extend([cLat, cLon]);
 
+        const tempMatch = (center.indoor_temp || '').match(/\d+°F/);
+        const displayTemp = tempMatch ? tempMatch[0] : (center.indoor_temp || '70°F');
+        const isMobileUnit = (center.id || '').includes('mobile');
+
         const pinHtml = `
-          <div id="pin-${center.id}" class="px-2 py-0.5 rounded-xl bg-slate-900/95 border-2 ${idx === 0 ? 'border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.6)]' : 'border-cyan-400/80 shadow-lg'} text-cyan-300 text-[11px] font-mono font-bold flex items-center gap-1 cursor-pointer transform hover:scale-110 transition duration-150">
-            <span>❄️</span>
-            <span>${center.indoor_temp || '69°F'}</span>
+          <div id="pin-${center.id}" class="px-2 py-0.5 rounded-xl bg-slate-900/95 border-2 ${idx === 0 ? 'border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.6)]' : (isMobileUnit ? 'border-amber-400 text-amber-300' : 'border-cyan-400/80 text-cyan-300')} text-[11px] font-mono font-bold flex items-center gap-1 cursor-pointer transform hover:scale-110 transition duration-150 whitespace-nowrap shadow-lg">
+            <span>${isMobileUnit ? '💧' : '❄️'}</span>
+            <span>${displayTemp}</span>
           </div>
         `;
 
@@ -4689,6 +4740,280 @@
       return html;
     }
 
+    // =========================================================================
+    // DANA IN-CHAT GIS MINI-MAP & SCANNABLE GOOGLE MAPS QR NAVIGATION
+    // =========================================================================
+
+    const DALLAS_CHAT_CATALOG = {
+      "48113020500": {
+        tract_id: "48113020500",
+        name: "Igelisia de Cristo Elim Church (West Dallas)",
+        category: "cooling_center",
+        lat: 32.7834,
+        lng: -96.8623,
+        offset: "+0.43°F",
+        poverty: "29.1%",
+        no_car: "45.2%",
+        details: "West Dallas / Elm Thicket Corridor. Severe transit dependency (45.2% no-car)."
+      },
+      "48113008704": {
+        tract_id: "48113008704",
+        name: "Anita Martinez Recreation Center (South Oak Cliff)",
+        category: "cooling_center",
+        lat: 32.6952,
+        lng: -96.7815,
+        offset: "-1.05°F",
+        poverty: "52.2%",
+        no_car: "33.5%",
+        details: "South Oak Cliff. Concentrated poverty (52.2%) requiring emergency utility relief."
+      },
+      "48113020300": {
+        tract_id: "48113020300",
+        name: "Martin Luther King Jr Community Center (Fair Park)",
+        category: "cooling_center",
+        lat: 32.7600,
+        lng: -96.7600,
+        offset: "+0.09°F",
+        poverty: "30.1%",
+        no_car: "38.5%",
+        details: "Fair Park / South Dallas. Vital civic hub for elderly and pedestrian heat safety."
+      },
+      "48113019213": {
+        tract_id: "48113019213",
+        name: "Pleasant Grove Branch Library",
+        category: "cooling_center",
+        lat: 32.7300,
+        lng: -96.7000,
+        offset: "+0.96°F",
+        poverty: "36.1%",
+        no_car: "28.5%",
+        details: "Southeast Dallas park desert with severe afternoon asphalt heat retention."
+      },
+      "48085031720": {
+        tract_id: "48085031720",
+        name: "Coit Rd & Frankford Rd (Hydration Unit Alpha)",
+        category: "hydration",
+        lat: 32.9984,
+        lng: -96.7121,
+        offset: "+1.24°F",
+        poverty: "35.3%",
+        no_car: "26.2%",
+        details: "Peak microclimate heat hotspot (+1.24°F offset). Rapid mobile hydration staging."
+      },
+      "48113011401": {
+        tract_id: "48113011401",
+        name: "Simpson Stuart / Paul Quinn Corridor",
+        category: "cooling_center",
+        lat: 32.6840,
+        lng: -96.7530,
+        offset: "+1.05°F",
+        poverty: "34.8%",
+        no_car: "31.2%",
+        details: "Southern Dallas transit corridor with high afternoon foot traffic."
+      },
+      "48113012302": {
+        tract_id: "48113012302",
+        name: "Buckner Terrace / Urban Park",
+        category: "cooling_center",
+        lat: 32.7910,
+        lng: -96.6980,
+        offset: "+0.82°F",
+        poverty: "28.4%",
+        no_car: "22.1%",
+        details: "East Dallas residential heat island with elderly transit vulnerability."
+      },
+      "48113010101": {
+        tract_id: "48113010101",
+        name: "Vickery Meadow / Skillman Corridor",
+        category: "canopy",
+        lat: 32.8720,
+        lng: -96.7610,
+        offset: "+0.91°F",
+        poverty: "32.5%",
+        no_car: "38.0%",
+        details: "Dense multi-family apartment corridor with extreme pedestrian bus ridership."
+      }
+    };
+
+    function extractClientLocations(text, serverLocations) {
+      if (serverLocations && Array.isArray(serverLocations) && serverLocations.length > 0) {
+        return serverLocations;
+      }
+      if (!text) return [];
+      const extracted = [];
+      const seen = new Set();
+      const lower = text.toLowerCase();
+
+      for (const [tid, info] of Object.entries(DALLAS_CHAT_CATALOG)) {
+        if (!seen.has(tid) && (text.includes(tid) || lower.includes(info.name.toLowerCase()))) {
+          const loc = Object.assign({}, info);
+          loc.directions_url = `https://www.google.com/maps/dir/?api=1&destination=${loc.lat.toFixed(5)},${loc.lng.toFixed(5)}`;
+          extracted.push(loc);
+          seen.add(tid);
+        }
+      }
+      return extracted.slice(0, 4);
+    }
+
+    function renderDanaLocationModule(locations, mapUid) {
+      if (!locations || locations.length === 0) return '';
+
+      let cardsHtml = '';
+      locations.forEach((loc, idx) => {
+        const qrId = `chat-qr-${mapUid}-${idx}`;
+        const dirsUrl = loc.directions_url || `https://www.google.com/maps/dir/?api=1&destination=${loc.lat.toFixed(5)},${loc.lng.toFixed(5)}`;
+        const isHydration = loc.category === 'hydration';
+        const badgeColor = isHydration ? 'bg-amber-500/20 text-amber-300 border-amber-500/30' : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
+        const iconClass = isHydration ? 'fa-solid fa-truck-droplet text-amber-400' : 'fa-solid fa-snowflake text-emerald-400';
+
+        cardsHtml += `
+          <div class="chat-location-card flex items-center justify-between gap-3">
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1.5 flex-wrap mb-1">
+                <span class="text-[9px] font-mono px-2 py-0.5 rounded-full border ${badgeColor} font-bold">
+                  <i class="${iconClass} mr-1"></i>${escapeHtml(loc.tract_id || 'Dallas Site')}
+                </span>
+                ${loc.offset ? `<span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 font-bold border border-rose-500/30">${escapeHtml(loc.offset)}</span>` : ''}
+                ${loc.no_car ? `<span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30"><i class="fa-solid fa-bus mr-1"></i>${escapeHtml(loc.no_car)} zero-car</span>` : ''}
+              </div>
+              <h5 class="text-xs font-bold text-white truncate">${escapeHtml(loc.name)}</h5>
+              <p class="text-[10px] text-slate-300 mt-0.5 line-clamp-2">${escapeHtml(loc.details || 'Priority climate resilience location')}</p>
+              <div class="flex items-center gap-2 mt-2">
+                <a href="${dirsUrl}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 rounded-md bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-300 border border-emerald-500/40 text-[10px] font-semibold flex items-center gap-1 transition">
+                  <i class="fa-solid fa-diamond-turn-right"></i> Directions on Maps
+                </a>
+                <button type="button" onclick="flyCesiumTo(${loc.lng}, ${loc.lat}, 500, -35, 45)" class="px-2.5 py-1 rounded-md bg-cyan-600/30 hover:bg-cyan-600/50 text-cyan-300 border border-cyan-500/40 text-[10px] font-semibold flex items-center gap-1 transition cursor-pointer">
+                  <i class="fa-solid fa-cube"></i> Focus 3D
+                </button>
+              </div>
+            </div>
+            <div class="chat-qr-wrapper" title="Scan with Phone Camera for Google Maps Turn-by-Turn Directions">
+              <div id="${qrId}" class="w-20 h-20 flex items-center justify-center"></div>
+              <span class="text-[8px] font-mono font-bold text-slate-700 mt-1 flex items-center gap-1">
+                <i class="fa-solid fa-camera text-slate-900"></i> Scan on Phone
+              </span>
+            </div>
+          </div>
+        `;
+      });
+
+      return `
+        <div class="mt-3 pt-2.5 border-t border-white/10">
+          <div class="flex items-center justify-between text-[10px] text-slate-300 mb-1 font-semibold">
+            <span class="flex items-center gap-1.5 text-cyan-300">
+              <i class="fa-solid fa-map-location-dot text-cyan-400"></i> Tactical Siting GIS & Directions (${locations.length} Sites)
+            </span>
+            <span class="text-[9px] font-mono text-slate-400">1,200m Walking Catchments</span>
+          </div>
+          <div id="chat-map-${mapUid}" class="chat-minimap-container"></div>
+          <div class="space-y-1.5">
+            ${cardsHtml}
+          </div>
+        </div>
+      `;
+    }
+
+    function initDanaLocationModule(locations, mapUid) {
+      if (!locations || locations.length === 0) return;
+
+      // 1. Initialize Leaflet Mini-Map
+      const mapEl = document.getElementById(`chat-map-${mapUid}`);
+      if (mapEl && typeof L !== 'undefined') {
+        try {
+          const map = L.map(`chat-map-${mapUid}`, {
+            zoomControl: false,
+            attributionControl: false
+          });
+
+          L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            maxZoom: 19,
+            subdomains: 'abcd'
+          }).addTo(map);
+
+          L.control.zoom({ position: 'topright' }).addTo(map);
+
+          const group = L.featureGroup();
+
+          locations.forEach(loc => {
+            const isHydration = loc.category === 'hydration';
+            const markerColor = isHydration ? '#f59e0b' : '#10b981';
+            
+            // 1,200m pedestrian walking catchment buffer
+            L.circle([loc.lat, loc.lng], {
+              radius: 1200,
+              color: markerColor,
+              weight: 1.5,
+              dashArray: '4, 4',
+              fillColor: markerColor,
+              fillOpacity: 0.12
+            }).addTo(group);
+
+            // Pulsing center marker
+            const markerHtml = `
+              <div style="background-color: ${markerColor}; width: 14px; height: 14px; border-radius: 50%; border: 2px solid #ffffff; box-shadow: 0 0 10px ${markerColor};"></div>
+            `;
+            const icon = L.divIcon({
+              html: markerHtml,
+              className: 'custom-chat-pin',
+              iconSize: [14, 14],
+              iconAnchor: [7, 7]
+            });
+
+            const marker = L.marker([loc.lat, loc.lng], { icon: icon }).addTo(group);
+            marker.bindPopup(`
+              <div style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; color: #0f172a; padding: 4px; min-width: 140px;">
+                <div style="font-weight: bold; margin-bottom: 2px;">${escapeHtml(loc.name)}</div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #475569;">Tract ${escapeHtml(loc.tract_id || '')}</div>
+                <div style="margin-top: 4px; font-weight: 600; color: #059669;">Offset: ${escapeHtml(loc.offset || 'N/A')}</div>
+              </div>
+            `);
+          });
+
+          group.addTo(map);
+
+          if (locations.length === 1) {
+            map.setView([locations[0].lat, locations[0].lng], 13);
+          } else {
+            map.fitBounds(group.getBounds(), { padding: [25, 25], maxZoom: 14 });
+          }
+
+          setTimeout(() => {
+            map.invalidateSize();
+          }, 250);
+        } catch (mapErr) {
+          console.warn("Leaflet mini-map error:", mapErr);
+        }
+      }
+
+      // 2. Render Scannable QR Codes for Google Maps Directions
+      locations.forEach((loc, idx) => {
+        const qrId = `chat-qr-${mapUid}-${idx}`;
+        const qrEl = document.getElementById(qrId);
+        if (!qrEl) return;
+
+        const dirsUrl = loc.directions_url || `https://www.google.com/maps/dir/?api=1&destination=${loc.lat.toFixed(5)},${loc.lng.toFixed(5)}`;
+
+        if (typeof QRCode !== 'undefined') {
+          try {
+            qrEl.innerHTML = '';
+            new QRCode(qrEl, {
+              text: dirsUrl,
+              width: 80,
+              height: 80,
+              colorDark: '#0f172a',
+              colorLight: '#ffffff',
+              correctLevel: QRCode.CorrectLevel.M
+            });
+          } catch (qrErr) {
+            console.warn("QRCode generation error, falling back to image:", qrErr);
+            qrEl.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(dirsUrl)}" alt="QR Code" class="w-20 h-20 rounded" />`;
+          }
+        } else {
+          qrEl.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(dirsUrl)}" alt="QR Code" class="w-20 h-20 rounded" />`;
+        }
+      });
+    }
+
     async function sendDanaMessage() {
       const input = document.getElementById('copilot-input');
       const text = input.value.trim();
@@ -4732,6 +5057,9 @@
         const isBlocked = data.model_armor_blocked;
         const bg = isBlocked ? 'bg-rose-950/60 border-rose-800 text-rose-200' : 'trace-card border-white/10 text-slate-200';
         const rendered = renderDanaMarkdown(data.response);
+        const locations = extractClientLocations(data.response, data.locations);
+        const mapUid = Date.now();
+        const locationsHtml = renderDanaLocationModule(locations, mapUid);
 
         container.innerHTML += `
           <div class="flex gap-2.5">
@@ -4746,10 +5074,17 @@
               <div class="dana-markdown text-xs">
                 ${rendered}
               </div>
+              ${locationsHtml}
             </div>
           </div>
         `;
         container.scrollTop = container.scrollHeight;
+
+        if (locations.length > 0) {
+          setTimeout(() => {
+            initDanaLocationModule(locations, mapUid);
+          }, 80);
+        }
       } catch (e) {
         const loadEl = document.getElementById(loadId);
         if (loadEl) loadEl.remove();
@@ -5007,7 +5342,20 @@
         if (currentDanaBubble) {
           const textEl = currentDanaBubble.querySelector('.dana-text');
           if (textEl && textEl.dataset.rawText) {
-            textEl.innerHTML = renderDanaMarkdown(textEl.dataset.rawText);
+            const raw = textEl.dataset.rawText;
+            textEl.innerHTML = renderDanaMarkdown(raw);
+            const voiceLocs = extractClientLocations(raw, []);
+            if (voiceLocs.length > 0) {
+              const voiceMapUid = Date.now();
+              const voiceLocHtml = renderDanaLocationModule(voiceLocs, voiceMapUid);
+              const cardEl = currentDanaBubble.querySelector('.trace-card') || currentDanaBubble.children[1];
+              if (cardEl) {
+                cardEl.insertAdjacentHTML('beforeend', voiceLocHtml);
+                setTimeout(() => {
+                  initDanaLocationModule(voiceLocs, voiceMapUid);
+                }, 80);
+              }
+            }
           }
         }
         currentDanaBubble = null;

@@ -16,7 +16,20 @@ import google.auth
 from google.auth.transport.requests import Request
 from google.cloud import bigquery
 
-PROJECT_ID = os.environ.get("GOOGLE_CLOUD_PROJECT", "climate-heat-challenge")
+def _detect_project():
+    p = os.environ.get("GOOGLE_CLOUD_PROJECT") or os.environ.get("GCP_PROJECT_ID")
+    if p and p != "climate-heat-challenge":
+        return p
+    try:
+        import subprocess
+        _detected = subprocess.run(["gcloud", "config", "get-value", "project"], capture_output=True, text=True, timeout=2).stdout.strip()
+        if _detected and _detected != "(unset)":
+            return _detected
+    except Exception:
+        pass
+    return p or "qwiklabs-gcp-04-4753f87c7a64"
+
+PROJECT_ID = _detect_project()
 DATASET = os.environ.get("BIGQUERY_DATASET", "a4i_climate")
 
 # Dallas Operational Geographic Bounding Box

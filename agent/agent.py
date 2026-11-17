@@ -37,7 +37,13 @@ from agent.tools import (
 )
 
 os.environ.setdefault("GOOGLE_GENAI_USE_VERTEXAI", "1")
-os.environ["GOOGLE_CLOUD_PROJECT"] = os.environ.get("GOOGLE_CLOUD_PROJECT", "climate-heat-challenge")
+if "GOOGLE_CLOUD_PROJECT" not in os.environ or not os.environ["GOOGLE_CLOUD_PROJECT"]:
+    try:
+        import subprocess
+        _detected = subprocess.run(["gcloud", "config", "get-value", "project"], capture_output=True, text=True, timeout=2).stdout.strip()
+        os.environ["GOOGLE_CLOUD_PROJECT"] = _detected if _detected and _detected != "(unset)" else "qwiklabs-gcp-04-4753f87c7a64"
+    except Exception:
+        os.environ["GOOGLE_CLOUD_PROJECT"] = "qwiklabs-gcp-04-4753f87c7a64"
 os.environ["GOOGLE_CLOUD_LOCATION"] = os.environ.get("GOOGLE_CLOUD_LOCATION", "global")
 
 # ==============================================================================
