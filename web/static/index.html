@@ -352,6 +352,52 @@
       background: rgba(0, 240, 255, 0.12);
       border-color: rgba(0, 240, 255, 0.35);
     }
+    .dana-markdown .tract-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #38bdf8;
+      background: rgba(8, 51, 68, 0.5);
+      border: 1px solid rgba(14, 165, 233, 0.4);
+      padding: 0.18rem 0.55rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      vertical-align: middle;
+      margin: 0.15rem 0.2rem;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+    }
+    .dana-markdown .tract-pill:hover {
+      background: rgba(14, 165, 233, 0.25);
+      border-color: rgba(56, 189, 248, 0.7);
+      color: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
+    }
+    .dana-markdown .tract-pill:active {
+      transform: translateY(0);
+      background: rgba(14, 165, 233, 0.35);
+    }
+    .dana-markdown .tract-pill i {
+      color: #22d3ee;
+      font-size: 0.68rem;
+    }
+    .dana-markdown .tract-pill .tract-geoid {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: #94a3b8;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 0.05rem 0.25rem;
+      border-radius: 0.25rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .dana-markdown .tract-pill:hover .tract-geoid {
+      color: #cbd5e1;
+      border-color: rgba(56, 189, 248, 0.3);
+    }
     .dana-markdown .table-wrapper {
       overflow-x: auto;
       margin: 0.65rem 0;
@@ -2420,32 +2466,31 @@
         `).join('');
 
         card.innerHTML = `
-          <div class="flex items-start justify-between gap-2">
-            <div class="min-w-0">
-              <div class="flex items-center gap-1.5 flex-wrap">
-                <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                  <span>${dict.openNow}</span>
-                </span>
-                <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-400/30">
-                  ❄️ ${hub.indoor_temp}
-                </span>
-                <span class="text-[11px] font-bold ${textMuted}">
-                  🚶 ${hub.walk_time_minutes} ${dict.walkMins} (${hub.distance_miles} mi)
-                </span>
-              </div>
-              <h4 class="text-sm font-black tracking-tight text-white mt-1 leading-snug">${hub.name}</h4>
-              <p class="text-[11px] ${textMuted} flex items-center gap-1 mt-0.5">
-                <i class="fa-solid fa-location-dot text-cyan-400 text-[10px]"></i>
-                <span class="truncate">${hub.address}</span>
-                <span class="text-slate-600">•</span>
-                <span class="font-medium text-slate-300">${hub.neighborhood}</span>
-              </p>
-            </div>
-            ${hub.transit ? `
-              <span class="text-[10px] font-mono ${textMuted} bg-slate-800/80 px-1.5 py-0.5 rounded border border-white/5 whitespace-nowrap flex-shrink-0">
-                <i class="fa-solid fa-bus text-cyan-400 mr-1"></i>${hub.transit}
+          <div>
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>${dict.openNow}</span>
               </span>
+              <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-400/30">
+                ❄️ ${hub.indoor_temp}
+              </span>
+              <span class="text-[11px] font-bold ${textMuted}">
+                🚶 ${hub.walk_time_minutes} ${dict.walkMins} (${hub.distance_miles} mi)
+              </span>
+            </div>
+            <h4 class="text-sm font-black tracking-tight ${isSunlightMode ? 'text-slate-900' : 'text-white'} mt-1 leading-snug">${hub.name}</h4>
+            <p class="text-[11px] ${textMuted} flex items-center gap-1 mt-0.5">
+              <i class="fa-solid fa-location-dot text-cyan-400 text-[10px] flex-shrink-0"></i>
+              <span class="truncate">${hub.address}</span>
+              <span class="text-slate-600">•</span>
+              <span class="font-medium ${isSunlightMode ? 'text-slate-700' : 'text-slate-300'} flex-shrink-0">${hub.neighborhood}</span>
+            </p>
+            ${hub.transit ? `
+              <p class="text-[10px] font-mono ${isSunlightMode ? 'text-cyan-700' : 'text-cyan-300/80'} flex items-center gap-1 mt-1 truncate">
+                <i class="fa-solid fa-bus text-cyan-400 text-[10px] flex-shrink-0"></i>
+                <span class="truncate">${hub.transit}</span>
+              </p>
             ` : ''}
           </div>
 

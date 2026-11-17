@@ -1,11 +1,12 @@
 """Dallas Urban Heat Resilience & 3-Track Multi-Agent Planning System (ADK Multi-Agent Architecture).
 
 An autonomous multi-agent climate decision-support system built on Google ADK and Gemini 2.5 Flash,
-orchestrating four specialized domain subagents under Dana (Chief Climate Resilience Orchestrator):
+orchestrating five specialized domain subagents under CoolAid (Chief Climate Resilience Orchestrator):
 1. emergency_dispatch_agent (Track 1: Today Emergency Response)
 2. capital_siting_agent (Track 2: This Budget Cycle Capital Siting)
 3. forestry_roi_agent (Track 3: This Decade Urban Forestry ROI)
 4. grid_resilience_agent (Compound Grid Outage & Medically Fragile Life Support)
+5. portfolio_optimizer (Multi-Objective Pareto Budget Allocation)
 """
 
 import os
@@ -18,7 +19,10 @@ from agent.tools import (
     get_tract_canopy_planting_sites,
     assess_grid_vulnerability_and_medical_risk,
     get_heat_frequency,
-    run_equity_audit
+    run_equity_audit,
+    optimize_climate_portfolio,
+    draft_council_resolution,
+    get_reduction_strategies
 )
 
 os.environ.setdefault("GOOGLE_GENAI_USE_VERTEXAI", "1")
@@ -97,12 +101,26 @@ Always use `assess_grid_vulnerability_and_medical_risk` and `get_heat_frequency`
 )
 
 # ==============================================================================
+# SUBAGENT 5: CAPITAL PORTFOLIO PARETO OPTIMIZER (Multi-Objective Budgeting)
+# ==============================================================================
+portfolio_optimizer = Agent(
+    name="portfolio_optimizer",
+    model="gemini-2.5-flash",
+    description="Coordinates multi-objective Pareto capital budgeting ($10M–$50M): runs Monte Carlo simulations balancing climate adaptation (cooling centers, shade canopy) versus climate mitigation (solar microgrids, energy burden relief).",
+    instruction="""You are the Capital Budget Pareto Portfolio Optimizer.
+Your mission is to find mathematically optimal resilience investments across competing adaptation and mitigation priorities.
+You calculate Pareto-efficient frontiers, budget allocations, and net heat-reduction ROI for municipal capital improvement programs.
+Use optimize_climate_portfolio, draft_council_resolution, and get_reduction_strategies.""",
+    tools=[optimize_climate_portfolio, draft_council_resolution, get_reduction_strategies]
+)
+
+# ==============================================================================
 # ROOT ORCHESTRATOR: DANA (CHIEF CLIMATE RESILIENCE OFFICER)
 # ==============================================================================
 SYSTEM_INSTRUCTION = """
 You are Dana, the Senior Climate Resilience Planning Analyst for the City of Dallas Office of Emergency Management and Environmental Quality.
 
-You orchestrate four specialized domain subagents:
+You orchestrate five specialized domain subagents:
 1. ⚡ `emergency_dispatch_agent` (Track 1: Today Emergency Response)
    - "It's 102° tomorrow. Where do the hydration trucks and wellness checks go?"
    - Mobile hydration routing, carless elder wellness checks, emPOWER life-support lists.
@@ -114,6 +132,8 @@ You orchestrate four specialized domain subagents:
    - BigQuery ML.EXPLAIN_PREDICT feature attributions, park distance deficits, person-°F cooling ROI per $10k.
 4. 🚨 `grid_resilience_agent` (Compound Grid Failure & Medically Fragile Risk)
    - HHS emPOWER life support rosters, DOE LEAD energy burden, islandable solar microgrid requirements.
+5. 📊 `portfolio_optimizer` (Multi-Objective Pareto Budget Allocation)
+   - Pareto-efficient frontier analysis, $10M-$50M municipal capital allocation between adaptation and mitigation.
 
 ### OPERATIONAL DIRECTIVES
 - When a user asks about immediate emergency response, delegate to or synthesize guidance from `emergency_dispatch_agent`.
@@ -173,7 +193,7 @@ To maintain civil service credibility and prevent hallucination, you must strict
    - Your data, BigQuery ML models, and municipal mandate cover the **City of Dallas and Dallas County (Texas FIPS 48113)**.
    - If asked about other cities (e.g., Austin, Houston, Chicago, New York, Phoenix, Miami, San Antonio, Los Angeles):
      - **POLITELY REFUSE TO ANSWER OR SPECULATE.**
-     - State clearly: *"I am Dana, Climate Resilience Analyst specifically for the City of Dallas. Our high-resolution street campaign data, 7-year station temperature records, and BigQuery ML models cover Dallas County only. I do not have street-level urban heat campaign data or demographic models for [City]. Please consult [City]'s Office of Resilience or NOAA Heat Watch campaign archives."*
+     - State clearly: *"I am CoolAid, Climate Resilience Analyst specifically for the City of Dallas. Our high-resolution street campaign data, 7-year station temperature records, and BigQuery ML models cover Dallas County only. I do not have street-level urban heat campaign data or demographic models for [City]. Please consult [City]'s Office of Resilience or NOAA Heat Watch campaign archives."*
 
 2. **Unmeasured Historical Dates & Clock Times**:
    - The street-level traverse data represents a single-day summer campaign measuring spatial temperature **offsets** (how much hotter a block runs than the citywide average at that peak hour), NOT continuous minute-by-minute historical records.
@@ -187,6 +207,24 @@ To maintain civil service credibility and prevent hallucination, you must strict
    - If asked: *"If we plant 200 trees here or change asphalt, by how many degrees will the temperature drop?"*:
      - **BE HONEST ABOUT MODEL LIMITS.**
      - State clearly: *"While our BigQuery ML model (`ML.EXPLAIN_PREDICT`) identifies the physical features driving extreme heat offsets at this location, our empirical model is diagnostic rather than a hydrodynamic microclimate simulator. It identifies the priority intervention, but cannot simulate post-planting temperature reductions. In our council proposal, we note this distinction to maintain fiscal and scientific integrity."*
+
+---
+
+### 🗺️ HUMAN GEOGRAPHIC GROUNDING MANDATE (CRITICAL RULE)
+
+Whenever referencing an 11-digit Census Tract GEOID (e.g., Tract 48113020500 or 48113008704), you MUST always anchor it with its recognized human neighborhood name, bounding cross-streets/corridors, and civic landmarks:
+- **Format**: `Tract [GEOID] ([Recognized Neighborhood], along [Key Cross-Streets/Arterials], near [Landmark/Council District])`
+- **Canonical Neighborhood Anchors**:
+  - `48113020500`: **West Dallas / Elm Thicket Corridor** (along Singleton Blvd & Hampton Rd, near West Dallas Multipurpose Center & Fish Trap Lake, District 6)
+  - `48113008704`: **South Oak Cliff** (near Anita Martinez Rec Center, Marsalis Ave & Ann Arbor Ave, District 4)
+  - `48113020300`: **Fair Park / South Dallas** (along Martin Luther King Jr. Blvd & Robert B. Cullum Blvd, MLK Jr. Community Center, District 7)
+  - `48113019213`: **Pleasant Grove / Lake June Corridor** (near Pleasant Grove Branch Library & Crawford Memorial Park, District 5)
+  - `48085031720`: **North Dallas / Collin Border** (at Coit Rd & Frankford Rd intersection, District 12)
+  - `48113011401`: **Simpson Stuart / Paul Quinn Corridor** (Southern Dallas transit corridor along Simpson Stuart Rd & I-45, District 8)
+  - `48113012302`: **Buckner Terrace / Urban Park** (East Dallas residential corridor along S. Buckner Blvd, District 7)
+  - `48113010101`: **Vickery Meadow / Skillman Corridor** (Dense multi-family corridor along Skillman St & Northwest Hwy, District 13)
+  - `48113015303`: **Elmwood / Wynnewood Park Corridor** (Oak Cliff, along Vernon Ave & Edgefield Ave, District 1)
+- **Never output raw, isolated 11-digit GEOIDs without their human neighborhood translation**, because elected council members, emergency dispatchers, and residents rely on recognizable neighborhood names and physical street landmarks to understand where thermal hazards and cooling relief are physically situated.
 
 ---
 
@@ -247,13 +285,14 @@ You are fully prepared to answer all 3 challenge tracks and municipal workflows:
 root_agent = Agent(
     name="dallas_heat_orchestrator",
     model="gemini-2.5-flash",
-    description="Dana: Chief Climate Resilience & 3-Track Multi-Agent Orchestrator for the City of Dallas.",
+    description="CoolAid: Chief Climate Resilience & 3-Track Multi-Agent Orchestrator for the City of Dallas.",
     instruction=SYSTEM_INSTRUCTION,
     sub_agents=[
         emergency_dispatch_agent,
         capital_siting_agent,
         forestry_roi_agent,
-        grid_resilience_agent
+        grid_resilience_agent,
+        portfolio_optimizer
     ],
     tools=[
         explain_heat_offset,
@@ -266,3 +305,13 @@ root_agent = Agent(
         run_equity_audit
     ]
 )
+
+all_subagents = [
+    emergency_dispatch_agent,
+    capital_siting_agent,
+    forestry_roi_agent,
+    grid_resilience_agent,
+    portfolio_optimizer
+]
+
+

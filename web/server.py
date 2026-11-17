@@ -1192,9 +1192,9 @@ def list_agents():
                 "name": sub.name,
                 "model": sub.model,
                 "description": sub.description,
-                "tools": [t.__name__ for t in sub.tools]
+                "tools": [getattr(t, "__name__", str(t)) for t in getattr(sub, "tools", [])]
             }
-            for sub in ag.all_subagents
+            for sub in getattr(ag, "all_subagents", [])
         ]
     }
 
@@ -1307,6 +1307,17 @@ DALLAS_LOCATIONS_CATALOG = {
         "poverty": "32.5%",
         "no_car": "38.0%",
         "details": "Dense multi-family apartment corridor with extreme pedestrian bus ridership."
+    },
+    "48113015303": {
+        "tract_id": "48113015303",
+        "name": "Elmwood / Wynnewood Park Corridor",
+        "category": "cooling_center",
+        "lat": 32.7160,
+        "lng": -96.8370,
+        "offset": "+0.57°F",
+        "poverty": "16.7%",
+        "no_car": "5.4%",
+        "details": "Oak Cliff park desert corridor with high building density heat retention."
     }
 }
 
@@ -1373,27 +1384,36 @@ def extract_chat_locations(text: str, tool_calls: list) -> list:
                 locations.append(loc)
                 seen_keys.add(tid)
 
-    coord_matches = re.findall(r"\[([3-4][0-9]\.[0-9]+),\s*(-9[6-7]\.[0-9]+)\]", text)
-    for lat_s, lng_s in coord_matches:
-        try:
-            lat, lng = float(lat_s), float(lng_s)
-            ckey = f"{lat:.3f},{lng:.3f}"
-            if ckey not in seen_keys:
-                locations.append({
-                    "tract_id": "Geo-Coordinate",
-                    "name": f"Dallas Coordinates ({lat:.4f}, {lng:.4f})",
-                    "lat": lat,
-                    "lng": lng,
-                    "category": "hotspot",
-                    "offset": "+0.6°F",
-                    "poverty": "N/A",
-                    "no_car": "N/A",
-                    "details": "Model-identified geographic coordinate",
-                    "directions_url": f"https://www.google.com/maps/dir/?api=1&destination={lat:.5f},{lng:.5f}"
-                })
-                seen_keys.add(ckey)
-        except Exception:
-            pass
+    coord_patterns = [
+        r"\[([3-4][0-9]\.[0-9]+),\s*(-9[6-7]\.[0-9]+)\]",
+        r"\b([3-4][0-9]\.[0-9]{3,})°?\s*N?,\s*(-9[6-7]\.[0-9]{3,})°?\s*W?\b",
+        r"\b([3-4][0-9]\.[0-9]{3,})°?\s*N?,\s*(9[6-7]\.[0-9]{3,})°?\s*W\b"
+    ]
+    for pattern in coord_patterns:
+        coord_matches = re.findall(pattern, text)
+        for lat_s, lng_s in coord_matches:
+            try:
+                lat = float(lat_s)
+                lng = float(lng_s)
+                if lng > 0:
+                    lng = -lng
+                ckey = f"{lat:.3f},{lng:.3f}"
+                if ckey not in seen_keys:
+                    locations.append({
+                        "tract_id": "Geo-Coordinate",
+                        "name": f"Dallas Coordinates ({lat:.4f}, {lng:.4f})",
+                        "lat": lat,
+                        "lng": lng,
+                        "category": "hotspot",
+                        "offset": "+0.6°F",
+                        "poverty": "N/A",
+                        "no_car": "N/A",
+                        "details": "Model-identified geographic coordinate",
+                        "directions_url": f"https://www.google.com/maps/dir/?api=1&destination={lat:.5f},{lng:.5f}"
+                    })
+                    seen_keys.add(ckey)
+            except Exception:
+                pass
 
     return locations[:6]
 
