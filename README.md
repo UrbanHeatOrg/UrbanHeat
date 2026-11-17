@@ -9,7 +9,9 @@ An autonomous climate resilience decision support system, nationwide equity allo
 ## 🌟 Live Deployments & Official Deliverables
 
 - **Live Cloud Run Deployment**: [https://dallas-heat-app-447063751013.us-central1.run.app](https://dallas-heat-app-447063751013.us-central1.run.app)
+- **Architecture & Demo Blueprint**: [ARCHITECTURE_AND_DEMO.md](ARCHITECTURE_AND_DEMO.md) (Clean 3-Tier Architecture, Cloud Run Deployment, & 4 Standout Demo Moments)
 - **Comprehensive Walkthrough**: [WALKTHROUGH.md](WALKTHROUGH.md) (Complete verification, architecture, and live screenshots)
+
 - **System Implementation Blueprint**: [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) (Multi-agent council design & $50M Pareto engine)
 - **Official Placement Recommendation Artifact**: [PLACEMENT_RECOMMENDATION.md](PLACEMENT_RECOMMENDATION.md) (Council Resolution No. 2026-HEAT-01)
 - **Interactive 3D Command Center**: Singapore DUCT 3D Heat X-Ray (CesiumJS) + Google Solar API Dynamic Sun & Shade Animator.

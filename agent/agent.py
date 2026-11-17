@@ -18,7 +18,10 @@ from agent.tools import (
     get_tract_canopy_planting_sites,
     assess_grid_vulnerability_and_medical_risk,
     get_heat_frequency,
-    run_equity_audit
+    run_equity_audit,
+    compare_siting_scenarios,
+    compare_locations_heat_contrast,
+    optimize_climate_portfolio
 )
 
 os.environ.setdefault("GOOGLE_GENAI_USE_VERTEXAI", "1")
@@ -142,6 +145,9 @@ root_agent = Agent(
         get_tract_canopy_planting_sites,
         assess_grid_vulnerability_and_medical_risk,
         get_heat_frequency,
-        run_equity_audit
+        run_equity_audit,
+        compare_siting_scenarios,
+        compare_locations_heat_contrast,
+        optimize_climate_portfolio
     ]
 )
