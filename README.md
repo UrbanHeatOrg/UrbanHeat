@@ -1,7 +1,8 @@
-# City of Dallas: Urban Heat Island Resilience & Cooling Center Allocation Tool
-### Agents for Impact 2026 — Challenge 1: Walkability & Urban Heat
+# HeatShield AI — Team CoolAid
+### Climate Orchestration & Optimization Lab — Artificial Intelligence Deployment (COOL-AID)
+#### Agents for Impact 2026 — Challenge 1: Walkability & Urban Heat
 
-An autonomous climate resilience decision support system and interactive web dashboard built with **Google ADK (Agent Development Kit)**, **Gemini 2.5 Flash on Vertex AI**, and **BigQuery ML**!
+An autonomous climate resilience decision support system, nationwide equity allocator, and 3D digital twin built with **Google ADK (Agent Development Kit)**, **Gemini 2.5 Flash / 3.8 Live**, and **BigQuery ML**!
 
 ---
 

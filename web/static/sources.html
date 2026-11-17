@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sources & Data Ecosystem — HeatShield AI | SVL 11</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            heading: ['"Outfit"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              dark: '#121317',
+              surface: '#1A1C23',
+              card: 'rgba(255, 255, 255, 0.035)',
+              border: 'rgba(255, 255, 255, 0.08)',
+              accent: '#38BDF8',
+              emerald: '#34D399',
+              amber: '#FBBF24',
+              coral: '#EF4444'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #0D0E12;
+      color: #F8FAFC;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+    }
+    .glass-card:hover {
+      border-color: rgba(56, 189, 248, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.5);
+    }
+    .glow-cyan {
+      box-shadow: 0 0 25px -5px rgba(56, 189, 248, 0.25);
+    }
+  </style>
+</head>
+<body class="min-h-screen font-sans flex flex-col selection:bg-sky-500/30 selection:text-sky-200">
+
+  <!-- Top Sticky Navigation Bar -->
+  <header class="sticky top-0 z-50 bg-[#121317]/90 backdrop-blur-md border-b border-white/10 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+    <div class="flex items-center gap-4">
+      <a href="/" class="flex items-center gap-2 text-slate-400 hover:text-white transition group text-sm font-medium">
+        <i class="fa-solid fa-arrow-left group-hover:-translate-x-1 transition-transform"></i>
+        <span>Dashboard</span>
+      </a>
+      <div class="h-4 w-px bg-white/20"></div>
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-sky-500 to-emerald-400 flex items-center justify-center font-black text-black text-sm">
+          A11
+        </div>
+        <div>
+          <h1 class="font-heading font-bold text-base leading-tight">HeatShield AI &bull; Sources Page</h1>
+          <p class="text-xs text-slate-400">SVL 11 Pitch Deck &bull; Slide 6: Data Ecosystem</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Action Buttons for Google Slides Insertion -->
+    <div class="flex items-center gap-2.5 flex-wrap">
+      <button onclick="copySlideImage()" id="btn-copy" class="px-3.5 py-2 rounded-lg bg-sky-500/15 hover:bg-sky-500/25 border border-sky-400/30 text-sky-300 text-xs font-semibold flex items-center gap-2 transition active:scale-95">
+        <i class="fa-solid fa-copy"></i>
+        <span>Copy Slide 6 Image</span>
+      </button>
+      <a href="/static/slide_6_sources_full.png" download="SVL11_Slide6_Sources_1920x1080.png" class="px-3.5 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 text-xs font-semibold flex items-center gap-2 transition">
+        <i class="fa-solid fa-download"></i>
+        <span>Download PNG (1920×1080)</span>
+      </a>
+      <a href="/static/SVL_11_Pitch_Deck_HeatShield.pptx" download class="px-3.5 py-2 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-400/30 text-emerald-300 text-xs font-semibold flex items-center gap-2 transition">
+        <i class="fa-solid fa-file-powerpoint"></i>
+        <span>Download .PPTX Deck</span>
+      </a>
+      <a href="https://docs.google.com/presentation/d/14ybCdsNikpz6tYmWyUudpvojtH-0luboRfn4Dj3TtIo/edit?slide=id.h52fa8b8a4798773f_0_151#slide=id.h52fa8b8a4798773f_0_151" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-lg bg-amber-500/15 hover:bg-amber-500/25 border border-amber-400/30 text-amber-300 text-xs font-semibold flex items-center gap-2 transition">
+        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+        <span>Open Slide in Google Slides</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Notification Banner -->
+  <div id="toast" class="fixed top-20 right-6 z-50 hidden max-w-md p-4 rounded-xl bg-slate-900 border border-sky-400/40 text-white shadow-2xl flex items-start gap-3 transition-all duration-300">
+    <i class="fa-solid fa-circle-check text-sky-400 text-lg mt-0.5"></i>
+    <div>
+      <div id="toast-title" class="font-bold text-sm">Copied to Clipboard!</div>
+      <div id="toast-desc" class="text-xs text-slate-300 mt-0.5">Slide 6 PNG is ready to paste (Ctrl+V) directly into your Google Slides presentation.</div>
+    </div>
+  </div>
+
+  <main class="flex-grow max-w-7xl mx-auto w-full px-6 py-8 space-y-10">
+
+    <!-- Section 1: Visual Presentation Slide 6 Preview -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <span class="text-xs font-mono uppercase tracking-wider text-sky-400 font-semibold">Pitch Deck Layout</span>
+          <h2 class="text-2xl font-heading font-bold mt-0.5">Slide 6: Data Ecosystem Architecture</h2>
+          <p class="text-sm text-slate-400">16:9 widescreen canvas (1920×1080) rendered for the hackathon pitch deck sources page.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="px-2.5 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono">12 Integrated Sources</span>
+          <span class="px-2.5 py-1 rounded-md bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-mono">100% License Defensible</span>
+        </div>
+      </div>
+
+      <!-- Slide Container -->
+      <div class="relative rounded-2xl overflow-hidden border border-white/10 glow-cyan bg-[#121317] aspect-[16/9] shadow-2xl group">
+        <img src="/static/slide_6_sources_full.png" alt="Slide 6 Sources Layout" class="w-full h-full object-cover">
+        
+        <!-- Hover Overlay with Quick Actions -->
+        <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm flex flex-col items-center justify-center gap-4 p-6">
+          <p class="text-white font-heading font-bold text-lg text-center max-w-md">Ready to paste directly into your Google Slides presentation!</p>
+          <div class="flex items-center gap-3">
+            <button onclick="copySlideImage()" class="px-4 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-black font-bold text-sm flex items-center gap-2 shadow-lg shadow-sky-500/20 transition active:scale-95">
+              <i class="fa-solid fa-copy"></i> Copy High-Res Image
+            </button>
+            <a href="/static/slide_6_sources_full.png" target="_blank" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm flex items-center gap-2 border border-white/20 transition">
+              <i class="fa-solid fa-expand"></i> View Full 1920×1080
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Data Ecosystem Catalog & Individual Logos -->
+    <section class="space-y-6">
+      <div class="border-t border-white/10 pt-8 flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <span class="text-xs font-mono uppercase tracking-wider text-emerald-400 font-semibold">Asset Inventory & License Defense</span>
+          <h2 class="text-2xl font-heading font-bold mt-0.5">The 12 Sources Powering HeatShield AI</h2>
+          <p class="text-sm text-slate-400">Download individual vector SVGs, transparent PNGs, or inspect BigQuery ML table schemas.</p>
+        </div>
+        <div class="text-xs font-mono text-slate-400 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
+          BigQuery Project: <span class="text-sky-300">qwiklabs-gcp-04-4753f87c7a64.a4i_climate</span>
+        </div>
+      </div>
+
+      <!-- Sources Grid (12 Cards) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="sources-catalog">
+        <!-- Cards populated by script -->
+      </div>
+    </section>
+
+    <!-- Section 3: Legal & Title VI Compliance Defense -->
+    <section class="glass-card rounded-2xl p-6 space-y-4 border border-white/10">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-purple-500/15 border border-purple-400/30 flex items-center justify-center text-purple-300 text-lg">
+          <i class="fa-solid fa-scale-balanced"></i>
+        </div>
+        <div>
+          <h3 class="font-heading font-bold text-lg text-white">Title VI & Environmental Justice Defense Statement</h3>
+          <p class="text-xs text-slate-400">How HeatShield AI safeguards algorithmic fairness and federal compliance.</p>
+        </div>
+      </div>
+      <p class="text-xs text-slate-300 leading-relaxed">
+        Under <strong>Title VI of the Civil Rights Act of 1964</strong> and municipal equity mandates, HeatShield AI decouples thermal physics from demographic proxies during model training. The BigQuery ML Random Forest model (<code class="font-mono text-sky-300">heat_offset_model</code>) trains strictly on physical surface parameters (tree canopy, albedo, NDVI, building volume, distance to water). Socioeconomic vulnerability metrics from <strong>CDC SVI</strong> and <strong>HHS emPOWER</strong> are applied strictly as post-hoc allocation constraints to eliminate algorithmic bias and ensure cooling resources reach historically redlined and energy-burdened communities without predictive discrimination.
+      </p>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-white/10 py-6 px-6 text-center text-xs text-slate-500 bg-[#121317]">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <strong>UrbanHeatOrg / HeatShield AI</strong> &bull; Agents for Impact 2026 Challenge 1
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="https://github.com/UrbanHeatOrg/UrbanHeat" target="_blank" class="hover:text-slate-300 transition"><i class="fa-brands fa-github"></i> GitHub Repository</a>
+        <a href="/api/data-sources" target="_blank" class="hover:text-slate-300 transition"><i class="fa-solid fa-code"></i> JSON API</a>
+        <a href="/" class="hover:text-slate-300 transition"><i class="fa-solid fa-gauge-high"></i> Live System Dashboard</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const SOURCES_DATA = [
+      {
+        id: "noaa",
+        name: "NOAA / NWS Climate",
+        fullName: "National Oceanic and Atmospheric Administration",
+        category: "Microclimate & Heat Hazards",
+        badge: "US GOV / PUBLIC DOMAIN",
+        badgeClass: "bg-sky-500/15 text-sky-300 border-sky-400/30",
+        logoPng: "/static/logos/png/noaa.png",
+        logoSvg: "/static/logos/noaa.svg",
+        datasets: "Heat Watch Dallas Campaign & GHCN-Daily Stations",
+        metric: "19,491 records | BQML target",
+        role: "Ground-truth mobile thermal readings capturing 9.2°F microclimate spread across Dallas."
+      },
+      {
+        id: "nasa",
+        name: "NASA JPL ECOSTRESS",
+        fullName: "NASA Jet Propulsion Laboratory",
+        category: "Satellite Thermal Radiometry",
+        badge: "US GOV / PUBLIC DOMAIN",
+        badgeClass: "bg-sky-500/15 text-sky-300 border-sky-400/30",
+        logoPng: "/static/logos/png/nasa.png",
+        logoSvg: "/static/logos/nasa.svg",
+        datasets: "ECOSTRESS Land Surface Temperature (LST)",
+        metric: "70m thermal resolution | ISS Radiometer",
+        role: "High-resolution satellite scans mapping night heat trapping in dense urban canyons."
+      },
+      {
+        id: "epa",
+        name: "U.S. EPA (SLD v3)",
+        fullName: "U.S. Environmental Protection Agency",
+        category: "Built Environment & Walkability",
+        badge: "US GOV / PUBLIC DOMAIN",
+        badgeClass: "bg-sky-500/15 text-sky-300 border-sky-400/30",
+        logoPng: "/static/logos/png/epa.png",
+        logoSvg: "/static/logos/epa.svg",
+        datasets: "Smart Location Database (SLD v3)",
+        metric: "12,873 Census block groups",
+        role: "Intersection density, pedestrian transit accessibility, and zero-car household barriers."
+      },
+      {
+        id: "climatetrace",
+        name: "Climate TRACE Coalition",
+        fullName: "Climate TRACE Global Emissions Inventory",
+        category: "Emissions & Industrial Heat",
+        badge: "CC BY 4.0 OPEN DATA",
+        badgeClass: "bg-emerald-500/15 text-emerald-300 border-emerald-400/30",
+        logoPng: "/static/logos/png/climatetrace.png",
+        logoSvg: "/static/logos/climatetrace.svg",
+        datasets: "v5.12 Point-Source Greenhouse Gas Inventory",
+        metric: "Asset-level thermal emitters",
+        role: "Pinpointing heavy industrial heat and combustion emitters amplifying urban heat island effect."
+      },
+      {
+        id: "census",
+        name: "U.S. Census Bureau",
+        fullName: "U.S. Census Bureau (ACS, TIGER, LODES)",
+        category: "Demographics & Transit",
+        badge: "US GOV / PUBLIC DOMAIN",
+        badgeClass: "bg-sky-500/15 text-sky-300 border-sky-400/30",
+        logoPng: "/static/logos/png/census.png",
+        logoSvg: "/static/logos/census.svg",
+        datasets: "ACS 5-Year, TIGER/Line Shapefiles, LODES",
+        metric: "658 Dallas County tracts",
+        role: "Poverty rate, elderly percentage, zero-vehicle households, and daily commute flows."
+      },
+      {
+        id: "cdc",
+        name: "CDC / ATSDR",
+        fullName: "Centers for Disease Control & Prevention",
+        category: "Social Vulnerability",
+        badge: "US GOV / PUBLIC DOMAIN",
+        badgeClass: "bg-sky-500/15 text-sky-300 border-sky-400/30",
+        logoPng: "/static/logos/png/cdc.png",
+        logoSvg: "/static/logos/cdc.svg",
+        datasets: "Social Vulnerability Index (SVI 2022)",
+        metric: "16-variable equity percentile",
+        role: "Multi-theme socioeconomic vulnerability used strictly as a post-hoc Title VI equity filter."
+      },
+      {
+        id: "hhs",
+        name: "HHS emPOWER",
+        fullName: "U.S. Dept. of Health & Human Services",
+        category: "Life Safety & Medical Resilience",
+        badge: "US GOV / PUBLIC DOMAIN",
+        badgeClass: "bg-sky-500/15 text-sky-300 border-sky-400/30",
+        logoPng: "/static/logos/png/hhs.png",
+        logoSvg: "/static/logos/hhs.svg",
+        datasets: "Medicare Electricity-Dependent Registry",
+        metric: "Oxygen, dialysis, ventilator lives",
+        role: "Critical life-safety registry for microgrid battery storage and emergency cooling prioritization."
+      },
+      {
+        id: "doe",
+        name: "U.S. DOE LEAD",
+        fullName: "U.S. Department of Energy",
+        category: "Energy Burden & Housing",
+        badge: "US GOV / PUBLIC DOMAIN",
+        badgeClass: "bg-sky-500/15 text-sky-300 border-sky-400/30",
+        logoPng: "/static/logos/png/doe.png",
+        logoSvg: "/static/logos/doe.svg",
+        datasets: "Low-Income Energy Affordability Data",
+        metric: ">6% severe energy burden threshold",
+        role: "Household income percentage consumed by electricity and cooling bills."
+      },
+      {
+        id: "dallas",
+        name: "City of Dallas (GIS)",
+        fullName: "City of Dallas Municipal OpenData",
+        category: "Municipal Governance",
+        badge: "MUNICIPAL OPEN DATA",
+        badgeClass: "bg-purple-500/15 text-purple-300 border-purple-400/30",
+        logoPng: "/static/logos/png/dallas.png",
+        logoSvg: "/static/logos/dallas.svg",
+        datasets: "Council Districts, Equity Zones, Park Canopy",
+        metric: "14 Municipal Council Districts",
+        role: "City boundaries, existing cooling facilities, and municipal park shade coverage."
+      },
+      {
+        id: "bigquery",
+        name: "BigQuery & BQML",
+        fullName: "Google Cloud BigQuery ML",
+        category: "ML Modeling Engine",
+        badge: "GOOGLE CLOUD AI",
+        badgeClass: "bg-amber-500/15 text-amber-300 border-amber-400/30",
+        logoPng: "/static/logos/png/bigquery.png",
+        logoSvg: "/static/logos/bigquery.svg",
+        datasets: "heat_offset_model (Random Forest)",
+        metric: "R²=0.91 | ML.EXPLAIN_PREDICT",
+        role: "Parametric microclimate prediction and tree-canopy cooling attribution powered by GCP MCP Toolbox."
+      },
+      {
+        id: "google_cloud",
+        name: "Vertex AI & Model Armor",
+        fullName: "Google Cloud Vertex AI & Model Armor",
+        category: "Agent Reasoning & Security",
+        badge: "GOOGLE CLOUD AI",
+        badgeClass: "bg-amber-500/15 text-amber-300 border-amber-400/30",
+        logoPng: "/static/logos/png/google_cloud.png",
+        logoSvg: "/static/logos/google_cloud.svg",
+        datasets: "Gemini 2.5 Flash Autonomous Agents",
+        metric: "Zero-Trust Model Armor Guardian",
+        role: "Autonomous multi-agent planning swarm protected by zero-trust prompt and SQL sanitization filters."
+      },
+      {
+        id: "google_maps",
+        name: "Google Maps Platform",
+        fullName: "Google Maps Platform APIs",
+        category: "Geospatial & 3D Twin",
+        badge: "GOOGLE GEOSPATIAL",
+        badgeClass: "bg-amber-500/15 text-amber-300 border-amber-400/30",
+        logoPng: "/static/logos/png/google_maps.png",
+        logoSvg: "/static/logos/google_maps.svg",
+        datasets: "Photorealistic 3D Tiles, Routes, Solar API",
+        metric: "1,200m pedestrian walking buffers",
+        role: "Cesium 3D digital twin, pedestrian heat-safe routing, and rooftop solar radiation calculations."
+      }
+    ];
+
+    function renderCards() {
+      const container = document.getElementById('sources-catalog');
+      container.innerHTML = SOURCES_DATA.map(src => ).join('');
+    }
+
+    async function copySlideImage() {
+      const btn = document.getElementById('btn-copy');
+      try {
+        const response = await fetch('/static/slide_6_sources_full.png');
+        const blob = await response.blob();
+        if (navigator.clipboard && navigator.clipboard.write) {
+          await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': blob })
+          ]);
+          showToast('Copied to Clipboard!', 'Slide 6 PNG is copied! Press Ctrl+V directly into Google Slides.');
+        } else {
+          showToast('Image Ready', 'Click "Download PNG" to insert into your presentation.');
+        }
+      } catch (err) {
+        console.error('Clipboard copy failed:', err);
+        showToast('Image Ready', 'Click "Download PNG" to insert into your presentation.');
+      }
+    }
+
+    function showToast(title, desc) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-title').innerText = title;
+      document.getElementById('toast-desc').innerText = desc;
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 5000);
+    }
+
+    renderCards();
+  </script>
+</body>
+</html>

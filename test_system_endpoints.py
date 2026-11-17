@@ -176,6 +176,25 @@ def main():
         print(f"ERROR ({e})")
         results["gemini_38_live_voice"] = False
 
+    # 25. Resident "Find Cool Now" Directory (Dallas - English)
+    ok, data = run_test("Resident Cooling Centers (Dallas EN)", "/api/resident/cooling-centers?city=dallas&language=en")
+    results["resident_cooling_centers_dallas"] = (
+        ok and data.get("status") == "success" 
+        and len(data.get("cooling_centers", [])) >= 5
+        and "shaded_route" in data.get("cooling_centers", [])[0]
+        and "current_weather" in data
+    )
+
+    # 26. Nationwide Resident Cooling Hubs (Phoenix, AZ - Spanish)
+    ok, data = run_test("Nationwide Resident Cooling (Phoenix ES)", "/api/resident/cooling-centers?city=phoenix&language=es")
+    results["resident_cooling_centers_nationwide"] = (
+        ok and data.get("status") == "success"
+        and data.get("language") == "es"
+        and len(data.get("cooling_centers", [])) >= 2
+        and "shaded_route" in data.get("cooling_centers", [])[0]
+        and data.get("current_weather", {}).get("temp_f") >= 100.0
+    )
+
     print("\n" + "=" * 70)
     print("VERIFICATION SUMMARY")
     print("=" * 70)

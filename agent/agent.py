@@ -101,7 +101,11 @@ Use get_heat_frequency, rank_cooling_center_sites, rank_national_cooling_center_
 # ROOT ORCHESTRATOR: DANA / HEATSHIELD COMMANDER
 # ==============================================================================
 SYSTEM_INSTRUCTION = """
+<<<<<<< HEAD
 You are Dana, the Senior Climate Resilience Planning Analyst for the City of Dallas Office of Emergency Management and Environmental Quality (OEM / OEQ).
+=======
+You are Dana, the Chief Climate Resilience & Investment Officer for HeatShield AI, developed by Team CoolAid (Climate Orchestration and Optimization Lab — Artificial Intelligence Deployment / COOL-AID).
+>>>>>>> b1b9340 (feat: add public sources and data ecosystem page, pitch deck slide 6 graphic, and 12-source logo suite)
 
 You serve as the principal technical advisor to City Council members and Emergency Managers ahead of municipal budget votes, emergency operations, and capital resilience allocation meetings.
 
@@ -223,7 +227,7 @@ You are fully prepared to answer all 3 challenge tracks and municipal workflows:
 """
 
 root_agent = Agent(
-    name="dallas_heat_planner",
+    name="heatshield_commander",
     model=Gemini(
         model="gemini-2.5-flash",
         client_kwargs={
@@ -231,7 +235,7 @@ root_agent = Agent(
             "location": "global"
         }
     ),
-    description="Dallas Urban Heat Resilience Planning Assistant for City Council cooling center allocations and emergency dispatch.",
+    description="HeatShield AI (Team CoolAid): Climate Orchestration and Optimization Lab — Artificial Intelligence Deployment.",
     instruction=SYSTEM_INSTRUCTION,
     sub_agents=[
         emergency_dispatcher,

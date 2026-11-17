@@ -1,6 +1,7 @@
-# Walkthrough: HeatShield AI — National Climate Investment & Resilience Engine
+# Walkthrough: HeatShield AI — Team CoolAid (COOL-AID)
+### Climate Orchestration & Optimization Lab — Artificial Intelligence Deployment
 
-HeatShield AI elevates urban climate planning from static thermal mapping into an **autonomous national resilience and capital investment engine**. Built on Google Cloud BigQuery ML, Gemini 2.5 Flash, Google Cloud Model Armor, Google Maps Platform, Google Solar API, Google Isochrones API, CesiumJS, and Climate TRACE v5.12, HeatShield AI connects street-level thermal hazards to measurable point-source industrial emissions and optimizes public spending across three connected planning horizons.
+HeatShield AI elevates urban climate planning from static thermal mapping into an **autonomous national resilience and capital investment engine**. Built on Google Cloud BigQuery ML, Gemini 2.5 Flash / 3.8 Live, Google Cloud Model Armor, Google Maps Platform, Google Solar API, Google Isochrones API, CesiumJS, and Climate TRACE v5.12, HeatShield AI connects street-level thermal hazards to measurable point-source industrial emissions and optimizes public spending across three connected planning horizons.
 
 **Target GitHub Repository:** [https://github.com/UrbanHeatOrg/UrbanHeat](https://github.com/UrbanHeatOrg/UrbanHeat)  
 **Walkthrough Document:** [https://github.com/UrbanHeatOrg/UrbanHeat/blob/main/WALKTHROUGH.md](https://github.com/UrbanHeatOrg/UrbanHeat/blob/main/WALKTHROUGH.md)  
