@@ -30,3 +30,7 @@ Thumbs.db
 # Agent skills cache
 .agents/skills/
 skills-lock.json
+
+# Test screenshots
+screenshot_*.png
+

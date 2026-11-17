@@ -62,7 +62,7 @@ async def run_tests():
         print("Captured screenshot_mobile_resident_portal.png")
 
         # Close Resident Portal
-        await page_mobile.click("#modal-resident button:has(.fa-xmark)")
+        await page_mobile.evaluate("toggleResidentPortal(false)")
         await asyncio.sleep(0.5)
 
         # 2. Tablet Test (768 x 1024) - iPad

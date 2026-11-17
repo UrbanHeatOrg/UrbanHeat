@@ -195,6 +195,45 @@ def main():
         and data.get("current_weather", {}).get("temp_f") >= 100.0
     )
 
+    # 27. NOAA 68-City Campaign Catalog
+    ok, data = run_test("NOAA 68-City Campaign Catalog", "/api/multi-city/catalog")
+    results["multi_city_catalog_68"] = (
+        ok and data.get("status") == "SUCCESS"
+        and data.get("total_cities") == 68
+        and "catalog" in data
+        and "dallas" in data["catalog"]
+        and "chicago" in data["catalog"]
+    )
+
+    # 28. Multi-City BigQuery Mobile Heat Observations (Chicago Flagship)
+    ok, data = run_test("Multi-City Heat Traverses (Chicago)", "/api/multi-city/observations?city=chicago&limit=10")
+    results["multi_city_traverse_chicago"] = (
+        ok and data.get("city") == "chicago"
+        and data.get("count", 0) > 0
+        and len(data.get("observations", [])) > 0
+        and "temp_f" in data["observations"][0]
+        and "heat_offset_f" in data["observations"][0]
+    )
+
+    # 29. Multi-City US Resilience Master Fallback (Austin Network City)
+    ok, data = run_test("Multi-City Resilience Microclimates (Austin)", "/api/multi-city/observations?city=austin&limit=10")
+    results["multi_city_fallback_austin"] = (
+        ok and data.get("city") == "austin"
+        and data.get("count", 0) > 0
+        and len(data.get("observations", [])) > 0
+        and "temp_f" in data["observations"][0]
+        and "heat_offset_f" in data["observations"][0]
+    )
+
+    # 30. BigQuery ML Multi-City ML.EXPLAIN_PREDICT Heat Offset Model
+    ok, data = run_test("BigQuery ML Multi-City Explain Predict", "/api/multi-city/explain?city=chicago&latitude=41.8781&longitude=-87.6298")
+    results["multi_city_bqml_explain"] = (
+        ok and data.get("city") == "chicago"
+        and "predicted_heat_offset_f" in data
+        and len(data.get("top_features", [])) > 0
+        and "attribution_f" in data["top_features"][0]
+    )
+
     print("\n" + "=" * 70)
     print("VERIFICATION SUMMARY")
     print("=" * 70)

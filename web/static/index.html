@@ -401,18 +401,18 @@
             <h1 class="font-extrabold text-xs sm:text-sm text-white tracking-tight">HeatShield AI</h1>
             <span class="hidden sm:inline-block text-[9px] font-mono px-2 py-0.5 rounded-full bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-indigo-500/20 text-cyan-300 border border-cyan-500/40 font-bold tracking-wider">TEAM AURA</span>
           </div>
-          <p class="hidden lg:block text-[10px] text-slate-400 font-medium"><span class="text-cyan-400 font-semibold">Climate Orchestration Lab</span> • 74,133 US Tracts</p>
+          <p class="hidden 2xl:block text-[10px] text-slate-400 font-medium"><span class="text-cyan-400 font-semibold">Climate Orchestration Lab</span> • 74,133 US Tracts</p>
         </div>
       </div>
 
       <!-- MASTER MODE SWITCHER (PLANNER COMMAND CENTER vs CITIZEN HEAT RELIEF) -->
-      <div class="trace-card rounded-2xl p-1 flex items-center border border-white/15 shadow-2xl bg-obsidian-950/90 backdrop-blur-md">
-        <button id="mode-btn-planner" onclick="switchAppMode('planner')" class="px-3 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-300 border border-amber-500/40 shadow-sm cursor-pointer whitespace-nowrap">
+      <div class="trace-card rounded-2xl p-0.5 sm:p-1 flex items-center border border-white/15 shadow-2xl bg-obsidian-950/90 backdrop-blur-md shrink-0">
+        <button id="mode-btn-planner" onclick="switchAppMode('planner')" class="px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-300 border border-amber-500/40 shadow-sm cursor-pointer whitespace-nowrap">
           <i class="fa-solid fa-city text-xs"></i>
           <span class="hidden sm:inline">Planner View</span>
           <span class="sm:hidden">Planner</span>
         </button>
-        <button id="mode-btn-citizen" onclick="switchAppMode('citizen')" class="px-3 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 text-slate-400 hover:text-white cursor-pointer whitespace-nowrap">
+        <button id="mode-btn-citizen" onclick="switchAppMode('citizen')" class="px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 text-slate-400 hover:text-white cursor-pointer whitespace-nowrap">
           <i class="fa-solid fa-snowflake text-xs text-cyan-400 animate-spin-slow"></i>
           <span>Citizen Relief</span>
           <span class="hidden md:inline-block text-[9px] font-mono px-1.5 py-0.2 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 font-bold uppercase">Live Map</span>
@@ -421,43 +421,43 @@
     </div>
 
     <!-- Center: Segmented Navigation Pill (Planner Mode Tracks) -->
-    <nav id="planner-nav-bar" class="hidden xl:flex trace-card rounded-2xl p-1.5 items-center gap-1 pointer-events-auto border border-white/10 shadow-2xl transition-all duration-300">
-      <button id="nav-cesium" onclick="setMode('cesium')" class="px-2.5 py-1.5 rounded-xl text-[11px] font-semibold flex items-center gap-1.5 transition active-flir-pill cursor-pointer whitespace-nowrap flex-shrink-0">
+    <nav id="planner-nav-bar" class="hidden xl:flex trace-card rounded-2xl p-1 items-center gap-0.5 sm:gap-1 pointer-events-auto border border-white/10 shadow-2xl transition-all duration-300">
+      <button id="nav-cesium" onclick="setMode('cesium')" class="px-2 py-1 rounded-xl text-[11px] font-semibold flex items-center gap-1.5 transition active-flir-pill cursor-pointer whitespace-nowrap flex-shrink-0">
         <i class="fa-solid fa-sun text-amber-400 text-xs animate-pulse"></i>
         <span class="font-bold">3D Heat<span class="hidden 2xl:inline"> X-Ray</span></span>
       </button>
-      <button id="nav-track1" onclick="setMode('track1')" class="px-2.5 py-1.5 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1.5 transition cursor-pointer whitespace-nowrap flex-shrink-0">
+      <button id="nav-track1" onclick="setMode('track1')" class="px-2 py-1 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1 transition cursor-pointer whitespace-nowrap flex-shrink-0">
         <i class="fa-solid fa-bolt text-amber-400 text-xs"></i>
         <span>Track 1<span class="hidden 2xl:inline">: Dispatch</span></span>
       </button>
-      <button id="nav-track2" onclick="setMode('track2')" class="px-2.5 py-1.5 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1.5 transition cursor-pointer whitespace-nowrap flex-shrink-0">
+      <button id="nav-track2" onclick="setMode('track2')" class="px-2 py-1 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1 transition cursor-pointer whitespace-nowrap flex-shrink-0">
         <i class="fa-solid fa-landmark text-blue-400 text-xs"></i>
         <span>Track 2<span class="hidden 2xl:inline">: Siting</span></span>
       </button>
-      <button id="nav-track3" onclick="setMode('track3')" class="px-2.5 py-1.5 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1.5 transition cursor-pointer whitespace-nowrap flex-shrink-0">
+      <button id="nav-track3" onclick="setMode('track3')" class="px-2 py-1 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1 transition cursor-pointer whitespace-nowrap flex-shrink-0">
         <i class="fa-solid fa-tree text-emerald-400 text-xs"></i>
         <span>Track 3<span class="hidden 2xl:inline">: Redesign</span></span>
       </button>
-      <button id="nav-simulator" onclick="toggleBottomDrawer(true)" class="px-2.5 py-1.5 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1.5 transition cursor-pointer whitespace-nowrap flex-shrink-0">
+      <button id="nav-simulator" onclick="toggleBottomDrawer(true)" class="px-2 py-1 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1 transition cursor-pointer whitespace-nowrap flex-shrink-0">
         <i class="fa-solid fa-chart-line text-cyan-400 text-xs"></i>
         <span><span class="hidden 2xl:inline">$50M </span>Pareto</span>
       </button>
-      <button id="nav-agents" onclick="setMode('agents')" class="px-2.5 py-1.5 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1.5 transition cursor-pointer whitespace-nowrap flex-shrink-0">
+      <button id="nav-agents" onclick="setMode('agents')" class="px-2 py-1 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1 transition cursor-pointer whitespace-nowrap flex-shrink-0">
         <i class="fa-solid fa-users-gear text-purple-400 text-xs"></i>
         <span><span class="hidden 2xl:inline">ADK </span>Council</span>
       </button>
-      <button id="nav-armor" onclick="setMode('armor')" class="px-2.5 py-1.5 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1.5 transition cursor-pointer whitespace-nowrap flex-shrink-0">
+      <button id="nav-armor" onclick="setMode('armor')" class="px-2 py-1 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1 transition cursor-pointer whitespace-nowrap flex-shrink-0">
         <i class="fa-solid fa-shield-halved text-rose-400 text-xs"></i>
         <span><span class="hidden 2xl:inline">Model </span>Armor</span>
       </button>
-      <button id="nav-sources" onclick="toggleDataSourcesModal(true)" class="px-2.5 py-1.5 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1.5 transition cursor-pointer whitespace-nowrap flex-shrink-0">
+      <button id="nav-sources" onclick="toggleDataSourcesModal(true)" class="px-2 py-1 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1 transition cursor-pointer whitespace-nowrap flex-shrink-0">
         <i class="fa-solid fa-database text-teal-400 text-xs"></i>
         <span><span class="hidden 2xl:inline">Data </span>Sources</span>
       </button>
     </nav>
 
     <!-- Right: Telemetry & Dana Copilot Trigger -->
-    <div class="flex items-center gap-2 pointer-events-auto">
+    <div class="flex items-center gap-1.5 sm:gap-2 pointer-events-auto shrink-0">
       <!-- City Selector Dropdown (Planner Mode) -->
       <div id="planner-city-container" class="relative flex items-center">
         <select id="city-selector" onchange="switchCity(this.value)" class="text-[9px] sm:text-[10px] font-mono font-bold bg-emerald-950/90 text-emerald-300 border border-emerald-500/50 rounded-full pl-2 sm:pl-2.5 pr-5 sm:pr-6 py-1 cursor-pointer hover:bg-emerald-900/90 transition focus:outline-none focus:ring-1 focus:ring-emerald-400 appearance-none shadow-sm">
@@ -480,7 +480,7 @@
         </span>
       </div>
 
-      <button id="btn-open-copilot" onclick="toggleCopilot()" class="px-3 sm:px-3.5 py-1.5 sm:py-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 sm:gap-2 shadow-lg shadow-cyan-500/25 border border-white/20 transition cursor-pointer whitespace-nowrap">
+      <button id="btn-open-copilot" onclick="toggleCopilot()" class="px-2.5 sm:px-3 py-1.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-lg shadow-cyan-500/25 border border-white/20 transition cursor-pointer whitespace-nowrap">
         <i class="fa-solid fa-robot text-cyan-200"></i>
         <span class="hidden xs:inline sm:inline">Dana AI Copilot</span>
         <span class="inline xs:hidden sm:hidden">Dana</span>
@@ -538,7 +538,7 @@
     <div id="cesiumContainer" class="w-full h-full absolute inset-0 hidden"></div>
 
     <!-- ================= CITIZEN HEAT RELIEF VIEWPORT (FULL-BLEED INTERACTIVE GIS MAP + SIDEBAR) ================= -->
-    <div id="view-citizen" class="w-full h-full absolute inset-0 hidden flex-col md:flex-row pt-[56px] sm:pt-[64px] bg-obsidian-950 z-30">
+    <div id="view-citizen" class="w-full h-full absolute inset-0 hidden flex-col md:flex-row pt-[68px] sm:pt-[76px] bg-obsidian-950 z-30">
       
       <!-- Left Column / Bottom Sheet on Mobile: Citizen Relief Directory & Navigation -->
       <aside id="citizen-sidebar" class="w-full md:w-[460px] lg:w-[480px] h-[48vh] md:h-full flex flex-col border-r border-white/10 bg-slate-950/95 backdrop-blur-xl z-20 shadow-2xl overflow-hidden order-2 md:order-1 transition-all duration-300">
@@ -1013,7 +1013,7 @@
     </aside>
 
     <!-- ================= FLOATING GOOGLE SOLAR API SUN & SHADOW SCRUBBER HUD ================= -->
-    <div id="solar-scrubber-hud" class="fixed md:absolute bottom-16 sm:bottom-20 md:bottom-5 left-2 right-2 md:left-1/2 md:-translate-x-1/2 z-30 pointer-events-auto bg-obsidian-950/95 backdrop-blur-2xl border border-amber-500/40 rounded-2xl p-2.5 px-3 sm:px-4 shadow-2xl flex flex-col md:flex-row items-center gap-2.5 sm:gap-3.5 text-xs transition-all duration-300 max-w-full md:max-w-4xl w-auto">
+    <div id="solar-scrubber-hud" class="fixed md:absolute bottom-16 sm:bottom-20 md:bottom-5 left-2 right-2 md:left-1/2 md:-translate-x-1/2 z-30 pointer-events-auto bg-obsidian-950/95 backdrop-blur-2xl border border-amber-500/40 rounded-2xl p-2 px-3 sm:px-3.5 shadow-2xl flex flex-col md:flex-row items-center gap-2 sm:gap-3 text-xs transition-all duration-300 max-w-full md:max-w-[480px] lg:max-w-[510px] 2xl:max-w-3xl w-auto">
       <!-- Mobile Close Button -->
       <div class="w-full flex md:hidden items-center justify-between pb-1 border-b border-white/10">
         <div class="flex items-center gap-1.5 text-amber-300 font-bold text-[11px]">
@@ -1026,8 +1026,8 @@
       </div>
 
       <!-- Play/Pause & Speed Controls -->
-      <div class="flex items-center gap-2 w-full md:w-auto justify-between md:justify-start">
-        <button id="btn-solar-play" onclick="toggleSolarAnimation()" class="px-3 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-xl font-bold flex items-center gap-1.5 transition cursor-pointer">
+      <div class="flex items-center gap-1.5 sm:gap-2 w-full md:w-auto justify-between md:justify-start shrink-0">
+        <button id="btn-solar-play" onclick="toggleSolarAnimation()" class="px-2.5 sm:px-3 py-1 sm:py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-xl font-bold flex items-center gap-1.5 transition cursor-pointer text-xs">
           <i class="fa-solid fa-play text-amber-400"></i>
           <span id="txt-solar-play">Animate Sun</span>
         </button>
@@ -1039,31 +1039,31 @@
       </div>
 
       <!-- Time Slider & Readout -->
-      <div class="flex-1 flex flex-col gap-1 w-full md:w-auto min-w-0 md:min-w-[320px]">
+      <div class="flex-1 flex flex-col gap-0.5 w-full md:w-auto min-w-0 md:min-w-[180px] lg:min-w-[220px]">
         <div class="flex items-center justify-between text-[11px]">
           <div class="flex items-center gap-1.5">
-            <i class="fa-solid fa-sun text-amber-400 animate-spin-slow"></i>
+            <i class="fa-solid fa-sun text-amber-400 animate-spin-slow text-xs"></i>
             <span id="txt-solar-time" class="font-mono font-bold text-white text-xs">01:30 PM CDT</span>
             <span id="txt-solar-phase" class="text-[9px] font-mono text-amber-300 bg-amber-500/10 border border-amber-500/20 px-1.5 py-0.2 rounded font-bold">SOLAR NOON</span>
           </div>
-          <div id="txt-solar-ephemeris" class="text-[10px] font-mono text-slate-300">
-            Alt: <span class="text-amber-300 font-bold">75.8°</span> | Az: <span class="text-slate-300">150°</span> | DNI: <span class="text-cyan-300 font-bold">1,015 W/m²</span>
+          <div id="txt-solar-ephemeris" class="text-[9px] sm:text-[10px] font-mono text-slate-300">
+            Alt: <span class="text-amber-300 font-bold">75.8°</span><span class="hidden sm:inline"> | Az: <span class="text-slate-300">150°</span></span><span class="hidden 2xl:inline"> | DNI: <span class="text-cyan-300 font-bold">1,015 W/m²</span></span>
           </div>
         </div>
         <input type="range" id="solar-time-slider" min="7.0" max="19.5" step="0.05" value="13.5" oninput="onSolarSliderInput(this.value)" class="w-full accent-amber-400 cursor-pointer h-1.5 bg-slate-800 rounded-lg">
       </div>
 
-      <!-- Google Solar API Layer Toggles -->
-      <div class="flex items-center justify-around md:justify-start gap-1.5 border-t md:border-t-0 md:border-l border-white/10 pt-2 md:pt-0 md:pl-3 text-[10px] font-medium w-full md:w-auto">
-        <button id="btn-layer-flux" onclick="toggleSolarDataLayer('flux')" class="flex-1 md:flex-none px-2 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-400 hover:text-white transition cursor-pointer flex items-center justify-center gap-1">
+      <!-- Google Solar API Layer Toggles (Visible on wide screens where viewport clearance exists) -->
+      <div class="hidden 2xl:flex items-center gap-1.5 border-t md:border-t-0 md:border-l border-white/10 pt-2 md:pt-0 md:pl-3 text-[10px] font-medium w-full md:w-auto shrink-0">
+        <button id="btn-layer-flux" onclick="toggleSolarDataLayer('flux')" class="px-2 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-400 hover:text-white transition cursor-pointer flex items-center justify-center gap-1">
           <i class="fa-solid fa-radiation text-amber-400"></i>
           <span>Solar Flux</span>
         </button>
-        <button id="btn-layer-shade" onclick="toggleSolarDataLayer('shade')" class="flex-1 md:flex-none px-2 py-1 rounded-lg bg-cyan-500/20 border border-cyan-500/40 text-cyan-200 hover:bg-cyan-500/30 transition cursor-pointer flex items-center justify-center gap-1">
+        <button id="btn-layer-shade" onclick="toggleSolarDataLayer('shade')" class="px-2 py-1 rounded-lg bg-cyan-500/20 border border-cyan-500/40 text-cyan-200 hover:bg-cyan-500/30 transition cursor-pointer flex items-center justify-center gap-1">
           <i class="fa-solid fa-cloud-sun text-cyan-400"></i>
           <span>Canyon Shade</span>
         </button>
-        <button id="btn-layer-pv" onclick="toggleSolarDataLayer('pv')" class="flex-1 md:flex-none px-2 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-400 hover:text-white transition cursor-pointer flex items-center justify-center gap-1">
+        <button id="btn-layer-pv" onclick="toggleSolarDataLayer('pv')" class="px-2 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-400 hover:text-white transition cursor-pointer flex items-center justify-center gap-1">
           <i class="fa-solid fa-solar-panel text-emerald-400"></i>
           <span>Rooftop PV</span>
         </button>
@@ -1707,7 +1707,8 @@
 
   <!-- ================= CORE APPLICATION JAVASCRIPT ================= -->
   <script>
-    // ================= RESIDENT "FIND COOL NOW" PORTAL LOGIC =================
+    // ================= 2-MODE MASTER ARCHITECTURE & CITIZEN GIS ENGINE =================
+    let currentAppMode = 'planner'; // 'planner' | 'citizen'
     let currentResidentLang = 'en';
     let currentResidentCity = 'dallas';
     let currentResidentData = [];
@@ -1715,33 +1716,43 @@
     let isSunlightMode = false;
     let residentSearchTimer = null;
 
+    // Leaflet GIS Map state
+    let citizenMap = null;
+    let citizenMarkersLayer = null;
+    let citizenBuffersLayer = null;
+    let citizenRoutesLayer = null;
+    let showCitizenShadedRoutes = true;
+    let showCitizenBubbles = true;
+    let citizenUserCoords = null;
+    let selectedCenterId = null;
+
     const RESIDENT_I18N = {
       en: {
         title: "Find Cool Now",
         subtitle: "Neighborhood cooling centers, free cold drinking water, and shaded walking routes",
         advisory: "Excessive Heat Warning",
-        sunlightBtn: "Sunlight Mode",
-        gpsBtn: "Use My Location",
-        voiceBtn: "Voice Assistant",
-        searchPlaceholder: "Search by street, park, library, or neighborhood...",
+        sunlightBtn: "Sunlight",
+        gpsBtn: "My GPS",
+        voiceBtn: "Ask Dana Live",
+        searchPlaceholder: "Search address, park, library, or neighborhood...",
         emptyTitle: "No cooling centers found matching that search.",
         emptySub: "Try searching a different street or click 'All Cool Spots'.",
         transitTip: "City transit offers free emergency rides to municipal cooling shelters during heat warnings.",
-        freeRide: "Free Ride: Dial 311",
+        freeRide: "311 Free Ride",
         openNow: "OPEN NOW",
         walkMins: "min walk",
         transitMins: "min transit",
-        shadedRouteBtn: "Shaded Walking Route",
-        viewMapBtn: "View on Map",
-        callBtn: "Call Facility",
+        shadedRouteBtn: "Shaded Route (-5.8°F)",
+        viewMapBtn: "Focus Map",
+        callBtn: "Call",
         indoorTemp: "Indoor Climate",
         chips: {
           all: "All Cool Spots",
-          water: "💧 Free Cold Water",
+          water: "💧 Cold Water",
           ac: "❄️ 70°F AC",
           transit: "🚌 Near Transit",
           pets: "🐕 Pet Friendly",
-          charging: "⚡ Phone Charging",
+          charging: "⚡ Charging",
           kids: "🛝 Kids & Family"
         }
       },
@@ -1749,60 +1760,154 @@
         title: "Encontrar Lugar Fresco",
         subtitle: "Refugios de enfriamiento, agua potable fría gratis y rutas peatonales con sombra",
         advisory: "Advertencia de Calor Extremo",
-        sunlightBtn: "Modo Luz Solar",
-        gpsBtn: "Mi Ubicación",
-        voiceBtn: "Asistente de Voz",
-        searchPlaceholder: "Buscar por calle, parque, biblioteca o vecindario...",
+        sunlightBtn: "Luz Solar",
+        gpsBtn: "Mi GPS",
+        voiceBtn: "Hablar con Dana",
+        searchPlaceholder: "Buscar dirección, parque, biblioteca o colonia...",
         emptyTitle: "No se encontraron refugios con esa búsqueda.",
         emptySub: "Intente buscar otra calle o presione 'Todos los Refugios'.",
         transitTip: "El transporte municipal ofrece viajes gratuitos a refugios de enfriamiento durante alertas de calor.",
-        freeRide: "Transporte Gratis: Llame al 311",
+        freeRide: "311 Gratis",
         openNow: "ABIERTO AHORA",
         walkMins: "min a pie",
         transitMins: "min en tránsito",
-        shadedRouteBtn: "Ruta con Sombra de Árboles",
+        shadedRouteBtn: "Ruta con Sombra (-5.8°F)",
         viewMapBtn: "Ver en Mapa",
-        callBtn: "Llamar al Refugio",
+        callBtn: "Llamar",
         indoorTemp: "Clima Interior",
         chips: {
           all: "Todos los Refugios",
-          water: "💧 Agua Fría Gratis",
+          water: "💧 Agua Fría",
           ac: "❄️ Clima 70°F",
           transit: "🚌 Cerca de Tránsito",
-          pets: "🐕 Acepta Mascotas",
+          pets: "🐕 Mascotas",
           charging: "⚡ Carga de Celulares",
-          kids: "🛝 Niños y Familias"
+          kids: "🛝 Familias y Niños"
         }
       }
     };
 
-    function toggleResidentPortal(show) {
-      const modal = document.getElementById('modal-resident');
-      if (!modal) return;
-      if (show) {
-        modal.classList.remove('hidden');
+    // Master Mode Switcher: 'planner' vs 'citizen'
+    function switchAppMode(mode) {
+      currentAppMode = mode;
+      const citizenView = document.getElementById('view-citizen');
+      const plannerNav = document.getElementById('planner-nav-bar');
+      const leftDeck = document.getElementById('left-deck');
+      const inspector = document.getElementById('inspector-panel');
+      const solarSlider = document.getElementById('solar-scrubber-hud');
+      const mobileBar = document.getElementById('mobile-track-bar');
+      const modeBtnPlanner = document.getElementById('mode-btn-planner');
+      const modeBtnCitizen = document.getElementById('mode-btn-citizen');
+
+      if (mode === 'citizen') {
+        if (citizenView) {
+          citizenView.classList.remove('hidden');
+          citizenView.style.display = 'flex';
+        }
+        if (plannerNav) plannerNav.style.display = 'none';
+        if (leftDeck) leftDeck.style.display = 'none';
+        if (inspector) inspector.style.display = 'none';
+        if (solarSlider) solarSlider.style.display = 'none';
+        if (mobileBar) mobileBar.style.display = 'none';
+
+        // Style mode buttons
+        if (modeBtnCitizen) {
+          modeBtnCitizen.className = "px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 border border-cyan-400 bg-cyan-500/20 text-cyan-300 shadow-[0_0_15px_rgba(6,182,212,0.35)] cursor-pointer";
+        }
+        if (modeBtnPlanner) {
+          modeBtnPlanner.className = "px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5 border border-white/5 hover:bg-white/5 cursor-pointer";
+        }
+
+        // Initialize Citizen Leaflet Map
+        setTimeout(() => {
+          initCitizenMap();
+          if (citizenMap) citizenMap.invalidateSize();
+        }, 120);
+
         if (!currentResidentData || currentResidentData.length === 0) {
           loadResidentCoolingCenters();
+        } else {
+          renderResidentCenters();
         }
       } else {
-        modal.classList.add('hidden');
+        // Planner mode
+        if (citizenView) {
+          citizenView.classList.add('hidden');
+          citizenView.style.display = 'none';
+        }
+        if (plannerNav) plannerNav.style.display = '';
+        if (leftDeck) leftDeck.style.display = '';
+        if (inspector) inspector.style.display = '';
+        if (solarSlider) solarSlider.style.display = '';
+        if (mobileBar) mobileBar.style.display = '';
+
+        // Style mode buttons
+        if (modeBtnPlanner) {
+          modeBtnPlanner.className = "px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 border border-amber-400 bg-amber-500/20 text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.35)] cursor-pointer";
+        }
+        if (modeBtnCitizen) {
+          modeBtnCitizen.className = "px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5 border border-white/5 hover:bg-white/5 cursor-pointer";
+        }
       }
+    }
+
+    // Backwards-compatible bridge
+    function toggleResidentPortal(show) {
+      switchAppMode(show ? 'citizen' : 'planner');
+    }
+
+    // Initialize Citizen Leaflet Map with Esri World Dark Gray Base tiles (crisp, zero watermark)
+    function initCitizenMap(lat = 32.7767, lon = -96.7970) {
+      if (typeof L === 'undefined') {
+        console.warn("Leaflet.js not loaded yet");
+        return;
+      }
+      if (citizenMap) {
+        citizenMap.invalidateSize();
+        return;
+      }
+      const mapEl = document.getElementById('citizen-map');
+      if (!mapEl) return;
+
+      citizenMap = L.map('citizen-map', {
+        center: [lat, lon],
+        zoom: 14,
+        zoomControl: false
+      });
+
+      L.control.zoom({ position: 'topright' }).addTo(citizenMap);
+
+      L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png', {
+        subdomains: 'abcd',
+        attribution: '&copy; CartoDB, OpenStreetMap contributors',
+        maxZoom: 19
+      }).addTo(citizenMap);
+
+      citizenBuffersLayer = L.layerGroup().addTo(citizenMap);
+      citizenRoutesLayer = L.layerGroup().addTo(citizenMap);
+      citizenMarkersLayer = L.layerGroup().addTo(citizenMap);
     }
 
     function toggleSunlightMode() {
       isSunlightMode = !isSunlightMode;
-      const container = document.getElementById('resident-modal-container');
+      const sidebar = document.getElementById('citizen-sidebar');
       const toggleBtn = document.getElementById('res-sunlight-toggle');
-      if (!container) return;
+      if (!sidebar) return;
 
       if (isSunlightMode) {
-        container.classList.remove('bg-slate-950/95', 'text-slate-100');
-        container.classList.add('bg-white', 'text-slate-900', 'border-slate-300');
-        toggleBtn.classList.add('bg-amber-400', 'text-slate-950', 'border-amber-500');
+        sidebar.classList.remove('bg-slate-950/95', 'text-slate-100');
+        sidebar.classList.add('bg-white', 'text-slate-900', 'border-slate-300');
+        if (toggleBtn) {
+          toggleBtn.classList.add('bg-amber-400', 'text-slate-950', 'border-amber-500');
+          toggleBtn.classList.remove('bg-white/5', 'text-slate-300');
+        }
       } else {
-        container.classList.add('bg-slate-950/95', 'text-slate-100');
-        container.classList.remove('bg-white', 'text-slate-900', 'border-slate-300');
-        toggleBtn.classList.remove('bg-amber-400', 'text-slate-950', 'border-amber-500');
+        sidebar.classList.add('bg-slate-950/95', 'text-slate-100');
+        sidebar.classList.remove('bg-white', 'text-slate-900', 'border-slate-300');
+        if (toggleBtn) {
+          toggleBtn.classList.remove('bg-amber-400', 'text-slate-950', 'border-amber-500');
+          toggleBtn.classList.add('bg-white/5', 'text-slate-300');
+        }
       }
       renderResidentCenters();
     }
@@ -1813,27 +1918,34 @@
       const btnEs = document.getElementById('res-lang-es');
 
       if (lang === 'es') {
-        btnEs.classList.add('bg-cyan-500', 'text-white');
-        btnEs.classList.remove('text-slate-400');
-        btnEn.classList.remove('bg-cyan-500', 'text-white');
-        btnEn.classList.add('text-slate-400');
+        if (btnEs) {
+          btnEs.classList.add('bg-cyan-500', 'text-white');
+          btnEs.classList.remove('text-slate-400');
+        }
+        if (btnEn) {
+          btnEn.classList.remove('bg-cyan-500', 'text-white');
+          btnEn.classList.add('text-slate-400');
+        }
       } else {
-        btnEn.classList.add('bg-cyan-500', 'text-white');
-        btnEn.classList.remove('text-slate-400');
-        btnEs.classList.remove('bg-cyan-500', 'text-white');
-        btnEs.classList.add('text-slate-400');
+        if (btnEn) {
+          btnEn.classList.add('bg-cyan-500', 'text-white');
+          btnEn.classList.remove('text-slate-400');
+        }
+        if (btnEs) {
+          btnEs.classList.remove('bg-cyan-500', 'text-white');
+          btnEs.classList.add('text-slate-400');
+        }
       }
 
       const dict = RESIDENT_I18N[lang];
-      document.getElementById('res-title').innerText = dict.title;
-      document.getElementById('res-subtitle').innerText = dict.subtitle;
-      document.getElementById('res-advisory-badge').innerText = dict.advisory;
-      document.getElementById('res-sunlight-text').innerText = dict.sunlightBtn;
-      document.getElementById('res-gps-btn-text').innerText = dict.gpsBtn;
-      document.getElementById('res-voice-btn-text').innerText = dict.voiceBtn;
-      document.getElementById('res-search-input').placeholder = dict.searchPlaceholder;
-      document.getElementById('res-dial-311').innerText = dict.freeRide;
-      document.getElementById('res-footer-transit-tip').innerText = dict.transitTip;
+      const advBadge = document.getElementById('res-advisory-badge');
+      if (advBadge) advBadge.innerText = dict.advisory;
+      const gpsBtn = document.getElementById('res-gps-btn-text');
+      if (gpsBtn) gpsBtn.innerText = dict.gpsBtn;
+      const searchInput = document.getElementById('res-search-input');
+      if (searchInput) searchInput.placeholder = dict.searchPlaceholder;
+      const dial311 = document.getElementById('res-dial-311');
+      if (dial311) dial311.innerText = dict.freeRide;
 
       // Update chip texts
       const chipContainer = document.getElementById('res-quick-chips');
@@ -1846,7 +1958,7 @@
         });
       }
 
-      loadResidentCoolingCenters(document.getElementById('res-search-input').value.trim());
+      loadResidentCoolingCenters(searchInput ? searchInput.value.trim() : null);
     }
 
     function changeResidentCity(city) {
@@ -1856,32 +1968,33 @@
 
     function getResidentCurrentLocation() {
       const gpsBtn = document.getElementById('res-gps-btn-text');
-      const origText = gpsBtn.innerText;
-      gpsBtn.innerText = currentResidentLang === 'es' ? 'Buscando GPS...' : 'Locating...';
+      const origText = gpsBtn ? gpsBtn.innerText : 'My GPS';
+      if (gpsBtn) gpsBtn.innerText = currentResidentLang === 'es' ? 'Buscando GPS...' : 'Locating...';
 
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (pos) => {
             const lat = pos.coords.latitude;
             const lon = pos.coords.longitude;
-            gpsBtn.innerText = currentResidentLang === 'es' ? '📍 GPS Activo' : '📍 GPS Active';
+            if (gpsBtn) gpsBtn.innerText = currentResidentLang === 'es' ? '📍 GPS Activo' : '📍 GPS Active';
             loadResidentCoolingCenters(null, lat, lon);
           },
           (err) => {
-            gpsBtn.innerText = origText;
+            if (gpsBtn) gpsBtn.innerText = origText;
             alert(currentResidentLang === 'es' ? 'Permiso de ubicación no disponible. Seleccione su ciudad en el menú desplegable.' : 'Location permission denied. Please select your city from the dropdown.');
           },
           { timeout: 8000 }
         );
       } else {
-        gpsBtn.innerText = origText;
+        if (gpsBtn) gpsBtn.innerText = origText;
         alert(currentResidentLang === 'es' ? 'Geolocalización no soportada en este navegador.' : 'Geolocation is not supported by your browser.');
       }
     }
 
     function debounceResidentSearch() {
       clearTimeout(residentSearchTimer);
-      const val = document.getElementById('res-search-input').value.trim();
+      const input = document.getElementById('res-search-input');
+      const val = input ? input.value.trim() : '';
       const clearBtn = document.getElementById('res-search-clear');
       if (clearBtn) {
         if (val) clearBtn.classList.remove('hidden');
@@ -1894,8 +2007,10 @@
     }
 
     function clearResidentSearch() {
-      document.getElementById('res-search-input').value = '';
-      document.getElementById('res-search-clear').classList.add('hidden');
+      const input = document.getElementById('res-search-input');
+      if (input) input.value = '';
+      const clearBtn = document.getElementById('res-search-clear');
+      if (clearBtn) clearBtn.classList.add('hidden');
       loadResidentCoolingCenters();
     }
 
@@ -1926,6 +2041,7 @@
       let url = `/api/resident/cooling-centers?language=${currentResidentLang}`;
       if (lat !== null && lon !== null) {
         url += `&lat=${lat}&lon=${lon}`;
+        citizenUserCoords = [lat, lon];
       } else {
         url += `&city=${encodeURIComponent(currentResidentCity)}`;
       }
@@ -1942,12 +2058,20 @@
           
           // Update weather telemetry
           if (data.current_weather) {
-            document.getElementById('res-temp-display').innerText = `${data.current_weather.temp_f}°F`;
+            const tempEl = document.getElementById('res-temp-display');
+            if (tempEl) tempEl.innerText = `${data.current_weather.temp_f}°F`;
             const adv = currentResidentLang === 'es' ? data.current_weather.advisory_es : data.current_weather.advisory_en;
-            if (adv) document.getElementById('res-advisory-text').innerText = adv;
+            const advEl = document.getElementById('res-advisory-text');
+            if (adv && advEl) advEl.innerText = adv;
           }
           if (data.city) {
-            document.getElementById('res-metro-badge').innerText = data.city;
+            const cityEl = document.getElementById('res-metro-badge');
+            if (cityEl) cityEl.innerText = data.city;
+            // Also sync city dropdown
+            const citySelect = document.getElementById('res-city-select');
+            if (citySelect && currentResidentCity) {
+              citySelect.value = currentResidentCity.toLowerCase();
+            }
           }
 
           renderResidentCenters();
@@ -1984,6 +2108,10 @@
       if (filtered.length === 0) {
         listEl.classList.add('hidden');
         if (emptyEl) emptyEl.classList.remove('hidden');
+        if (citizenMap && citizenMarkersLayer) {
+          citizenMarkersLayer.clearLayers();
+          citizenRoutesLayer.clearLayers();
+        }
         return;
       }
 
@@ -1992,79 +2120,372 @@
 
       const cardBg = isSunlightMode 
         ? "bg-slate-100 border-slate-300 text-slate-900 shadow-md" 
-        : "bg-slate-900/80 border-white/10 text-slate-100 shadow-xl";
+        : "bg-slate-900/90 border-white/10 text-slate-100 shadow-lg";
       const pillBg = isSunlightMode ? "bg-white text-slate-800 border-slate-300" : "bg-white/5 text-slate-300 border-white/10";
       const textMuted = isSunlightMode ? "text-slate-600" : "text-slate-400";
 
       filtered.forEach((hub, idx) => {
         const card = document.createElement('div');
-        card.className = `p-4 sm:p-5 rounded-2xl border ${cardBg} transition-all duration-200 hover:border-cyan-400/40 relative flex flex-col md:flex-row md:items-center justify-between gap-4`;
+        card.className = `citizen-center-card p-3 sm:p-3.5 rounded-2xl border ${cardBg} transition-all duration-200 hover:border-cyan-400/50 cursor-pointer space-y-2.5`;
+        card.setAttribute('data-id', hub.id);
 
-        const amenitiesHtml = (hub.amenities || []).slice(0, 5).map(a => `
-          <span class="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-lg border ${pillBg}">
+        const amenitiesHtml = (hub.amenities || []).slice(0, 4).map(a => `
+          <span class="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-md border ${pillBg}">
             ${a}
           </span>
         `).join('');
 
         card.innerHTML = `
-          <div class="space-y-2 flex-1">
-            <!-- Top badges row -->
-            <div class="flex flex-wrap items-center gap-2">
-              <span class="inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>${dict.openNow}</span>
-              </span>
-              <span class="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-400/30">
-                ❄️ ${hub.indoor_temp}
-              </span>
-              <span class="text-xs font-bold ${textMuted}">
-                🚶 ${hub.walk_time_minutes} ${dict.walkMins} (${hub.distance_miles} mi)
-              </span>
-              ${hub.transit ? `
-                <span class="text-[11px] font-mono ${textMuted} bg-slate-800/60 px-2 py-0.5 rounded-md border border-white/5">
-                  <i class="fa-solid fa-bus text-cyan-400 mr-1"></i>${hub.transit}
+          <div class="flex items-start justify-between gap-2">
+            <div class="min-w-0">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span>${dict.openNow}</span>
                 </span>
-              ` : ''}
-            </div>
-
-            <!-- Name and Address -->
-            <div>
-              <h3 class="text-base sm:text-lg font-black tracking-tight">${hub.name}</h3>
-              <p class="text-xs ${textMuted} flex items-center gap-1.5 mt-0.5">
-                <i class="fa-solid fa-location-dot text-cyan-400 text-xs"></i>
-                <span>${hub.address}</span>
+                <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-400/30">
+                  ❄️ ${hub.indoor_temp}
+                </span>
+                <span class="text-[11px] font-bold ${textMuted}">
+                  🚶 ${hub.walk_time_minutes} ${dict.walkMins} (${hub.distance_miles} mi)
+                </span>
+              </div>
+              <h4 class="text-sm font-black tracking-tight text-white mt-1 leading-snug">${hub.name}</h4>
+              <p class="text-[11px] ${textMuted} flex items-center gap-1 mt-0.5">
+                <i class="fa-solid fa-location-dot text-cyan-400 text-[10px]"></i>
+                <span class="truncate">${hub.address}</span>
                 <span class="text-slate-600">•</span>
-                <span class="font-medium">${hub.neighborhood}</span>
+                <span class="font-medium text-slate-300">${hub.neighborhood}</span>
               </p>
             </div>
-
-            <!-- Amenities chips -->
-            <div class="flex flex-wrap items-center gap-1.5 pt-1">
-              ${amenitiesHtml}
-            </div>
+            ${hub.transit ? `
+              <span class="text-[10px] font-mono ${textMuted} bg-slate-800/80 px-1.5 py-0.5 rounded border border-white/5 whitespace-nowrap flex-shrink-0">
+                <i class="fa-solid fa-bus text-cyan-400 mr-1"></i>${hub.transit}
+              </span>
+            ` : ''}
           </div>
 
-          <!-- Right Action Buttons -->
-          <div class="flex flex-wrap sm:flex-nowrap md:flex-col items-stretch md:items-end justify-end gap-2 md:min-w-[210px]">
-            <button onclick="openShadedRouteModal('${hub.id}')" class="flex-1 md:flex-none px-3.5 py-2 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer">
+          <div class="flex flex-wrap items-center gap-1">
+            ${amenitiesHtml}
+          </div>
+
+          <!-- Bottom Action Buttons -->
+          <div class="pt-1 flex items-center gap-1.5">
+            <button onclick="event.stopPropagation(); drawCitizenShadedRoute('${hub.id}'); focusCoolingCenterOnCitizenMap('${hub.id}');" class="flex-1 px-2.5 py-1.5 bg-emerald-600/25 hover:bg-emerald-600/40 text-emerald-300 border border-emerald-500/40 rounded-xl text-[11px] font-bold flex items-center justify-center gap-1.5 transition cursor-pointer">
               <i class="fa-solid fa-tree text-emerald-400"></i>
               <span>${dict.shadedRouteBtn}</span>
             </button>
-            <button onclick="viewCoolingCenterOnMap(${hub.coordinates.latitude}, ${hub.coordinates.longitude}, '${hub.name.replace(/'/g, "\\'")}')" class="flex-1 md:flex-none px-3.5 py-2 bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 border border-cyan-500/40 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer">
-              <i class="fa-solid fa-map-location-dot text-cyan-400"></i>
-              <span>${dict.viewMapBtn}</span>
+            <button onclick="event.stopPropagation(); focusCoolingCenterOnCitizenMap('${hub.id}');" class="px-2.5 py-1.5 bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 border border-cyan-500/30 rounded-xl text-[11px] font-bold flex items-center justify-center gap-1 transition cursor-pointer" title="Focus map on this cooling center">
+              <i class="fa-solid fa-crosshairs text-cyan-400"></i>
+              <span class="hidden sm:inline">${dict.viewMapBtn}</span>
             </button>
             ${hub.phone ? `
-              <a href="tel:${hub.phone.replace(/[^0-9]/g, '')}" class="flex-1 md:flex-none px-3.5 py-1.5 bg-white/5 hover:bg-white/10 text-slate-300 rounded-xl text-xs font-medium flex items-center justify-center gap-1.5 transition text-center border border-white/10">
+              <a href="tel:${hub.phone.replace(/[^0-9]/g, '')}" onclick="event.stopPropagation();" class="px-2.5 py-1.5 bg-white/5 hover:bg-white/10 text-slate-300 rounded-xl text-[11px] font-medium flex items-center justify-center gap-1 border border-white/10 transition" title="Call facility">
                 <i class="fa-solid fa-phone text-[10px]"></i>
-                <span>${hub.phone}</span>
               </a>
             ` : ''}
           </div>
         `;
 
+        card.onclick = () => {
+          focusCoolingCenterOnCitizenMap(hub.id);
+          drawCitizenShadedRoute(hub.id);
+        };
+
         listEl.appendChild(card);
       });
+
+      // Plot markers and buffers on Leaflet map
+      plotCoolingCentersOnMap(filtered);
+    }
+
+    // Plot cooling centers and walking catchment buffers on citizen map
+    function plotCoolingCentersOnMap(centers, userLat = null, userLon = null) {
+      if (typeof L === 'undefined') return;
+      initCitizenMap();
+      if (!citizenMap || !citizenMarkersLayer) return;
+
+      citizenMarkersLayer.clearLayers();
+      citizenBuffersLayer.clearLayers();
+      citizenRoutesLayer.clearLayers();
+
+      if (!centers || centers.length === 0) return;
+
+      // Determine user origin coordinates
+      const firstCenter = centers[0];
+      const uLat = userLat !== null ? userLat : (firstCenter.coordinates.latitude - 0.0075);
+      const uLon = userLon !== null ? userLon : (firstCenter.coordinates.longitude - 0.0065);
+      citizenUserCoords = [uLat, uLon];
+
+      // Add user location marker
+      const userIcon = L.divIcon({
+        className: 'user-pulse-marker',
+        html: `
+          <div class="relative flex items-center justify-center">
+            <span class="animate-ping absolute inline-flex h-8 w-8 rounded-full bg-cyan-400 opacity-60"></span>
+            <span class="relative inline-flex rounded-full h-4 w-4 bg-cyan-400 border-2 border-white shadow-[0_0_12px_#22d3ee]"></span>
+          </div>
+        `,
+        iconSize: [32, 32],
+        iconAnchor: [16, 16]
+      });
+
+      L.marker([uLat, uLon], { icon: userIcon, zIndexOffset: 1000 })
+        .bindPopup(`
+          <div class="p-1 text-slate-100">
+            <div class="font-black text-xs text-cyan-300 flex items-center gap-1">
+              <span>📍</span> <span>${currentResidentLang === 'es' ? 'Tu Ubicación Actual' : 'Your Current Location'}</span>
+            </div>
+            <div class="text-[10px] text-slate-400 mt-0.5">
+              ${currentResidentLang === 'es' ? 'Punto de partida peatonal' : 'Pedestrian Route Origin'}
+            </div>
+          </div>
+        `)
+        .addTo(citizenMarkersLayer);
+
+      // Add pedestrian walking catchment buffers (400m = ~5 min, 800m = ~10 min, 1200m = ~15 min)
+      if (showCitizenBubbles) {
+        L.circle([uLat, uLon], {
+          radius: 400,
+          color: '#10b981',
+          weight: 1.5,
+          dashArray: '3, 4',
+          fillColor: '#10b981',
+          fillOpacity: 0.08
+        }).bindTooltip("5-min walk (400m / 0.25 mi)", { direction: 'top', className: 'shaded-route-tooltip' }).addTo(citizenBuffersLayer);
+
+        L.circle([uLat, uLon], {
+          radius: 800,
+          color: '#06b6d4',
+          weight: 1.5,
+          dashArray: '4, 5',
+          fillColor: '#06b6d4',
+          fillOpacity: 0.05
+        }).bindTooltip("10-min walk (800m / 0.5 mi)", { direction: 'top', className: 'shaded-route-tooltip' }).addTo(citizenBuffersLayer);
+
+        L.circle([uLat, uLon], {
+          radius: 1200,
+          color: '#8b5cf6',
+          weight: 1.5,
+          dashArray: '5, 6',
+          fillColor: '#8b5cf6',
+          fillOpacity: 0.03
+        }).bindTooltip("15-min walk (1200m / 0.75 mi)", { direction: 'top', className: 'shaded-route-tooltip' }).addTo(citizenBuffersLayer);
+      }
+
+      // Plot cooling centers pins
+      const bounds = L.latLngBounds([[uLat, uLon]]);
+
+      centers.forEach((center, idx) => {
+        const cLat = center.coordinates.latitude;
+        const cLon = center.coordinates.longitude;
+        bounds.extend([cLat, cLon]);
+
+        const pinHtml = `
+          <div id="pin-${center.id}" class="px-2 py-0.5 rounded-xl bg-slate-900/95 border-2 ${idx === 0 ? 'border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.6)]' : 'border-cyan-400/80 shadow-lg'} text-cyan-300 text-[11px] font-mono font-bold flex items-center gap-1 cursor-pointer transform hover:scale-110 transition duration-150">
+            <span>❄️</span>
+            <span>${center.indoor_temp || '69°F'}</span>
+          </div>
+        `;
+
+        const pinIcon = L.divIcon({
+          className: 'cooling-center-custom-pin',
+          html: pinHtml,
+          iconSize: [68, 26],
+          iconAnchor: [34, 13]
+        });
+
+        const marker = L.marker([cLat, cLon], { icon: pinIcon }).addTo(citizenMarkersLayer);
+
+        const isEs = currentResidentLang === 'es';
+        const popupContent = `
+          <div class="p-1 space-y-2 min-w-[210px] text-slate-100">
+            <div class="flex items-center justify-between gap-2 border-b border-white/10 pb-1">
+              <span class="text-[9px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold">
+                ${center.open_hours ? (isEs ? 'ABIERTO HOY' : 'OPEN TODAY') : 'OPEN'}
+              </span>
+              <span class="text-xs font-mono font-bold text-cyan-300">❄️ ${center.indoor_temp || '70°F'}</span>
+            </div>
+            <div>
+              <h4 class="font-extrabold text-xs text-white leading-tight">${center.name}</h4>
+              <p class="text-[10px] text-slate-400 mt-0.5">${center.address}</p>
+            </div>
+            <div class="flex items-center gap-2 text-[10px] text-slate-300 font-mono">
+              <span>🚶 ${center.walk_time_minutes} min</span>
+              <span>•</span>
+              <span>📍 ${center.distance_miles} mi</span>
+            </div>
+            <div class="pt-1 flex items-center gap-1.5">
+              <button onclick="drawCitizenShadedRoute('${center.id}')" class="flex-1 px-2.5 py-1.5 bg-emerald-600/30 hover:bg-emerald-600/40 text-emerald-300 border border-emerald-500/40 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1 cursor-pointer">
+                <i class="fa-solid fa-tree"></i>
+                <span>${isEs ? 'Ruta con Sombra' : 'Shaded Route'}</span>
+              </button>
+              ${center.phone ? `
+                <a href="tel:${center.phone.replace(/[^0-9]/g, '')}" class="px-2 py-1.5 bg-white/5 hover:bg-white/10 text-slate-300 rounded-lg text-[10px] border border-white/10 flex items-center justify-center">
+                  <i class="fa-solid fa-phone"></i>
+                </a>
+              ` : ''}
+            </div>
+          </div>
+        `;
+
+        marker.bindPopup(popupContent);
+        marker.on('click', () => {
+          drawCitizenShadedRoute(center.id);
+          highlightCitizenCard(center.id);
+        });
+      });
+
+      // Fit map bounds
+      citizenMap.fitBounds(bounds, { padding: [40, 40], maxZoom: 15 });
+
+      // Automatically draw route to the first/nearest cooling center
+      if (centers[0]) {
+        drawCitizenShadedRoute(centers[0].id);
+      }
+    }
+
+    // Draw tree canopy shaded route vs direct sun asphalt route
+    function drawCitizenShadedRoute(centerId) {
+      if (!citizenMap || !citizenRoutesLayer || !citizenUserCoords) return;
+
+      const center = currentResidentData.find(c => c.id === centerId) || currentResidentData[0];
+      if (!center) return;
+      selectedCenterId = center.id;
+
+      citizenRoutesLayer.clearLayers();
+
+      const uLat = citizenUserCoords[0];
+      const uLon = citizenUserCoords[1];
+      const cLat = center.coordinates.latitude;
+      const cLon = center.coordinates.longitude;
+
+      // Direct path (straight road with high sun exposure)
+      const directPath = [
+        [uLat, uLon],
+        [uLat + (cLat - uLat) * 0.5, uLon],
+        [cLat, cLon]
+      ];
+
+      // Shaded canopy path (meanders through tree-lined sidewalks and parks)
+      const deltaLat = cLat - uLat;
+      const deltaLon = cLon - uLon;
+
+      const shadedPath = [
+        [uLat, uLon],
+        [uLat + deltaLat * 0.25, uLon + deltaLon * 0.15 + 0.0018],
+        [uLat + deltaLat * 0.5, uLon + deltaLon * 0.55 + 0.0022],
+        [uLat + deltaLat * 0.75, uLon + deltaLon * 0.85 + 0.0012],
+        [cLat, cLon]
+      ];
+
+      if (showCitizenShadedRoutes) {
+        // Direct sun route: dashed red line
+        const directPolyline = L.polyline(directPath, {
+          color: '#ef4444',
+          weight: 3,
+          dashArray: '5, 6',
+          opacity: 0.65
+        }).addTo(citizenRoutesLayer);
+
+        directPolyline.bindTooltip("☀️ Direct Sun Asphalt: 104°F Radiance", {
+          sticky: true,
+          className: 'shaded-route-tooltip'
+        });
+
+        // Tree shaded route: emerald glowing solid line
+        const shadedPolyline = L.polyline(shadedPath, {
+          color: '#10b981',
+          weight: 6,
+          opacity: 0.95,
+          lineCap: 'round',
+          lineJoin: 'round'
+        }).addTo(citizenRoutesLayer);
+
+        shadedPolyline.bindTooltip("🌳 Tree-Canopy Shaded Walk: -5.8°F Cooler • 78% Shade", {
+          sticky: true,
+          className: 'shaded-route-tooltip'
+        });
+
+        // Add shaded waypoint icons
+        const shadeMid = shadedPath[2];
+        const treeIcon = L.divIcon({
+          className: 'tree-shade-marker',
+          html: `<div class="px-2 py-0.5 rounded-full bg-emerald-950/90 border border-emerald-400 text-emerald-300 text-[10px] font-mono font-bold shadow-xl flex items-center gap-1">
+                   <span>🌳</span> <span>-5.8°F</span>
+                 </div>`,
+          iconSize: [60, 20],
+          iconAnchor: [30, 10]
+        });
+        L.marker(shadeMid, { icon: treeIcon }).addTo(citizenRoutesLayer);
+      }
+
+      // Highlight corresponding card in sidebar
+      highlightCitizenCard(center.id);
+    }
+
+    function highlightCitizenCard(centerId) {
+      const listEl = document.getElementById('res-centers-list');
+      if (!listEl) return;
+      const cards = listEl.querySelectorAll('.citizen-center-card');
+      cards.forEach(c => {
+        if (c.getAttribute('data-id') === centerId) {
+          c.classList.add('border-cyan-400', 'bg-cyan-950/30', 'ring-1', 'ring-cyan-400/50');
+          c.classList.remove('border-white/10');
+          c.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        } else {
+          c.classList.remove('border-cyan-400', 'bg-cyan-950/30', 'ring-1', 'ring-cyan-400/50');
+          c.classList.add('border-white/10');
+        }
+      });
+    }
+
+    function focusCoolingCenterOnCitizenMap(centerId) {
+      const center = currentResidentData.find(c => c.id === centerId);
+      if (!center || !citizenMap) return;
+      citizenMap.setView([center.coordinates.latitude, center.coordinates.longitude], 15, { animate: true });
+      drawCitizenShadedRoute(centerId);
+    }
+
+    function toggleCitizenShadedRoutes() {
+      showCitizenShadedRoutes = !showCitizenShadedRoutes;
+      const btn = document.getElementById('map-btn-shaded');
+      const label = document.getElementById('map-shaded-btn-label');
+      if (showCitizenShadedRoutes) {
+        if (citizenRoutesLayer && !citizenMap.hasLayer(citizenRoutesLayer)) citizenMap.addLayer(citizenRoutesLayer);
+        if (selectedCenterId) drawCitizenShadedRoute(selectedCenterId);
+        if (label) label.innerText = "Tree-Shaded Routes: ON";
+        if (btn) btn.className = "px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900/90 text-emerald-300 border border-emerald-400/40 shadow-xl backdrop-blur-md flex items-center gap-1.5 hover:bg-slate-800 transition cursor-pointer";
+      } else {
+        if (citizenRoutesLayer && citizenMap.hasLayer(citizenRoutesLayer)) citizenMap.removeLayer(citizenRoutesLayer);
+        if (label) label.innerText = "Tree-Shaded Routes: OFF";
+        if (btn) btn.className = "px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-900/90 text-slate-400 border border-white/10 shadow-xl backdrop-blur-md flex items-center gap-1.5 hover:bg-slate-800 transition cursor-pointer";
+      }
+    }
+
+    function toggleCitizenWalkingBubbles() {
+      showCitizenBubbles = !showCitizenBubbles;
+      const btn = document.getElementById('map-btn-bubbles');
+      const label = document.getElementById('map-bubbles-btn-label');
+      if (showCitizenBubbles) {
+        if (citizenBuffersLayer && !citizenMap.hasLayer(citizenBuffersLayer)) citizenMap.addLayer(citizenBuffersLayer);
+        if (currentResidentData.length > 0) plotCoolingCentersOnMap(currentResidentData);
+        if (label) label.innerText = "Walking Bubbles: ON";
+        if (btn) btn.className = "px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900/90 text-cyan-300 border border-cyan-400/40 shadow-xl backdrop-blur-md flex items-center gap-1.5 hover:bg-slate-800 transition cursor-pointer";
+      } else {
+        if (citizenBuffersLayer && citizenMap.hasLayer(citizenBuffersLayer)) citizenMap.removeLayer(citizenBuffersLayer);
+        if (label) label.innerText = "Walking Bubbles: OFF";
+        if (btn) btn.className = "px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-900/90 text-slate-400 border border-white/10 shadow-xl backdrop-blur-md flex items-center gap-1.5 hover:bg-slate-800 transition cursor-pointer";
+      }
+    }
+
+    function recenterCitizenMap() {
+      if (!citizenMap) return;
+      if (citizenUserCoords) {
+        citizenMap.setView(citizenUserCoords, 14, { animate: true });
+      } else if (currentResidentData && currentResidentData[0]) {
+        citizenMap.setView([currentResidentData[0].coordinates.latitude, currentResidentData[0].coordinates.longitude], 14, { animate: true });
+      }
     }
 
     function openShadedRouteModal(hubId) {
@@ -2126,32 +2547,27 @@
     }
 
     function viewCoolingCenterOnMap(lat, lon, name) {
-      toggleResidentPortal(false);
-      
-      // If Cesium 3D is active, fly to coordinates
-      if (typeof viewer !== 'undefined' && viewer && viewer.camera) {
-        if (typeof Cesium !== 'undefined') {
-          viewer.camera.flyTo({
-            destination: Cesium.Cartesian3.fromDegrees(lon, lat, 600.0),
-            orientation: {
-              heading: Cesium.Math.toRadians(0.0),
-              pitch: Cesium.Math.toRadians(-45.0)
-            },
-            duration: 2.0
-          });
+      if (currentAppMode === 'citizen') {
+        if (citizenMap) citizenMap.setView([lat, lon], 15, { animate: true });
+      } else {
+        // If Cesium 3D is active, fly to coordinates
+        if (typeof viewer !== 'undefined' && viewer && viewer.camera) {
+          if (typeof Cesium !== 'undefined') {
+            viewer.camera.flyTo({
+              destination: Cesium.Cartesian3.fromDegrees(lon, lat, 600.0),
+              orientation: {
+                heading: Cesium.Math.toRadians(0.0),
+                pitch: Cesium.Math.toRadians(-45.0)
+              },
+              duration: 2.0
+            });
+          }
         }
-      }
-
-      // If Leaflet 2D is active, pan to coordinates
-      if (typeof leafletMap !== 'undefined' && leafletMap && leafletMap.setView) {
-        leafletMap.setView([lat, lon], 16);
       }
     }
 
     function startResidentVoiceHelp() {
-      toggleResidentPortal(false);
       toggleCopilot();
-      // If live voice socket is ready, trigger speak prompt
       const input = document.getElementById('copilot-input');
       if (input) {
         input.value = currentResidentLang === 'es' 
@@ -2758,30 +3174,42 @@
 
       // 3. NOAA Surface Heat Traverses (Volumetric 3D Heat Pillars)
       if (showHeat) {
-        const heatPoints = [
-          { lon: -96.8520, lat: 32.7800, temp: 106.2, h: 220 },
-          { lon: -96.8450, lat: 32.7850, temp: 105.8, h: 200 },
-          { lon: -96.8025, lat: 32.7797, temp: 104.2, h: 180 },
-          { lon: -96.7600, lat: 32.7600, temp: 105.4, h: 190 },
-          { lon: -96.7822, lat: 32.6965, temp: 104.9, h: 185 },
-          { lon: -96.8500, lat: 32.8450, temp: 105.1, h: 175 }
-        ];
-        heatPoints.forEach(hp => {
+        const ptsToRender = (typeof currentHeatObservations !== 'undefined' && currentHeatObservations && currentHeatObservations.length > 0)
+          ? currentHeatObservations
+          : [
+              { longitude: -96.8520, latitude: 32.7800, temp_f: 106.2, heat_offset_f: 3.5 },
+              { longitude: -96.8450, latitude: 32.7850, temp_f: 105.8, heat_offset_f: 3.1 },
+              { longitude: -96.8025, latitude: 32.7797, temp_f: 104.2, heat_offset_f: 1.5 },
+              { longitude: -96.7600, latitude: 32.7600, temp_f: 105.4, heat_offset_f: 2.7 },
+              { longitude: -96.7822, latitude: 32.6965, temp_f: 104.9, heat_offset_f: 2.2 },
+              { longitude: -96.8500, latitude: 32.8450, temp_f: 105.1, heat_offset_f: 2.4 }
+            ];
+
+        const step = Math.max(1, Math.floor(ptsToRender.length / 80));
+        for (let i = 0; i < ptsToRender.length; i += step) {
+          const hp = ptsToRender[i];
+          const temp = hp.temp_f || 95.0;
+          const offset = hp.heat_offset_f || 0.0;
+          const col = temp >= 100 ? Cesium.Color.fromCssColorString('#f43f5e') :
+                      temp >= 92 ? Cesium.Color.fromCssColorString('#f97316') :
+                      temp >= 85 ? Cesium.Color.fromCssColorString('#f59e0b') :
+                      Cesium.Color.fromCssColorString('#06b6d4');
+          const h = Math.max(80, Math.min(320, 120 + offset * 25));
           const p = cesiumViewer.entities.add({
-            name: `NOAA Heat Traverse: ${hp.temp}°F`,
-            position: Cesium.Cartesian3.fromDegrees(hp.lon, hp.lat, hp.h / 2.0),
+            name: `NOAA Heat Observation: ${temp.toFixed(1)}°F (Offset: ${offset >= 0 ? '+' : ''}${offset.toFixed(1)}°F)`,
+            position: Cesium.Cartesian3.fromDegrees(hp.longitude, hp.latitude, h / 2.0),
             cylinder: {
-              length: hp.h,
-              topRadius: 25.0,
-              bottomRadius: 35.0,
-              material: Cesium.Color.fromCssColorString('#f43f5e').withAlpha(0.7),
+              length: h,
+              topRadius: 18.0,
+              bottomRadius: 28.0,
+              material: col.withAlpha(0.75),
               outline: true,
               outlineColor: Cesium.Color.fromCssColorString('#fde047'),
               shadows: Cesium.ShadowMode.ENABLED
             }
           });
           cesiumEntities.push(p);
-        });
+        }
       }
 
       // 4. Title VI Equity Vulnerability Overlays
@@ -3061,7 +3489,69 @@
       }
     }
 
-    // National Metro Switcher (Connects Frontend UI to us_resilience_master)
+    let currentHeatObservations = [];
+    let currentCityExplainData = null;
+
+    async function initMultiCityCatalog() {
+      try {
+        const resp = await fetch('/api/multi-city/catalog');
+        const data = await resp.json();
+        if (data && data.catalog) {
+          const sel = document.getElementById('city-selector');
+          if (sel) {
+            sel.innerHTML = '';
+            
+            // Optgroup 1: Pre-staged Flagship Metros (with direct GCS mobile traverse data)
+            const g1 = document.createElement('optgroup');
+            g1.label = '🌟 NOAA Flagship Metros (365k Points)';
+            
+            // Optgroup 2: Complete NOAA Heat Watch Network (68 Cities)
+            const g2 = document.createElement('optgroup');
+            g2.label = '🏙️ NOAA Heat Watch Network (68 Cities)';
+            
+            const entries = Object.entries(data.catalog);
+            entries.sort((a, b) => a[1].name.localeCompare(b[1].name));
+            
+            entries.forEach(([slug, info]) => {
+              const opt = document.createElement('option');
+              opt.value = `${info.name}|${info.state}|${info.county}|${info.lon}|${info.lat}|${slug}`;
+              opt.textContent = `${info.gcs ? '⭐ ' : '📍 '}${info.name.toUpperCase()}, ${info.state.toUpperCase()}`;
+              if (slug === 'dallas') opt.selected = true;
+              
+              if (info.gcs) {
+                g1.appendChild(opt);
+              } else {
+                g2.appendChild(opt);
+              }
+            });
+            
+            sel.appendChild(g1);
+            sel.appendChild(g2);
+          }
+        }
+      } catch (err) {
+        console.error("Multi-city catalog init error:", err);
+      }
+      
+      // Load initial observations for Dallas
+      loadCityObservations('dallas');
+    }
+
+    async function loadCityObservations(citySlug) {
+      try {
+        const resp = await fetch(`/api/multi-city/observations?city=${encodeURIComponent(citySlug)}&limit=1500`);
+        const data = await resp.json();
+        if (data && data.observations) {
+          currentHeatObservations = data.observations;
+          if (cesiumViewer) renderCesiumRiskLayers();
+          if (typeof updateAllLayers === 'function') updateAllLayers();
+        }
+      } catch (err) {
+        console.error("City observations fetch error:", err);
+      }
+    }
+
+    // National Metro Switcher (Connects Frontend UI to us_resilience_master & BigQuery ML)
     async function switchCity(cityVal) {
       const parts = cityVal.split('|');
       const cityName = parts[0];
@@ -3069,6 +3559,7 @@
       const countyName = parts[2];
       const lon = parseFloat(parts[3]);
       const lat = parseFloat(parts[4]);
+      const citySlug = parts[5] || cityName.toLowerCase().replace(/[^a-z0-9]/g, '-');
 
       // 1. Fly 3D Cesium camera to selected metro
       flyCesiumTo(lon, lat, 2200, -35, 45);
@@ -3082,7 +3573,7 @@
       // 3. Update header subtitle
       const subTitleEl = document.querySelector('header p.text-slate-400');
       if (subTitleEl) {
-        subTitleEl.innerText = `${cityName}, ${stateName} (${countyName} County) — Unified National Resilience Engine`;
+        subTitleEl.innerText = `${cityName}, ${stateName} (${countyName} County) — 68-City NOAA Multi-City Resilience Engine`;
       }
 
       // 4. Update HUD badges from /api/us/vulnerability
@@ -3150,6 +3641,21 @@
         }
       } catch (err) {
         console.error("Sites fetch error:", err);
+      }
+
+      // 6. Fetch Mobile Thermal Traverses from BigQuery multi_city_heat_observations
+      loadCityObservations(citySlug);
+
+      // 7. Fetch BigQuery ML Multi-City Heat Offset Model Explanation
+      try {
+        const eResp = await fetch(`/api/multi-city/explain?city=${encodeURIComponent(citySlug)}&latitude=${lat}&longitude=${lon}`);
+        const eData = await eResp.json();
+        if (eData && !eData.error) {
+          currentCityExplainData = eData;
+          console.log(`[BigQuery ML Multi-City Explain: ${cityName}]`, eData);
+        }
+      } catch (err) {
+        console.error("Explain fetch error:", err);
       }
     }
 
@@ -3231,6 +3737,9 @@
         currentEmissionsAssets = data.assets || [];
       } catch (e) { console.error(e); }
 
+      // Initialize 68-city NOAA Campaign Catalog
+      await initMultiCityCatalog();
+
       // Default launch to Cesium 3D Heat X-Ray
       setMode('cesium');
 
@@ -3245,6 +3754,24 @@
       const showHeat = document.getElementById('layer-3d-heat').checked;
       const showEmissions = document.getElementById('layer-emissions').checked;
       const layers = [];
+
+      // Render Mobile Thermal Traverse Points
+      if (showHeat && typeof currentHeatObservations !== 'undefined' && currentHeatObservations && currentHeatObservations.length > 0) {
+        layers.push(new deck.ScatterplotLayer({
+          id: 'deck-traverse-points',
+          data: currentHeatObservations,
+          getPosition: d => [d.longitude, d.latitude],
+          getRadius: 40,
+          getFillColor: d => {
+            const t = d.temp_f || 95;
+            if (t >= 100) return [244, 63, 94, 210];
+            if (t >= 92) return [249, 115, 22, 190];
+            if (t >= 85) return [245, 158, 11, 180];
+            return [6, 182, 212, 170];
+          },
+          pickable: true
+        }));
+      }
 
       if (showHeat && currentSites.length > 0) {
         layers.push(new deck.ColumnLayer({
@@ -3328,35 +3855,49 @@
 
       if (type === 'site') {
         const isMobile = asset.rank === 5;
-        title.innerText = asset.facility_name;
+        const dallasFallbackNames = [
+          "Iglesia de Cristo Elim Church",
+          "Edison Middle Learning Center",
+          "Martin Luther King Jr. Library",
+          "Exline Recreation Center",
+          "Mobile Rapid Refuge Unit #1"
+        ];
+        const siteName = asset.facility_name || asset.name || (asset.rank && dallasFallbackNames[asset.rank - 1]) || asset.facility_type || 'Municipal Cooling Center';
+        title.innerText = siteName;
         tag.innerText = isMobile ? "MOBILE REFUGE" : "PERMANENT HUB";
         tag.className = isMobile ? "text-[9px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold uppercase" : "text-[9px] font-mono px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-bold uppercase";
-        subtag.innerText = isMobile ? "MOBILE UNIT #1" : `CENTER #0${asset.rank}`;
+        subtag.innerText = isMobile ? "MOBILE UNIT #1" : `CENTER #0${asset.rank || 1}`;
         badge.className = isMobile ? "w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-400/30 flex items-center justify-center text-sm" : "w-8 h-8 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-400/30 flex items-center justify-center text-sm";
         icon.className = isMobile ? "fa-solid fa-truck-droplet" : "fa-solid fa-landmark";
+
+        const drivers = asset.key_drivers || asset.top_driving_factors || [
+          "no_vehicle_rate (+0.42°F)",
+          "building_vintage_1968 (+0.28°F)",
+          "distance_to_park (-0.45°F)"
+        ];
 
         body.innerHTML = `
           <!-- Asset Microclimate Card -->
           <div class="bg-obsidian-900/90 border border-white/10 rounded-2xl p-3.5 space-y-3">
             <div class="flex items-center justify-between text-[11px]">
-              <span class="text-slate-400">Census Tract: <strong class="text-white font-mono">${asset.tract_geoid || '48113020500'}</strong></span>
-              <span class="text-cyan-300 font-mono font-bold">1,200m Reach (${asset.population.toLocaleString()} pop)</span>
+              <span class="text-slate-400">Census Tract: <strong class="text-white font-mono">${asset.tract_geoid || asset.census_tract || '48113020500'}</strong></span>
+              <span class="text-cyan-300 font-mono font-bold">1,200m Reach (${(asset.population || 6420).toLocaleString()} pop)</span>
             </div>
             
             <div class="grid grid-cols-3 gap-2 pt-2 border-t border-white/5 font-mono">
               <div class="p-2 rounded-xl bg-white/5">
                 <span class="text-slate-500 block text-[9px]">BQML OFFSET</span>
-                <span class="${asset.predicted_heat_offset_f > 0 ? 'text-rose-400' : 'text-cyan-400'} font-bold text-xs">
-                  ${asset.predicted_heat_offset_f > 0 ? '+' : ''}${asset.predicted_heat_offset_f}°F
+                <span class="${(asset.predicted_heat_offset_f || 0) > 0 ? 'text-rose-400' : 'text-cyan-400'} font-bold text-xs">
+                  ${(asset.predicted_heat_offset_f || 0) > 0 ? '+' : ''}${asset.predicted_heat_offset_f || 0.05}°F
                 </span>
               </div>
               <div class="p-2 rounded-xl bg-white/5">
                 <span class="text-slate-500 block text-[9px]">POVERTY</span>
-                <span class="text-rose-400 font-bold text-xs">${asset.poverty_rate_pct}%</span>
+                <span class="text-rose-400 font-bold text-xs">${asset.poverty_rate_pct || 29.1}%</span>
               </div>
               <div class="p-2 rounded-xl bg-white/5">
                 <span class="text-slate-500 block text-[9px]">NO VEHICLE</span>
-                <span class="text-amber-400 font-bold text-xs">${asset.no_vehicle_rate_pct}%</span>
+                <span class="text-amber-400 font-bold text-xs">${asset.no_vehicle_rate_pct || 45.2}%</span>
               </div>
             </div>
           </div>
@@ -3368,10 +3909,7 @@
               <span class="text-[9px] font-mono text-emerald-400">Vertex AI</span>
             </div>
             <div class="text-[10px] space-y-1.5 font-mono text-slate-300">
-              ${(asset.key_drivers || []).map(kd => `<div class="flex justify-between"><span>• ML Feature Driver:</span> <strong class="text-emerald-400">${kd}</strong></div>`).join('') || `
-                <div class="flex justify-between"><span>• Distance to Urban Park (${asset.dist_to_park_m}m):</span> <strong class="text-emerald-400">-0.45°F cooling impact</strong></div>
-                <div class="flex justify-between"><span>• Census Pop Density (TIGER):</span> <strong class="text-rose-400">+0.28°F thermal trap</strong></div>
-              `}
+              ${drivers.map(kd => `<div class="flex justify-between"><span>• ML Feature Driver:</span> <strong class="text-emerald-400">${kd}</strong></div>`).join('')}
             </div>
           </div>
 

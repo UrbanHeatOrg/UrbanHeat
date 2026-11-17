@@ -975,6 +975,7 @@ def rank_cooling_center_sites(top_n: int = 5, prioritize_vulnerability: bool = T
                 "total_candidates_evaluated": 618,
                 "sites_returned": len(sites),
                 "recommendations": sites,
+                "ranked_sites": sites,
                 "data_source": "bigquery_ml_live"
             }
     except Exception:
@@ -988,6 +989,7 @@ def rank_cooling_center_sites(top_n: int = 5, prioritize_vulnerability: bool = T
         "total_candidates_evaluated": 618,
         "sites_returned": len(selected),
         "recommendations": selected,
+        "ranked_sites": selected,
         "data_source": "bigquery_ml_verified_benchmark"
     }
 
