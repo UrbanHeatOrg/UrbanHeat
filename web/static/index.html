@@ -1738,7 +1738,7 @@
       <div id="res-hero-banner" class="px-4 py-3 bg-gradient-to-r from-red-950/70 via-amber-950/40 to-slate-950 border-b border-red-500/20 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
         <div class="flex items-center gap-3">
           <div class="flex items-baseline gap-1 text-red-400 font-mono">
-            <span class="text-2xl sm:text-3xl font-black" id="res-temp-display">104.5°F</span>
+            <span class="text-2xl sm:text-3xl font-black" id="modal-res-temp-display">104.5°F</span>
             <span class="text-xs uppercase font-semibold text-red-300/80">Ambient</span>
           </div>
           <div class="h-8 w-px bg-white/10 hidden sm:block"></div>
@@ -1746,11 +1746,11 @@
             <div class="flex items-center gap-2">
               <span class="inline-flex items-center gap-1 text-xs font-extrabold text-amber-300 bg-amber-500/20 px-2 py-0.5 rounded-full border border-amber-400/40 animate-pulse">
                 <i class="fa-solid fa-triangle-exclamation text-[10px]"></i>
-                <span id="res-advisory-badge">Excessive Heat Warning</span>
+                <span id="modal-res-advisory-badge">Excessive Heat Warning</span>
               </span>
-              <span id="res-metro-badge" class="text-xs font-semibold text-slate-300">Dallas, TX</span>
+              <span id="modal-res-metro-badge" class="text-xs font-semibold text-slate-300">Dallas, TX</span>
             </div>
-            <p id="res-advisory-text" class="text-[11px] sm:text-xs text-slate-300 mt-0.5 line-clamp-1 sm:line-clamp-none">
+            <p id="modal-res-advisory-text" class="text-[11px] sm:text-xs text-slate-300 mt-0.5 line-clamp-1 sm:line-clamp-none">
               Dangerously hot conditions. Drink plenty of fluids, stay in an air-conditioned room, and check up on relatives and neighbors.
             </p>
           </div>
@@ -1759,7 +1759,7 @@
         <div class="flex items-center gap-2 self-stretch md:self-auto justify-between md:justify-end">
           <a href="tel:311" class="px-3 py-1.5 bg-red-600/30 hover:bg-red-600/40 text-red-200 border border-red-500/40 rounded-xl text-xs font-bold flex items-center gap-1.5 transition">
             <i class="fa-solid fa-phone text-xs"></i>
-            <span id="res-dial-311">Free Ride: Dial 311</span>
+            <span id="modal-res-dial-311">Free Ride: Dial 311</span>
           </a>
           <span class="text-[10px] font-mono text-slate-400 hidden lg:inline">Text <b>COOL</b> to 311-CITY</span>
         </div>
@@ -1771,7 +1771,7 @@
           
           <!-- City / Metro Selector -->
           <div class="relative min-w-[170px]">
-            <select id="res-city-select" onchange="changeResidentCity(this.value)" class="w-full text-xs font-mono font-bold bg-slate-950 text-cyan-300 border border-cyan-500/40 rounded-xl pl-3 pr-8 py-2.5 cursor-pointer hover:bg-slate-900 transition focus:outline-none focus:ring-1 focus:ring-cyan-400 appearance-none shadow-sm">
+            <select id="modal-res-city-select" onchange="changeResidentCity(this.value)" class="w-full text-xs font-mono font-bold bg-slate-950 text-cyan-300 border border-cyan-500/40 rounded-xl pl-3 pr-8 py-2.5 cursor-pointer hover:bg-slate-900 transition focus:outline-none focus:ring-1 focus:ring-cyan-400 appearance-none shadow-sm">
               <option value="dallas" selected>📍 Dallas, TX</option>
               <option value="phoenix">📍 Phoenix, AZ</option>
               <option value="houston">📍 Houston, TX</option>
@@ -1787,14 +1787,14 @@
           <!-- GPS Current Location Button -->
           <button onclick="getResidentCurrentLocation()" class="px-3 py-2.5 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/40 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer whitespace-nowrap">
             <i class="fa-solid fa-location-crosshairs text-xs"></i>
-            <span id="res-gps-btn-text">Use My Location</span>
+            <span id="modal-res-gps-btn-text">Use My Location</span>
           </button>
 
           <!-- Text Search Input -->
           <div class="relative flex-1">
             <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
-            <input id="res-search-input" oninput="debounceResidentSearch()" type="text" placeholder="Search by street, park, library, or neighborhood..." class="w-full bg-slate-950 text-white placeholder-slate-400 text-xs rounded-xl pl-9 pr-8 py-2.5 border border-white/15 focus:outline-none focus:border-cyan-400 transition">
-            <button onclick="clearResidentSearch()" id="res-search-clear" class="absolute right-3 top-2.5 text-slate-400 hover:text-white hidden">
+            <input id="modal-res-search-input" oninput="debounceResidentSearch()" type="text" placeholder="Search by street, park, library, or neighborhood..." class="w-full bg-slate-950 text-white placeholder-slate-400 text-xs rounded-xl pl-9 pr-8 py-2.5 border border-white/15 focus:outline-none focus:border-cyan-400 transition">
+            <button onclick="clearResidentSearch()" id="modal-res-search-clear" class="absolute right-3 top-2.5 text-slate-400 hover:text-white hidden">
               <i class="fa-solid fa-circle-xmark text-xs"></i>
             </button>
           </div>
@@ -1802,12 +1802,12 @@
           <!-- 1-Tap Voice Help Button (CoolAid Live API) -->
           <button onclick="startResidentVoiceHelp()" class="px-3.5 py-2.5 bg-gradient-to-r from-purple-600/30 to-indigo-600/30 hover:from-purple-600/50 hover:to-indigo-600/50 text-purple-200 border border-purple-400/40 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer whitespace-nowrap shadow-sm">
             <i class="fa-solid fa-microphone text-purple-300 animate-pulse"></i>
-            <span id="res-voice-btn-text">Voice Assistant</span>
+            <span id="modal-res-voice-btn-text">Voice Assistant</span>
           </button>
         </div>
 
         <!-- Amenity Quick Filter Chips -->
-        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 text-[11px]" id="res-quick-chips">
+        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 text-[11px]" id="modal-res-quick-chips">
           <button onclick="filterResidentChip('all')" class="px-2.5 py-1 rounded-lg bg-cyan-500 text-white font-semibold transition cursor-pointer flex-shrink-0" data-filter="all">All Cool Spots</button>
           <button onclick="filterResidentChip('water')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 font-semibold border border-white/10 transition cursor-pointer flex-shrink-0" data-filter="water">💧 Free Cold Water</button>
           <button onclick="filterResidentChip('ac')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 font-semibold border border-white/10 transition cursor-pointer flex-shrink-0" data-filter="ac">❄️ 70°F AC</button>
@@ -1819,15 +1819,15 @@
       </div>
 
       <!-- Cooling Centers Results Feed -->
-      <div class="p-3 sm:p-5 overflow-y-auto flex-1 space-y-3.5 bg-slate-950/70" id="res-centers-container">
-        <div id="res-loading-spinner" class="py-12 flex flex-col items-center justify-center text-slate-400 gap-3">
+      <div class="p-3 sm:p-5 overflow-y-auto flex-1 space-y-3.5 bg-slate-950/70" id="modal-res-centers-container">
+        <div id="modal-res-loading-spinner" class="py-12 flex flex-col items-center justify-center text-slate-400 gap-3">
           <i class="fa-solid fa-snowflake text-3xl text-cyan-400 animate-spin"></i>
           <span class="text-xs font-mono">Finding nearest air-conditioned cooling centers...</span>
         </div>
-        <div id="res-centers-list" class="space-y-3 hidden">
+        <div id="modal-res-centers-list" class="space-y-3 hidden">
           <!-- Rendered dynamically via JavaScript -->
         </div>
-        <div id="res-empty-state" class="py-12 text-center text-slate-400 hidden">
+        <div id="modal-res-empty-state" class="py-12 text-center text-slate-400 hidden">
           <i class="fa-solid fa-map-location-dot text-3xl mb-2 text-slate-500"></i>
           <p class="text-sm font-semibold text-slate-300">No cooling centers found matching that search.</p>
           <p class="text-xs text-slate-500 mt-1">Try searching a different street or click "All Cool Spots".</p>
@@ -1906,6 +1906,9 @@
         advisory: "Excessive Heat Warning",
         sunlightBtn: "Sunlight",
         gpsBtn: "My GPS",
+        gpsActive: "📍 GPS Active",
+        gpsLocating: "Locating...",
+        currentLocation: "Current Location",
         voiceBtn: "Ask CoolAid Live",
         searchPlaceholder: "Search address, park, library, or neighborhood...",
         emptyTitle: "No cooling centers found matching that search.",
@@ -1935,6 +1938,9 @@
         advisory: "Advertencia de Calor Extremo",
         sunlightBtn: "Luz Solar",
         gpsBtn: "Mi GPS",
+        gpsActive: "📍 GPS Activo",
+        gpsLocating: "Buscando GPS...",
+        currentLocation: "Ubicación Actual",
         voiceBtn: "Hablar con CoolAid",
         searchPlaceholder: "Buscar dirección, parque, biblioteca o colonia...",
         emptyTitle: "No se encontraron refugios con esa búsqueda.",

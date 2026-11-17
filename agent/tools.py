@@ -2386,6 +2386,34 @@ def compare_siting_scenarios(tract_a_geoid: str, tract_b_geoid: str) -> Dict[str
         site_b = sites.get(tract_b_geoid)
         
         if not site_a or not site_b:
+            q_us = f"""
+            SELECT
+              geo_id,
+              state_name,
+              county_name,
+              tract_name,
+              latitude,
+              longitude,
+              COALESCE(total_pop, 2500.0) AS total_pop,
+              COALESCE(pop_density_per_sqmi, 5000.0) AS pop_density_per_sqmi,
+              COALESCE(median_age, 35.0) AS median_age,
+              (COALESCE(poverty_rate_pct, 0.0) / 100.0) AS poverty_rate,
+              (COALESCE(no_vehicle_rate_pct, 0.0) / 100.0) AS no_vehicle_rate,
+              COALESCE(heat_offset_estimated_f, 0.0) AS predicted_temp_offset_f,
+              [
+                STRUCT('resilience_deficit_score' AS feature, resilience_deficit_score AS attribution),
+                STRUCT('no_vehicle_rate_pct' AS feature, no_vehicle_rate_pct AS attribution),
+                STRUCT('poverty_rate_pct' AS feature, poverty_rate_pct AS attribution)
+              ] AS top_feature_attributions
+            FROM `{PROJECT_ID}.{DATASET}.us_resilience_master`
+            WHERE geo_id IN ('{tract_a_geoid}', '{tract_b_geoid}');
+            """
+            job_us = client.query(q_us)
+            sites_us = {row.geo_id: row for row in job_us.result()}
+            site_a = site_a or sites_us.get(tract_a_geoid)
+            site_b = site_b or sites_us.get(tract_b_geoid)
+
+        if not site_a or not site_b:
             return {"error": f"One or both tract IDs not found: {tract_a_geoid}, {tract_b_geoid}"}
             
         def format_site(s):
