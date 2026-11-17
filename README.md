@@ -15,9 +15,11 @@ An autonomous climate resilience decision support system, nationwide equity allo
 - **Interactive 3D Command Center**: Singapore DUCT 3D Heat X-Ray (CesiumJS) + Google Solar API Dynamic Sun & Shade Animator.
 - **BigQuery ML Model**: `a4i_climate.heat_offset_model` (Linear regression with `ML.EXPLAIN_PREDICT` on Vertex AI `us-central1`).
 - **Google MCP Toolbox for Databases**: Declarative [`mcp/tools.yaml`](mcp/tools.yaml) & [`mcp.json`](mcp.json) for [`googleapis/mcp-toolbox`](https://github.com/googleapis/mcp-toolbox).
+- **Security & Red-Team Evals Report**: [SECURITY_EVALS_AND_SAFETY.md](SECURITY_EVALS_AND_SAFETY.md) (NIST/SAIF Threat Matrix, Model Armor evals & sample test results)
 - **Security Gateway**: Google Cloud Model Armor prompt injection, jailbreak, and SQL/DDL injection interceptor (`agent/model_armor.py`).
 - **Decarbonization Layer**: Climate TRACE v5.12 monitored point-source assets (`a4i_climate.dallas_emissions_assets`).
 - **Climate Investment Simulator**: $50M Multi-Objective Pareto Frontier (Heat Adaptation vs. CO2e Mitigation).
+
 
 ---
 
