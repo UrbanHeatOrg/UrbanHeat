@@ -2164,6 +2164,10 @@
         if (mobCard) {
           mobCard.classList.remove('bg-slate-950/95', 'text-slate-100', 'border-cyan-500/40');
           mobCard.classList.add('bg-white', 'text-slate-900', 'border-slate-300');
+          const mobTitle = document.getElementById('mob-card-title');
+          const mobAddr = document.getElementById('mob-card-addr');
+          if (mobTitle) { mobTitle.classList.remove('text-white'); mobTitle.classList.add('text-slate-900'); }
+          if (mobAddr) { mobAddr.classList.remove('text-slate-400'); mobAddr.classList.add('text-slate-600'); }
         }
       } else {
         sidebar.classList.add('bg-slate-950/95', 'text-slate-100');
@@ -2179,6 +2183,10 @@
         if (mobCard) {
           mobCard.classList.add('bg-slate-950/95', 'text-slate-100', 'border-cyan-500/40');
           mobCard.classList.remove('bg-white', 'text-slate-900', 'border-slate-300');
+          const mobTitle = document.getElementById('mob-card-title');
+          const mobAddr = document.getElementById('mob-card-addr');
+          if (mobTitle) { mobTitle.classList.add('text-white'); mobTitle.classList.remove('text-slate-900'); }
+          if (mobAddr) { mobAddr.classList.add('text-slate-400'); mobAddr.classList.remove('text-slate-600'); }
         }
       }
       renderResidentCenters();
