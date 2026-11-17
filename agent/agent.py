@@ -16,7 +16,24 @@ from agent.tools import (
     run_equity_audit,
     plan_emergency_hydration_dispatch,
     evaluate_tree_planting_roi,
-    assess_grid_and_medically_fragile_risk
+    assess_grid_and_medically_fragile_risk,
+    compare_siting_scenarios,
+    dispatch_emergency_units,
+    recommend_urban_retrofits,
+    draft_council_resolution,
+    get_emission_sources,
+    get_city_emissions,
+    get_reduction_strategies,
+    optimize_climate_portfolio,
+    compute_pedestrian_route,
+    search_civic_places,
+    get_solar_and_shade_insights,
+    get_vulnerability_profile,
+    get_air_quality_summary,
+    get_national_vulnerability_profile,
+    rank_national_cooling_center_sites,
+    resolve_dallas_location,
+    compare_locations_heat_contrast
 )
 
 os.environ.setdefault("GOOGLE_GENAI_USE_VERTEXAI", "1")
