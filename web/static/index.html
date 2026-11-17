@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HeatShield AI — 3D Urban Resilience & Autonomous Climate Intelligence</title>
+  <title>HeatShield AI — 3D Urban Climate Twin (DUCT) & Autonomous Intelligence</title>
   
   <!-- Modern Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,6 +18,10 @@
   
   <!-- Deck.gl for WebGL 3D Volumetric Extrusions -->
   <script src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
+
+  <!-- CesiumJS for 3D Photorealistic Tiles & Singapore DUCT Heat X-Ray -->
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.115/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.115/Build/Cesium/Cesium.js"></script>
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -69,7 +73,7 @@
       width: 100vw;
     }
     
-    /* Climate TRACE-inspired Glass Panels */
+    /* Climate TRACE & Singapore DUCT Glass Styling */
     .trace-card {
       background: rgba(7, 12, 23, 0.88);
       backdrop-filter: blur(24px);
@@ -96,12 +100,19 @@
       box-shadow: 0 0 24px rgba(0, 240, 255, 0.3);
     }
 
-    /* Animated Radial Glow Pin */
-    .pin-glow-cyan {
-      box-shadow: 0 0 15px rgba(0, 240, 255, 0.7), 0 0 30px rgba(0, 240, 255, 0.3);
+    .active-flir-pill {
+      background: linear-gradient(135deg, rgba(255, 77, 77, 0.3), rgba(255, 159, 10, 0.4));
+      border: 1px solid rgba(255, 100, 50, 0.8);
+      color: #ffffff;
+      box-shadow: 0 0 24px rgba(255, 77, 77, 0.35);
     }
-    .pin-glow-rose {
-      box-shadow: 0 0 15px rgba(255, 51, 102, 0.7), 0 0 30px rgba(255, 51, 102, 0.3);
+
+    /* Cesium UI Overrides */
+    .cesium-widget-credits {
+      display: none !important;
+    }
+    .cesium-viewer {
+      font-family: inherit;
     }
 
     /* Custom Scrollbar */
@@ -127,21 +138,25 @@
       <div>
         <div class="flex items-center gap-2">
           <h1 class="font-extrabold text-sm text-white tracking-tight">HeatShield AI</h1>
-          <span class="text-[9px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-bold tracking-wider">3D TWIN</span>
+          <span class="text-[9px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-bold tracking-wider">DUCT 3D TWIN</span>
           <span class="text-[9px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold flex items-center gap-1">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
             DALLAS, TX
           </span>
         </div>
-        <p class="text-[10px] text-slate-400 font-medium">Climate TRACE Emissions + BigQuery ML Thermal Risk Architecture</p>
+        <p class="text-[10px] text-slate-400 font-medium">Singapore DUCT Climate Architecture + Google Photorealistic 3D Tiles</p>
       </div>
     </div>
 
-    <!-- Center: Climate TRACE-Style Horizon & Mode Segmented Pill -->
+    <!-- Center: Segmented Navigation Pill (Including DUCT Cesium Heat X-Ray) -->
     <nav class="trace-card rounded-2xl p-1.5 flex items-center gap-1 pointer-events-auto border border-white/10 shadow-2xl">
-      <button id="nav-3d" onclick="setMode('3d')" class="px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition active-pill cursor-pointer">
+      <button id="nav-cesium" onclick="setMode('cesium')" class="px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition active-flir-pill cursor-pointer">
+        <i class="fa-solid fa-fire-flame-curved text-amber-400 text-xs animate-pulse"></i>
+        <span class="font-bold">Cesium 3D Heat X-Ray</span>
+      </button>
+      <button id="nav-3d" onclick="setMode('3d')" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1.5 transition cursor-pointer">
         <i class="fa-solid fa-cube text-cyan-400 text-xs"></i>
-        <span>3D Twin</span>
+        <span>3D Vector</span>
       </button>
       <button id="nav-track2" onclick="setMode('track2')" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1.5 transition cursor-pointer">
         <i class="fa-solid fa-landmark text-blue-400 text-xs"></i>
@@ -174,7 +189,7 @@
       <div class="hidden xl:flex items-center gap-2">
         <span class="trace-pill px-2.5 py-1.5 rounded-xl text-[10px] font-mono text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span>BQML EXPLAIN</span>
+          <span>DUCT ENGINE ACTIVE</span>
         </span>
         <span class="trace-pill px-2.5 py-1.5 rounded-xl text-[10px] font-mono text-purple-300 border border-purple-500/30 flex items-center gap-1.5">
           <i class="fa-solid fa-shield-cat text-[10px]"></i>
@@ -191,112 +206,141 @@
 
   <!-- ================= FULL-BLEED 3D SPATIAL CANVAS ================= -->
   <main class="relative w-full h-full flex-1">
-    <!-- Google Maps Vector Viewport -->
+    
+    <!-- Google Maps Vector Viewport (Deck.gl 3D Pillars) -->
     <div id="map" class="w-full h-full"></div>
 
+    <!-- CesiumJS 3D Photorealistic & Singapore DUCT Heat X-Ray Viewport -->
+    <div id="cesiumContainer" class="w-full h-full absolute inset-0 hidden"></div>
+
     <!-- ================= LEFT FLOATING FILTER & LAYER DECK ================= -->
-    <aside id="left-deck" class="absolute top-20 left-4 bottom-6 w-[340px] z-30 pointer-events-auto flex flex-col gap-3 transition-all duration-300">
+    <aside id="left-deck" class="absolute top-20 left-4 bottom-6 w-[350px] z-30 pointer-events-auto flex flex-col gap-3 transition-all duration-300">
       
       <!-- LAYER ACCORDION & SECTOR FILTERS -->
       <div class="trace-card rounded-3xl p-4 flex-1 flex flex-col justify-between overflow-hidden border border-white/10 shadow-2xl">
         <div>
-          <!-- Title & Sector Header -->
+          <!-- Title & Sub-header -->
           <div class="pb-3 border-b border-white/10 flex items-center justify-between">
             <div class="flex items-center gap-2">
-              <i class="fa-solid fa-layer-group text-cyan-400 text-sm"></i>
-              <span class="font-bold text-xs text-white uppercase tracking-wider">Spatial Layer Control</span>
+              <i id="deck-icon" class="fa-solid fa-fire-flame-curved text-amber-400 text-sm"></i>
+              <span id="deck-title" class="font-bold text-xs text-white uppercase tracking-wider">DUCT Heat X-Ray Layers</span>
             </div>
-            <span class="text-[9px] font-mono text-slate-400 bg-white/5 px-2 py-0.5 rounded-md">6 DATASETS</span>
+            <span id="deck-badge" class="text-[9px] font-mono text-amber-300 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-md">6 RISK LAYERS</span>
           </div>
 
-          <!-- Multi-Dataset Layer List with Counts -->
-          <div class="space-y-2 mt-3 text-xs overflow-y-auto max-h-[380px] pr-1">
-            
-            <!-- Layer 1: Sited Cooling Infrastructure -->
-            <label class="flex items-center justify-between p-2.5 rounded-xl bg-obsidian-900/80 border border-white/5 hover:border-cyan-400/40 transition cursor-pointer">
-              <div class="flex items-center gap-2.5">
-                <input type="checkbox" id="layer-cooling" checked onchange="updateAllLayers()" class="rounded accent-cyan-400">
-                <div>
-                  <div class="font-bold text-white text-[11px] flex items-center gap-1.5">
-                    <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
-                    <span>Cooling Infrastructure</span>
-                  </div>
-                  <div class="text-[9px] text-slate-400">5 Prioritized Resilience Hubs</div>
-                </div>
-              </div>
-              <span class="text-[9px] font-mono text-cyan-300 bg-cyan-500/10 px-1.5 py-0.5 rounded">782 ASSETS</span>
-            </label>
+          <!-- X-Ray Shader Selector (Singapore DUCT Style) -->
+          <div id="xray-shader-controls" class="mt-3 p-2.5 rounded-2xl bg-obsidian-900/90 border border-white/10 space-y-2">
+            <div class="flex items-center justify-between text-[11px] font-bold text-white">
+              <span>Heat X-Ray Shader</span>
+              <span class="text-[9px] font-mono text-cyan-300">GPU CUSTOM SHADER</span>
+            </div>
+            <div class="grid grid-cols-2 gap-1.5 text-[10px] font-semibold">
+              <button onclick="setCesiumShader('flir')" id="btn-flir" class="p-1.5 rounded-xl bg-amber-500/25 border border-amber-500/50 text-amber-200 transition cursor-pointer text-center">
+                🔥 FLIR Thermal Heat
+              </button>
+              <button onclick="setCesiumShader('xray')" id="btn-xray" class="p-1.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 hover:text-white transition cursor-pointer text-center">
+                🌐 Cyber X-Ray
+              </button>
+              <button onclick="setCesiumShader('anomaly')" id="btn-anomaly" class="p-1.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 hover:text-white transition cursor-pointer text-center">
+                🚨 Peak Heat (>102°F)
+              </button>
+              <button onclick="setCesiumShader('mesh')" id="btn-mesh" class="p-1.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 hover:text-white transition cursor-pointer text-center">
+                🏙️ Photorealistic Mesh
+              </button>
+            </div>
 
-            <!-- Layer 2: 3D Volumetric Thermal Pillars -->
-            <label class="flex items-center justify-between p-2.5 rounded-xl bg-obsidian-900/80 border border-white/5 hover:border-amber-400/40 transition cursor-pointer">
-              <div class="flex items-center gap-2.5">
-                <input type="checkbox" id="layer-3d-heat" checked onchange="updateAllLayers()" class="rounded accent-amber-400">
+            <!-- X-Ray Transparency & Gain Sliders -->
+            <div class="pt-2 border-t border-white/10 space-y-2">
+              <div>
+                <div class="flex justify-between text-[10px] text-slate-400">
+                  <span>Building X-Ray Opacity</span>
+                  <span id="txt-xray-opacity" class="font-mono text-white">65%</span>
+                </div>
+                <input type="range" id="sl-xray-opacity" min="10" max="100" value="65" oninput="updateCesiumUniforms()" class="w-full accent-cyan-400 cursor-pointer h-1">
+              </div>
+              <div>
+                <div class="flex justify-between text-[10px] text-slate-400">
+                  <span>Thermal Sensitivity Gain</span>
+                  <span id="txt-xray-gain" class="font-mono text-amber-300">1.5x</span>
+                </div>
+                <input type="range" id="sl-xray-gain" min="5" max="30" value="15" oninput="updateCesiumUniforms()" class="w-full accent-amber-400 cursor-pointer h-1">
+              </div>
+            </div>
+          </div>
+
+          <!-- Selectable Risk Layers List with Counts -->
+          <div class="space-y-1.5 mt-3 text-xs overflow-y-auto max-h-[260px] pr-1">
+            
+            <!-- Layer 1: NOAA Surface Heat & Inversion Traverses -->
+            <label class="flex items-center justify-between p-2 rounded-xl bg-obsidian-900/80 border border-white/5 hover:border-amber-400/40 transition cursor-pointer">
+              <div class="flex items-center gap-2">
+                <input type="checkbox" id="layer-3d-heat" checked onchange="toggleRiskLayers()" class="rounded accent-amber-400">
                 <div>
                   <div class="font-bold text-white text-[11px] flex items-center gap-1.5">
-                    <span class="w-2 h-2 rounded-full bg-amber-400"></span>
-                    <span>3D Volumetric Heat Pillars</span>
+                    <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                    <span>NOAA Surface Heat Traverses</span>
                   </div>
-                  <div class="text-[9px] text-slate-400">Height = Δ°F Thermal Spread</div>
+                  <div class="text-[9px] text-slate-400">Intra-City Inversion (+9.2°F Δ)</div>
                 </div>
               </div>
               <span class="text-[9px] font-mono text-amber-300 bg-amber-500/10 px-1.5 py-0.5 rounded">19,491 OBS</span>
             </label>
 
-            <!-- Layer 3: Climate TRACE Industrial Emitters -->
-            <label class="flex items-center justify-between p-2.5 rounded-xl bg-obsidian-900/80 border border-white/5 hover:border-rose-400/40 transition cursor-pointer">
-              <div class="flex items-center gap-2.5">
-                <input type="checkbox" id="layer-emissions" checked onchange="updateAllLayers()" class="rounded accent-rose-400">
+            <!-- Layer 2: Climate TRACE Industrial Plumes -->
+            <label class="flex items-center justify-between p-2 rounded-xl bg-obsidian-900/80 border border-white/5 hover:border-rose-400/40 transition cursor-pointer">
+              <div class="flex items-center gap-2">
+                <input type="checkbox" id="layer-emissions" checked onchange="toggleRiskLayers()" class="rounded accent-rose-400">
                 <div>
                   <div class="font-bold text-white text-[11px] flex items-center gap-1.5">
                     <span class="w-2 h-2 rounded-full bg-rose-500"></span>
-                    <span>Climate TRACE Emitters</span>
+                    <span>Climate TRACE Emitter Plumes</span>
                   </div>
-                  <div class="text-[9px] text-slate-400">DFW, Love Field, Cement Plants</div>
+                  <div class="text-[9px] text-slate-400">DFW, Love Field, Cement Kilns</div>
                 </div>
               </div>
               <span class="text-[9px] font-mono text-rose-300 bg-rose-500/10 px-1.5 py-0.5 rounded">8.86M t CO₂e</span>
             </label>
 
-            <!-- Layer 4: US Census TIGER Population Density -->
-            <label class="flex items-center justify-between p-2.5 rounded-xl bg-obsidian-900/80 border border-white/5 hover:border-purple-400/40 transition cursor-pointer">
-              <div class="flex items-center gap-2.5">
-                <input type="checkbox" id="layer-census" checked onchange="updateAllLayers()" class="rounded accent-purple-400">
-                <div>
-                  <div class="font-bold text-white text-[11px] flex items-center gap-1.5">
-                    <span class="w-2 h-2 rounded-full bg-purple-400"></span>
-                    <span>Census TIGER Pop Density</span>
-                  </div>
-                  <div class="text-[9px] text-slate-400">pop_density_per_sqmi (0 to 28.5k)</div>
-                </div>
-              </div>
-              <span class="text-[9px] font-mono text-purple-300 bg-purple-500/10 px-1.5 py-0.5 rounded">618 TRACTS</span>
-            </label>
-
-            <!-- Layer 5: 10-Minute Walk Isochrones -->
-            <label class="flex items-center justify-between p-2.5 rounded-xl bg-obsidian-900/80 border border-white/5 hover:border-emerald-400/40 transition cursor-pointer">
-              <div class="flex items-center gap-2.5">
-                <input type="checkbox" id="layer-buffers" checked onchange="updateAllLayers()" class="rounded accent-emerald-400">
+            <!-- Layer 3: Title VI Vulnerability & Poverty Gradient -->
+            <label class="flex items-center justify-between p-2 rounded-xl bg-obsidian-900/80 border border-white/5 hover:border-emerald-400/40 transition cursor-pointer">
+              <div class="flex items-center gap-2">
+                <input type="checkbox" id="layer-equity" checked onchange="toggleRiskLayers()" class="rounded accent-emerald-400">
                 <div>
                   <div class="font-bold text-white text-[11px] flex items-center gap-1.5">
                     <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                    <span>10-Min Pedestrian Reach</span>
+                    <span>Title VI Equity Vulnerability</span>
                   </div>
-                  <div class="text-[9px] text-slate-400">1,200m Catchment Geometry</div>
+                  <div class="text-[9px] text-slate-400">Poverty, Elderly & Zero-Vehicle</div>
                 </div>
               </div>
-              <span class="text-[9px] font-mono text-emerald-300 bg-emerald-500/10 px-1.5 py-0.5 rounded">68k PEOPLE</span>
+              <span class="text-[9px] font-mono text-emerald-300 bg-emerald-500/10 px-1.5 py-0.5 rounded">1.18 RATIO</span>
             </label>
 
-            <!-- Layer 6: Mobile Hydration Tanker Units -->
-            <label class="flex items-center justify-between p-2.5 rounded-xl bg-obsidian-900/80 border border-white/5 hover:border-amber-400/40 transition cursor-pointer">
-              <div class="flex items-center gap-2.5">
-                <input type="checkbox" id="layer-tankers" checked onchange="updateAllLayers()" class="rounded accent-amber-400">
+            <!-- Layer 4: Sited Cooling Infrastructure -->
+            <label class="flex items-center justify-between p-2 rounded-xl bg-obsidian-900/80 border border-white/5 hover:border-cyan-400/40 transition cursor-pointer">
+              <div class="flex items-center gap-2">
+                <input type="checkbox" id="layer-cooling" checked onchange="toggleRiskLayers()" class="rounded accent-cyan-400">
+                <div>
+                  <div class="font-bold text-white text-[11px] flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+                    <span>Sited Cooling Hubs & Buffers</span>
+                  </div>
+                  <div class="text-[9px] text-slate-400">10-Minute Pedestrian Isochrones</div>
+                </div>
+              </div>
+              <span class="text-[9px] font-mono text-cyan-300 bg-cyan-500/10 px-1.5 py-0.5 rounded">68k PEOPLE</span>
+            </label>
+
+            <!-- Layer 5: Mobile Hydration Tankers -->
+            <label class="flex items-center justify-between p-2 rounded-xl bg-obsidian-900/80 border border-white/5 hover:border-amber-400/40 transition cursor-pointer">
+              <div class="flex items-center gap-2">
+                <input type="checkbox" id="layer-tankers" checked onchange="toggleRiskLayers()" class="rounded accent-amber-400">
                 <div>
                   <div class="font-bold text-white text-[11px] flex items-center gap-1.5">
                     <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
                     <span>Emergency Mobile Tankers</span>
                   </div>
-                  <div class="text-[9px] text-slate-400">West Dallas & MLK Corridors</div>
+                  <div class="text-[9px] text-slate-400">Singleton & MLK High-Risk Stops</div>
                 </div>
               </div>
               <span class="text-[9px] font-mono text-amber-300 bg-amber-500/10 px-1.5 py-0.5 rounded">3 ACTIVE</span>
@@ -305,23 +349,23 @@
           </div>
         </div>
 
-        <!-- Camera Tilt & Quick Fly-To HUD -->
+        <!-- 3D Camera & Fly-To Bookmarks HUD -->
         <div class="pt-3 border-t border-white/10 space-y-2">
           <div class="flex items-center justify-between">
-            <button id="btn-tilt" onclick="toggleTilt()" class="flex-1 py-1.5 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
-              <i class="fa-solid fa-cube"></i>
-              <span id="txt-tilt">3D Tilt: 67.5°</span>
+            <button id="btn-camera-action" onclick="toggleCesiumOrbit()" class="flex-1 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-rotate"></i>
+              <span id="txt-camera-action">3D Orbit: Off</span>
             </button>
-            <button onclick="orbitCamera()" class="ml-2 px-3 py-1.5 bg-white/5 hover:bg-white/10 text-slate-300 rounded-xl text-xs font-semibold transition cursor-pointer">
-              <i class="fa-solid fa-rotate mr-1"></i> Orbit
+            <button onclick="openApiKeyModal()" class="ml-2 px-2.5 py-1.5 bg-white/5 hover:bg-white/10 text-slate-300 rounded-xl text-[10px] font-mono transition cursor-pointer" title="Configure Google 3D Tiles API Key">
+              <i class="fa-solid fa-key text-cyan-300"></i> Key
             </button>
           </div>
 
           <div class="grid grid-cols-4 gap-1 text-[10px] font-medium text-slate-400">
-            <button onclick="flyTo(32.7800, -96.8000, 67.5, 42, 14.5)" class="p-1 rounded bg-white/5 hover:bg-white/10 hover:text-white transition text-center cursor-pointer">Downtown</button>
-            <button onclick="flyTo(32.7850, -96.8450, 67.5, 30, 15.5)" class="p-1 rounded bg-white/5 hover:bg-white/10 hover:text-white transition text-center cursor-pointer">W. Dallas</button>
-            <button onclick="flyTo(32.7600, -96.7700, 67.5, 55, 15.5)" class="p-1 rounded bg-white/5 hover:bg-white/10 hover:text-white transition text-center cursor-pointer">S. Dallas</button>
-            <button onclick="flyTo(32.8450, -96.8500, 67.5, 15, 14.5)" class="p-1 rounded bg-white/5 hover:bg-white/10 hover:text-white transition text-center cursor-pointer">Love Field</button>
+            <button onclick="flyCesiumTo(-96.7970, 32.7767, 1200, -35, 45)" class="p-1 rounded bg-white/5 hover:bg-white/10 hover:text-white transition text-center cursor-pointer">Downtown</button>
+            <button onclick="flyCesiumTo(-96.8736, 32.8048, 900, -30, 60)" class="p-1 rounded bg-white/5 hover:bg-white/10 hover:text-white transition text-center cursor-pointer">W. Dallas</button>
+            <button onclick="flyCesiumTo(-96.7822, 32.6965, 950, -40, 20)" class="p-1 rounded bg-white/5 hover:bg-white/10 hover:text-white transition text-center cursor-pointer">S. Dallas</button>
+            <button onclick="flyCesiumTo(-96.8500, 32.8450, 1100, -35, 90)" class="p-1 rounded bg-white/5 hover:bg-white/10 hover:text-white transition text-center cursor-pointer">Love Field</button>
           </div>
         </div>
       </div>
@@ -330,7 +374,7 @@
       <div class="trace-card rounded-2xl p-3 border border-white/10 shadow-xl text-xs">
         <div class="grid grid-cols-2 gap-2 text-[10px] font-mono">
           <div class="p-2 rounded-xl bg-obsidian-900/60 border border-white/5">
-            <span class="text-slate-400 block text-[9px] uppercase">Peak Disparity</span>
+            <span class="text-slate-400 block text-[9px] uppercase">DUCT Canyon Spread</span>
             <span class="text-amber-400 font-bold text-sm">9.2°F Δ</span>
           </div>
           <div class="p-2 rounded-xl bg-obsidian-900/60 border border-white/5">
@@ -342,7 +386,7 @@
             <span class="text-cyan-400 font-bold text-sm">6.5x (34.4%)</span>
           </div>
           <div class="p-2 rounded-xl bg-obsidian-900/60 border border-white/5">
-            <span class="text-slate-400 block text-[9px] uppercase">Point Sources</span>
+            <span class="text-slate-400 block text-[9px] uppercase">Climate TRACE</span>
             <span class="text-emerald-400 font-bold text-sm">8.86M t CO₂e</span>
           </div>
         </div>
@@ -398,7 +442,7 @@
     </aside>
 
     <!-- ================= FLOATING BOTTOM DRAWER: $50M PARETO & CLIMATOLOGY ================= -->
-    <div id="bottom-drawer" class="absolute left-[370px] right-[470px] bottom-4 z-30 transition-all duration-300 transform translate-y-[calc(100%+16px)] pointer-events-auto">
+    <div id="bottom-drawer" class="absolute left-[380px] right-[470px] bottom-4 z-30 transition-all duration-300 transform translate-y-[calc(100%+16px)] pointer-events-auto">
       <div class="trace-card rounded-3xl p-5 border border-white/10 shadow-2xl flex flex-col gap-4">
         
         <!-- Drawer Header -->
@@ -482,6 +526,9 @@
 
     <!-- Quick Prompt Chips -->
     <div class="p-3 border-b border-white/10 bg-obsidian-900/30 flex flex-wrap gap-1.5">
+      <button onclick="askDana('Explain the DUCT 3D Heat X-Ray thermal entrapment in Downtown Dallas canyons')" class="text-[10px] bg-white/5 hover:bg-white/10 text-slate-300 px-2.5 py-1 rounded-full border border-white/10 transition cursor-pointer">
+        🔥 DUCT Heat X-Ray
+      </button>
       <button onclick="askDana('Audit Title VI civil rights compliance for South Dallas sites')" class="text-[10px] bg-white/5 hover:bg-white/10 text-slate-300 px-2.5 py-1 rounded-full border border-white/10 transition cursor-pointer">
         ⚖️ Title VI Audit
       </button>
@@ -490,9 +537,6 @@
       </button>
       <button onclick="askDana('Dispatch mobile hydration tankers to unshaded bus stops')" class="text-[10px] bg-white/5 hover:bg-white/10 text-slate-300 px-2.5 py-1 rounded-full border border-white/10 transition cursor-pointer">
         ⚡ 104°F Dispatch
-      </button>
-      <button onclick="askDana('Simulate compound 108°F heatwave with ERCOT blackout')" class="text-[10px] bg-white/5 hover:bg-white/10 text-slate-300 px-2.5 py-1 rounded-full border border-white/10 transition cursor-pointer">
-        🚨 Red-Team Blackout
       </button>
     </div>
 
@@ -507,19 +551,58 @@
             <span>Dana Commander</span>
             <span class="text-purple-300"><i class="fa-solid fa-shield-cat"></i> Model Armor Guarded</span>
           </div>
-          Greetings. I am connected live to <strong>BigQuery ML Heat Offset Model</strong>, <strong>Climate TRACE Dallas Point Sources</strong>, and the <strong>3D WebGL Spatial Twin</strong>. What climate resilience decision can I model for you?
+          Greetings. I am connected live to the <strong>Singapore DUCT 3D Heat X-Ray Engine</strong>, <strong>BigQuery ML Heat Offset Model</strong>, and <strong>Climate TRACE Point Sources</strong>. What microclimate scenario can I simulate?
         </div>
       </div>
     </div>
 
     <!-- Input Footer -->
     <div class="p-3 border-t border-white/10 bg-obsidian-900/40 flex items-center gap-2">
-      <input type="text" id="copilot-input" onkeydown="if(event.key==='Enter') sendDanaMessage()" placeholder="Ask Dana anything about heat, equity, or capital..." class="flex-1 bg-obsidian-900 border border-white/15 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400">
+      <input type="text" id="copilot-input" onkeydown="if(event.key==='Enter') sendDanaMessage()" placeholder="Ask Dana about DUCT X-Ray, equity, or microclimate..." class="flex-1 bg-obsidian-900 border border-white/15 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400">
       <button onclick="sendDanaMessage()" class="w-9 h-9 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-obsidian-950 font-bold flex items-center justify-center transition shadow-lg shadow-cyan-500/20 cursor-pointer">
         <i class="fa-solid fa-paper-plane text-xs"></i>
       </button>
     </div>
   </aside>
+
+  <!-- ================= MODAL: GOOGLE 3D TILES API KEY CONFIGURATION ================= -->
+  <div id="modal-apikey" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="trace-card rounded-3xl w-full max-w-lg overflow-hidden border border-white/15 shadow-2xl">
+      <div class="p-5 border-b border-white/10 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-base">
+            <i class="fa-solid fa-key"></i>
+          </div>
+          <div>
+            <h4 class="font-bold text-sm text-white">Google Photorealistic 3D Tiles API Key</h4>
+            <p class="text-[10px] text-slate-400">Stream Google's Official 3D Mesh Tileset into CesiumJS</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modal-apikey')" class="text-slate-400 hover:text-white p-1 cursor-pointer">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="p-5 space-y-3.5 text-xs text-slate-300">
+        <p>HeatShield AI automatically streams high-resolution 3D building meshes. To stream Google's proprietary photorealistic tiles directly via the Map Tiles API, specify an authorized Google Maps key with `tile.googleapis.com` enabled:</p>
+        <div>
+          <label class="block text-[10px] text-slate-400 uppercase font-bold mb-1">Google Maps API Key:</label>
+          <input type="text" id="custom-google-tiles-key" value="AIzaSyAruft4_u7ERcieBTw1_gY7NPGyCbLyJxY" class="w-full bg-obsidian-900 border border-white/15 rounded-xl px-3 py-2 text-xs font-mono text-cyan-300">
+        </div>
+        <div class="p-3 rounded-2xl bg-white/5 border border-white/10 text-[11px] text-slate-400">
+          <span class="text-emerald-300 font-bold block mb-0.5">Automated Mesh Fallback:</span>
+          If this key is restricted to Maps Backend, CesiumJS seamlessly streams the global OpenStreetMap 3D buildings mesh with the full DUCT Heat X-Ray GPU shader active.
+        </div>
+      </div>
+      <div class="p-4 border-t border-white/10 flex justify-end gap-2">
+        <button onclick="closeModal('modal-apikey')" class="px-4 py-2 bg-white/5 hover:bg-white/10 text-slate-300 rounded-xl text-xs font-bold transition cursor-pointer">
+          Cancel
+        </button>
+        <button onclick="applyGoogleTilesKey()" class="px-5 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-xs font-bold transition cursor-pointer">
+          Save & Reload Tileset
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- ================= MODAL: TITLE VI EQUITY AUDIT SCORECARD ================= -->
   <div id="modal-equity" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
@@ -682,12 +765,21 @@
     let selectedAsset = null;
     let paretoChartInstance = null;
     let tempChartInstance = null;
-    let currentMode = '3d';
+    let currentMode = 'cesium'; // Default to Singapore DUCT 3D Heat X-Ray!
     let isTilt = true;
     let isOrbiting = false;
     let orbitTimer = null;
 
-    // Award-Winning Dark Vector Styling: Strips all retail, commercial labels & clashing shields
+    // Cesium State
+    let cesiumViewer = null;
+    let cesiumTileset = null;
+    let cesiumEntities = [];
+    let isCesiumOrbiting = false;
+    let cesiumOrbitRemoveListener = null;
+    let currentCesiumShaderMode = 'flir';
+    let googleMapsApiKey = "AIzaSyAruft4_u7ERcieBTw1_gY7NPGyCbLyJxY";
+
+    // Award-Winning Dark Vector Styling for Google Maps Viewport
     const classifiedDarkStyle = [
       { elementType: "geometry", stylers: [{ color: "#060a14" }] },
       { elementType: "labels.icon", stylers: [{ visibility: "off" }] },
@@ -705,7 +797,358 @@
       { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#1e3a5f" }] }
     ];
 
-    // Initialize Map Viewport
+    // Initialize CesiumJS 3D Heat X-Ray Engine (Singapore DUCT Architecture)
+    async function initCesium() {
+      if (cesiumViewer) return;
+
+      const container = document.getElementById("cesiumContainer");
+      if (!container || typeof Cesium === 'undefined') return;
+
+      try {
+        cesiumViewer = new Cesium.Viewer("cesiumContainer", {
+          animation: false,
+          baseLayerPicker: false,
+          fullscreenButton: false,
+          geocoder: false,
+          homeButton: false,
+          infoBox: false,
+          sceneModePicker: false,
+          selectionIndicator: false,
+          timeline: false,
+          navigationHelpButton: false
+        });
+
+        // Hide default credits for clean full-bleed cockpit
+        if (cesiumViewer.cesiumWidget && cesiumViewer.cesiumWidget.creditContainer) {
+          cesiumViewer.cesiumWidget.creditContainer.style.display = "none";
+        }
+
+        // Configure Scene atmosphere & lighting
+        cesiumViewer.scene.globe.enableLighting = false;
+        cesiumViewer.scene.backgroundColor = Cesium.Color.fromCssColorString('#03060d');
+
+        // Initial Dallas Camera Position (Downtown Canyon View)
+        cesiumViewer.camera.flyTo({
+          destination: Cesium.Cartesian3.fromDegrees(-96.7970, 32.7767, 1300),
+          orientation: {
+            pitch: Cesium.Math.toRadians(-35),
+            heading: Cesium.Math.toRadians(45)
+          },
+          duration: 0
+        });
+
+        // Load 3D Tileset with Heat X-Ray Custom Shader
+        await load3DTiles();
+
+        // Populate Cesium Selectable Risk Layers
+        renderCesiumRiskLayers();
+
+      } catch (err) {
+        console.error("Cesium init error:", err);
+      }
+    }
+
+    // Singapore DUCT Heat X-Ray Custom Shaders (GPU Accelerated)
+    function createCesiumCustomShader(mode) {
+      const opacity = (document.getElementById('sl-xray-opacity') ? document.getElementById('sl-xray-opacity').value : 65) / 100.0;
+      const gain = (document.getElementById('sl-xray-gain') ? document.getElementById('sl-xray-gain').value : 15) / 10.0;
+
+      if (mode === 'flir') {
+        return new Cesium.CustomShader({
+          lightingModel: Cesium.LightingModel.UNLIT,
+          uniforms: {
+            u_gain: { type: Cesium.UniformType.FLOAT, value: gain },
+            u_opacity: { type: Cesium.UniformType.FLOAT, value: opacity }
+          },
+          fragmentShaderText: `
+            void fragmentMain(FragmentInput fsInput, inout czm_modelMaterial material) {
+              float height = fsInput.positionWC.z;
+              float rim = 1.0 - abs(dot(fsInput.normalEC, normalize(fsInput.eyeDirectionEC)));
+              rim = pow(rim, 2.0);
+
+              // Singapore DUCT Street Canyon Heat Entrapment Simulation
+              float heatFactor = clamp((height - 110.0) / 220.0, 0.0, 1.0);
+
+              // FLIR Thermal Ramp: Deep Violet -> Amber Asphalt -> Crimson Facade -> Radiant Yellow
+              vec3 coolColor = vec3(0.08, 0.02, 0.22);
+              vec3 midColor = vec3(0.95, 0.25, 0.05);
+              vec3 hotColor = vec3(1.0, 0.90, 0.20);
+
+              vec3 thermal = heatFactor < 0.5 
+                ? mix(coolColor, midColor, heatFactor * 2.0)
+                : mix(midColor, hotColor, (heatFactor - 0.5) * 2.0);
+
+              thermal += vec3(rim * 0.7 * u_gain, rim * 0.35 * u_gain, rim * 0.1);
+
+              material.diffuse = thermal;
+              material.alpha = clamp(u_opacity + rim * 0.45, 0.15, 1.0);
+            }
+          `
+        });
+      }
+      else if (mode === 'xray') {
+        return new Cesium.CustomShader({
+          lightingModel: Cesium.LightingModel.UNLIT,
+          uniforms: {
+            u_opacity: { type: Cesium.UniformType.FLOAT, value: opacity }
+          },
+          fragmentShaderText: `
+            void fragmentMain(FragmentInput fsInput, inout czm_modelMaterial material) {
+              float rim = 1.0 - abs(dot(fsInput.normalEC, normalize(fsInput.eyeDirectionEC)));
+              rim = pow(rim, 2.2);
+              material.diffuse = vec3(0.0, 0.95, 1.0);
+              material.alpha = clamp(u_opacity * 0.35 + rim * 0.8, 0.1, 0.95);
+            }
+          `
+        });
+      }
+      else if (mode === 'anomaly') {
+        return new Cesium.CustomShader({
+          lightingModel: Cesium.LightingModel.UNLIT,
+          uniforms: {
+            u_gain: { type: Cesium.UniformType.FLOAT, value: gain }
+          },
+          fragmentShaderText: `
+            void fragmentMain(FragmentInput fsInput, inout czm_modelMaterial material) {
+              float height = fsInput.positionWC.z;
+              float rim = 1.0 - abs(dot(fsInput.normalEC, normalize(fsInput.eyeDirectionEC)));
+              rim = pow(rim, 2.5);
+
+              // Highlights building crowns and asphalt hot-spots exceeding 102°F
+              if (height > 180.0 || rim > 0.6) {
+                material.diffuse = vec3(1.0, 0.1, 0.2) * u_gain;
+                material.alpha = 0.9;
+              } else {
+                material.diffuse = vec3(0.04, 0.06, 0.12);
+                material.alpha = 0.3;
+              }
+            }
+          `
+        });
+      }
+      return null; // Photorealistic standard textured mesh
+    }
+
+    // Load Google Photorealistic 3D Tiles with Fallback to OSM 3D Buildings
+    async function load3DTiles() {
+      if (!cesiumViewer) return;
+      if (cesiumTileset) {
+        cesiumViewer.scene.primitives.remove(cesiumTileset);
+        cesiumTileset = null;
+      }
+
+      const shader = createCesiumCustomShader(currentCesiumShaderMode);
+
+      // Attempt 1: Google Photorealistic 3D Tiles API
+      try {
+        if (typeof Cesium.createGooglePhotorealistic3DTileset === 'function') {
+          cesiumTileset = await Cesium.createGooglePhotorealistic3DTileset({
+            key: googleMapsApiKey
+          });
+          if (shader) cesiumTileset.customShader = shader;
+          cesiumViewer.scene.primitives.add(cesiumTileset);
+          console.log("Loaded Google Photorealistic 3D Tiles successfully.");
+          return;
+        }
+      } catch (err) {
+        console.warn("Google 3D Tiles API key restriction or 403. Falling back to global 3D buildings mesh.", err);
+      }
+
+      // Fallback: Global OpenStreetMap 3D Buildings Mesh (Unrestricted)
+      try {
+        cesiumTileset = await Cesium.createOsmBuildingsAsync();
+        if (shader) cesiumTileset.customShader = shader;
+        cesiumViewer.scene.primitives.add(cesiumTileset);
+        console.log("Loaded OSM 3D Buildings with DUCT Heat X-Ray shader.");
+      } catch (e) {
+        console.error("3D Buildings load error:", e);
+      }
+    }
+
+    // Switch Shader Presets
+    async function setCesiumShader(mode) {
+      currentCesiumShaderMode = mode;
+      
+      ['flir', 'xray', 'anomaly', 'mesh'].forEach(id => {
+        const btn = document.getElementById(`btn-${id}`);
+        if (btn) {
+          if (id === mode) {
+            btn.className = "p-1.5 rounded-xl bg-amber-500/25 border border-amber-500/50 text-amber-200 transition cursor-pointer text-center font-bold";
+          } else {
+            btn.className = "p-1.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 hover:text-white transition cursor-pointer text-center";
+          }
+        }
+      });
+
+      if (cesiumTileset) {
+        cesiumTileset.customShader = createCesiumCustomShader(mode);
+      }
+    }
+
+    function updateCesiumUniforms() {
+      const op = document.getElementById('sl-xray-opacity').value;
+      const gn = (document.getElementById('sl-xray-gain').value / 10.0).toFixed(1);
+      document.getElementById('txt-xray-opacity').innerText = `${op}%`;
+      document.getElementById('txt-xray-gain').innerText = `${gn}x`;
+
+      if (cesiumTileset && currentCesiumShaderMode !== 'mesh') {
+        cesiumTileset.customShader = createCesiumCustomShader(currentCesiumShaderMode);
+      }
+    }
+
+    // Populate Selectable Risk Layers in CesiumJS
+    function renderCesiumRiskLayers() {
+      if (!cesiumViewer) return;
+
+      // Clear existing entities
+      cesiumEntities.forEach(e => cesiumViewer.entities.remove(e));
+      cesiumEntities = [];
+
+      const showHeat = document.getElementById('layer-3d-heat').checked;
+      const showEmissions = document.getElementById('layer-emissions').checked;
+      const showCooling = document.getElementById('layer-cooling').checked;
+      const showEquity = document.getElementById('layer-equity').checked;
+      const showTankers = document.getElementById('layer-tankers').checked;
+
+      // 1. Sited Cooling Hubs & 3D Thermal Offset Columns
+      if (showCooling && currentSites.length > 0) {
+        currentSites.forEach(s => {
+          const isMobile = s.rank === 5;
+          const col = isMobile ? Cesium.Color.fromCssColorString('#f59e0b') : Cesium.Color.fromCssColorString('#00F0FF');
+          
+          // Extruded 3D Cylinder Column
+          const cylinder = cesiumViewer.entities.add({
+            name: s.facility_name,
+            position: Cesium.Cartesian3.fromDegrees(s.longitude, s.latitude, 140),
+            cylinder: {
+              length: 280.0,
+              topRadius: 35.0,
+              bottomRadius: 55.0,
+              material: col.withAlpha(0.85),
+              outline: true,
+              outlineColor: Cesium.Color.WHITE
+            }
+          });
+          cesiumEntities.push(cylinder);
+
+          // 10-Minute Pedestrian Walk Buffer (1,200m)
+          const isochrone = cesiumViewer.entities.add({
+            position: Cesium.Cartesian3.fromDegrees(s.longitude, s.latitude),
+            ellipse: {
+              semiMinorAxis: 1200.0,
+              semiMajorAxis: 1200.0,
+              material: col.withAlpha(0.12),
+              outline: true,
+              outlineColor: col.withAlpha(0.65)
+            }
+          });
+          cesiumEntities.push(isochrone);
+        });
+      }
+
+      // 2. Climate TRACE Industrial Emission Stacks & Plumes (8.86M t CO₂e)
+      if (showEmissions && currentEmissionsAssets.length > 0) {
+        currentEmissionsAssets.forEach(a => {
+          const stack = cesiumViewer.entities.add({
+            name: a.name,
+            position: Cesium.Cartesian3.fromDegrees(a.coordinates.longitude, a.coordinates.latitude, 220),
+            cylinder: {
+              length: 440.0,
+              topRadius: 45.0,
+              bottomRadius: 70.0,
+              material: Cesium.Color.fromCssColorString('#ff3366').withAlpha(0.85),
+              outline: true,
+              outlineColor: Cesium.Color.fromCssColorString('#ff3366')
+            }
+          });
+          cesiumEntities.push(stack);
+        });
+      }
+
+      // 3. 104°F Emergency Mobile Hydration Tankers (Active Radar Pulsing)
+      if (showTankers) {
+        const tanker1 = cesiumViewer.entities.add({
+          name: "Mobile Hydration Tanker #1 (West Dallas)",
+          position: Cesium.Cartesian3.fromDegrees(-96.8450, 32.7850, 60),
+          point: {
+            pixelSize: 18,
+            color: Cesium.Color.fromCssColorString('#f59e0b'),
+            outlineColor: Cesium.Color.WHITE,
+            outlineWidth: 3
+          }
+        });
+        cesiumEntities.push(tanker1);
+
+        const tanker2 = cesiumViewer.entities.add({
+          name: "Mobile Hydration Tanker #2 (South Dallas MLK)",
+          position: Cesium.Cartesian3.fromDegrees(-96.7600, 32.7600, 60),
+          point: {
+            pixelSize: 18,
+            color: Cesium.Color.fromCssColorString('#3b82f6'),
+            outlineColor: Cesium.Color.WHITE,
+            outlineWidth: 3
+          }
+        });
+        cesiumEntities.push(tanker2);
+      }
+    }
+
+    function toggleRiskLayers() {
+      if (currentMode === 'cesium') {
+        renderCesiumRiskLayers();
+      } else {
+        updateAllLayers();
+      }
+    }
+
+    // Camera Fly-To Bookmarks in Cesium
+    function flyCesiumTo(lon, lat, height, pitchDeg, headingDeg) {
+      if (cesiumViewer) {
+        cesiumViewer.camera.flyTo({
+          destination: Cesium.Cartesian3.fromDegrees(lon, lat, height),
+          orientation: {
+            pitch: Cesium.Math.toRadians(pitchDeg),
+            heading: Cesium.Math.toRadians(headingDeg)
+          },
+          duration: 1.5
+        });
+      }
+    }
+
+    function toggleCesiumOrbit() {
+      if (!cesiumViewer) return;
+      isCesiumOrbiting = !isCesiumOrbiting;
+      const btn = document.getElementById('txt-camera-action');
+      const actionBtn = document.getElementById('btn-camera-action');
+
+      if (isCesiumOrbiting) {
+        btn.innerText = "3D Orbit: On";
+        actionBtn.className = "flex-1 py-1.5 bg-amber-500/40 text-amber-200 border border-amber-400 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer";
+        
+        cesiumOrbitRemoveListener = cesiumViewer.scene.postUpdate.addEventListener(() => {
+          cesiumViewer.camera.rotateRight(0.003);
+        });
+      } else {
+        btn.innerText = "3D Orbit: Off";
+        actionBtn.className = "flex-1 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer";
+        if (cesiumOrbitRemoveListener) {
+          cesiumOrbitRemoveListener();
+          cesiumOrbitRemoveListener = null;
+        }
+      }
+    }
+
+    function openApiKeyModal() { document.getElementById('modal-apikey').classList.remove('hidden'); }
+    function applyGoogleTilesKey() {
+      const key = document.getElementById('custom-google-tiles-key').value.trim();
+      if (key) {
+        googleMapsApiKey = key;
+        load3DTiles();
+        closeModal('modal-apikey');
+      }
+    }
+
+    // ================= GOOGLE MAPS BACKEND ENGINE =================
     function initMap() {
       const dallasCenter = { lat: 32.7767, lng: -96.7970 };
       try {
@@ -735,45 +1178,7 @@
       }
     }
 
-    // Camera Controls
-    function toggleTilt() {
-      if (!map) return;
-      isTilt = !isTilt;
-      const tiltVal = isTilt ? 67.5 : 0;
-      const headVal = isTilt ? 42 : 0;
-      map.setTilt(tiltVal);
-      map.setHeading(headVal);
-      document.getElementById('txt-tilt').innerText = `3D Tilt: ${tiltVal}°`;
-      document.getElementById('btn-tilt').className = isTilt 
-        ? "flex-1 py-1.5 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer"
-        : "flex-1 py-1.5 bg-white/5 hover:bg-white/10 text-slate-300 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer";
-    }
-
-    function flyTo(lat, lng, tilt, heading, zoom) {
-      if (map) {
-        map.panTo({ lat, lng });
-        map.setTilt(tilt);
-        map.setHeading(heading);
-        map.setZoom(zoom);
-      }
-    }
-
-    function orbitCamera() {
-      if (!map) return;
-      if (isOrbiting) {
-        clearInterval(orbitTimer);
-        isOrbiting = false;
-        return;
-      }
-      isOrbiting = true;
-      let heading = map.getHeading() || 42;
-      orbitTimer = setInterval(() => {
-        heading = (heading + 0.5) % 360;
-        map.setHeading(heading);
-      }, 50);
-    }
-
-    // Load Data
+    // Load Backend Data
     async function loadAllData() {
       try {
         const resp = await fetch('/api/sites');
@@ -790,21 +1195,21 @@
         currentEmissionsAssets = data.assets || [];
       } catch (e) { console.error(e); }
 
-      updateAllLayers();
+      // Default launch to Cesium 3D Heat X-Ray
+      setMode('cesium');
+
       initParetoChart();
       initTempChart();
     }
 
-    // Render Deck.gl 3D WebGL Layers
+    // Deck.gl 3D ColumnLayers for Google Maps Viewport
     function updateAllLayers() {
       if (!deckOverlay) return;
 
       const showHeat = document.getElementById('layer-3d-heat').checked;
       const showEmissions = document.getElementById('layer-emissions').checked;
-      const showCooling = document.getElementById('layer-cooling').checked;
       const layers = [];
 
-      // 3D Volumetric Thermal Pillars for candidate facilities
       if (showHeat && currentSites.length > 0) {
         layers.push(new deck.ColumnLayer({
           id: 'deck-heat-pillars',
@@ -826,7 +1231,6 @@
         }));
       }
 
-      // 3D Volumetric Industrial Emission Stacks
       if (showEmissions && currentEmissionsAssets.length > 0) {
         layers.push(new deck.ColumnLayer({
           id: 'deck-emission-stacks',
@@ -849,12 +1253,11 @@
       toggleWalkBuffers();
     }
 
-    // 10-Minute Walk Buffers
     function toggleWalkBuffers() {
       circleOverlays.forEach(c => c.setMap(null));
       circleOverlays = [];
 
-      const showBuffers = document.getElementById('layer-buffers').checked;
+      const showBuffers = document.getElementById('layer-cooling').checked;
       if (showBuffers && map && currentSites.length > 0) {
         currentSites.forEach(s => {
           const isMobile = s.rank === 5;
@@ -874,7 +1277,7 @@
       }
     }
 
-    // Inspect Asset in Climate TRACE Side Drawer
+    // Inspect Asset in Climate TRACE & DUCT Side Drawer
     function inspectAsset(asset, type) {
       selectedAsset = asset;
       const title = document.getElementById('inspector-title');
@@ -944,9 +1347,9 @@
 
           <!-- Quick Action Buttons -->
           <div class="grid grid-cols-2 gap-2 pt-1">
-            <button onclick="flyTo(${asset.latitude}, ${asset.longitude}, 67.5, 35, 16.5)" class="py-2 bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
-              <i class="fa-solid fa-cube text-xs"></i>
-              <span>Fly 3D Camera</span>
+            <button onclick="flyCesiumTo(${asset.longitude}, ${asset.latitude}, 800, -35, 45)" class="py-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-fire-flame-curved text-xs"></i>
+              <span>Fly DUCT X-Ray</span>
             </button>
             <button onclick="askDana('Simulate extreme 104°F impact at ${asset.facility_name}')" class="py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
               <i class="fa-solid fa-comments text-xs"></i>
@@ -999,9 +1402,9 @@
           </div>
 
           <!-- Fly to Emitter -->
-          <button onclick="flyTo(${asset.coordinates.latitude}, ${asset.coordinates.longitude}, 67.5, 45, 15.5)" class="w-full py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
-            <i class="fa-solid fa-cube text-xs"></i>
-            <span>Fly to 3D Volumetric Emission Stack</span>
+          <button onclick="flyCesiumTo(${asset.coordinates.longitude}, ${asset.coordinates.latitude}, 1100, -35, 45)" class="w-full py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
+            <i class="fa-solid fa-fire-flame-curved text-xs"></i>
+            <span>Fly to 3D Emission Plume in Cesium</span>
           </button>
         `;
       }
@@ -1011,33 +1414,67 @@
     function setMode(mode) {
       currentMode = mode;
       
-      // Update Pills
-      ['3d', 'track2', 'track1', 'track3', 'agents', 'armor'].forEach(id => {
+      const mapEl = document.getElementById('map');
+      const cesiumEl = document.getElementById('cesiumContainer');
+      const xrayControls = document.getElementById('xray-shader-controls');
+      const deckTitle = document.getElementById('deck-title');
+      const deckIcon = document.getElementById('deck-icon');
+      const deckBadge = document.getElementById('deck-badge');
+
+      // Update Nav Pills
+      ['cesium', '3d', 'track2', 'track1', 'track3', 'agents', 'armor'].forEach(id => {
         const btn = document.getElementById(`nav-${id}`);
         if (btn) {
           if (id === mode) {
-            btn.className = "px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition active-pill cursor-pointer";
+            btn.className = id === 'cesium' 
+              ? "px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition active-flir-pill cursor-pointer"
+              : "px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition active-pill cursor-pointer";
           } else {
             btn.className = "px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1.5 transition cursor-pointer";
           }
         }
       });
 
-      if (mode === '3d' || mode === 'track2') {
-        if (currentSites.length > 0) inspectAsset(currentSites[0], 'site');
-        if (mode === '3d') flyTo(32.7800, -96.8000, 67.5, 42, 14.5);
-      }
-      else if (mode === 'track1') {
-        renderEmergencyInspector();
-      }
-      else if (mode === 'track3') {
-        renderRedesignInspector();
-      }
-      else if (mode === 'agents') {
-        renderAgentsInspector();
-      }
-      else if (mode === 'armor') {
-        renderArmorInspector();
+      if (mode === 'cesium') {
+        mapEl.classList.add('hidden');
+        cesiumEl.classList.remove('hidden');
+        xrayControls.classList.remove('hidden');
+        deckTitle.innerText = "DUCT Heat X-Ray Layers";
+        deckIcon.className = "fa-solid fa-fire-flame-curved text-amber-400 text-sm";
+        deckBadge.className = "text-[9px] font-mono text-amber-300 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-md";
+
+        initCesium();
+        if (cesiumViewer) {
+          cesiumViewer.resize();
+        }
+      } 
+      else {
+        cesiumEl.classList.add('hidden');
+        mapEl.classList.remove('hidden');
+        xrayControls.classList.add('hidden');
+        deckTitle.innerText = "Spatial Layer Control";
+        deckIcon.className = "fa-solid fa-layer-group text-cyan-400 text-sm";
+        deckBadge.className = "text-[9px] font-mono text-cyan-300 bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 rounded-md";
+
+        if (map) {
+          google.maps.event.trigger(map, 'resize');
+        }
+
+        if (mode === '3d' || mode === 'track2') {
+          if (currentSites.length > 0) inspectAsset(currentSites[0], 'site');
+        }
+        else if (mode === 'track1') {
+          renderEmergencyInspector();
+        }
+        else if (mode === 'track3') {
+          renderRedesignInspector();
+        }
+        else if (mode === 'agents') {
+          renderAgentsInspector();
+        }
+        else if (mode === 'armor') {
+          renderArmorInspector();
+        }
       }
     }
 
@@ -1313,7 +1750,7 @@
           </div>
           <div class="trace-card rounded-2xl p-3 text-slate-400 flex items-center gap-2 border border-white/10">
             <i class="fa-solid fa-spinner fa-spin text-cyan-400"></i>
-            <span>Dana is querying BigQuery ML & Model Armor...</span>
+            <span>Dana is querying DUCT Physics & Model Armor...</span>
           </div>
         </div>
       `;
