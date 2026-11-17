@@ -1870,16 +1870,17 @@ def plan_emergency_hydration_dispatch(
     num_units: int = 3,
     include_wellness_checks: bool = True
 ) -> Dict[str, Any]:
-    """Plans immediate operational emergency deployment for mobile hydration trucks and wellness checks.
+    """Plans immediate operational emergency deployment for mobile hydration trucks, wellness checks, and extended library cooling sanctuaries.
     
     Directly addresses CHALLENGE 1 - TRACK 1:
-    'Today it is 102° tomorrow. Where do the hydration trucks and wellness checks go?'
+    'Today it is 102° tomorrow. Where do the hydration trucks, wellness checks, and extended library hours go?'
     
     Combines BQML predicted microclimate heat offsets with acute vulnerability indicators:
     - Peak modeled heat island offset (°F above baseline)
     - Zero-vehicle households (residents who cannot physically drive to cooling centers)
     - Medically fragile, elderly, and unhoused pedestrian concentrations
     - Specific street-level staging coordinates and landmarks for emergency dispatchers
+    - Emergency extended hours (extended to 8:00 PM) across Dallas Public Library anchor cooling sanctuaries
     
     Args:
         ambient_temp_f: Forecasted ambient temperature in degrees Fahrenheit (default 102.0).
@@ -2003,31 +2004,134 @@ def plan_emergency_hydration_dispatch(
             }
         }
     ]
+
+    # Designated Dallas Public Library emergency cooling sanctuaries activated at 100°F+ threshold
+    EXTENDED_LIBRARY_HOURS = [
+        {
+            "facility_name": "J. Erik Jonsson Central Library",
+            "role": "Flagship Downtown Cooling Sanctuary",
+            "census_tract": "48113002100",
+            "address": "1515 Young St, Dallas, TX 75201",
+            "coordinates": {"latitude": 32.7782, "longitude": -96.7972},
+            "regular_hours": "Closes 5:00 PM",
+            "emergency_extended_hours": "Extended to 8:00 PM (Emergency Heat Protocol Active)",
+            "cooling_capacity": "Multi-floor high-capacity HVAC (70°F indoor temp)",
+            "transit_access": "DART Rail All Lines (Akard / St. Paul Station)",
+            "amenities": [
+                "Multi-floor cold air conditioning",
+                "Filtered cold water refill stations",
+                "Workspaces & free high-speed Wi-Fi",
+                "Phone charging lockers",
+                "ADA accessible elevators",
+                "Youth & teen discovery centers"
+            ],
+            "target_population": "Downtown workers, unhoused community members, and transit commuters"
+        },
+        {
+            "facility_name": "Hampton-Illinois Branch Library",
+            "role": "Oak Cliff Anchor Cooling Center",
+            "census_tract": "48113008704",
+            "address": "2210 W Illinois Ave, Dallas, TX 75224",
+            "coordinates": {"latitude": 32.7212, "longitude": -96.8580},
+            "regular_hours": "Closes 6:00 PM",
+            "emergency_extended_hours": "Extended to 8:00 PM (Emergency Heat Protocol Active)",
+            "cooling_capacity": "Indoor climate controlled to 72°F",
+            "transit_access": "DART Bus #223 & #226 (Hampton Station nearby)",
+            "amenities": [
+                "Free ice water refill stations",
+                "Quiet air-conditioned study spaces",
+                "Public computers & free Wi-Fi",
+                "Children's story cooling area",
+                "ADA wheelchair accessible"
+            ],
+            "target_population": "South Dallas / Oak Cliff families and elderly residents (52.2% poverty tract corridor)"
+        },
+        {
+            "facility_name": "Pleasant Grove Branch Library & Community Hub",
+            "role": "Southeast Dallas Cooling Refuge",
+            "census_tract": "48113019213",
+            "address": "7310 Lake June Rd, Dallas, TX 75217",
+            "coordinates": {"latitude": 32.7298, "longitude": -96.6985},
+            "regular_hours": "Closes 6:00 PM",
+            "emergency_extended_hours": "Extended to 8:00 PM (Emergency Heat Protocol Active)",
+            "cooling_capacity": "Indoor climate controlled to 71°F",
+            "transit_access": "DART Bus #101 & #218 (Lake June Transit Hub)",
+            "amenities": [
+                "Free drinking water & ice dispenser",
+                "Full climate-controlled community sanctuary",
+                "Adjacent park splash pad",
+                "Device charging stations",
+                "Pet-friendly hydration station"
+            ],
+            "target_population": "High-density transit corridor with low tree canopy (<7%) and 36.1% poverty"
+        },
+        {
+            "facility_name": "Dallas West Branch Library",
+            "role": "West Dallas Industrial Corridor Cooling Station",
+            "census_tract": "48113020500",
+            "address": "2332 Singleton Blvd, Dallas, TX 75212",
+            "coordinates": {"latitude": 32.7834, "longitude": -96.8623},
+            "regular_hours": "Closes 6:00 PM",
+            "emergency_extended_hours": "Extended to 8:00 PM (Emergency Heat Protocol Active)",
+            "cooling_capacity": "Indoor climate controlled to 71°F",
+            "transit_access": "DART Bus #028 & #052 (Singleton Blvd transit link)",
+            "amenities": [
+                "Chilled hydration station",
+                "Senior resting lounge with recliners",
+                "Public computer lab & Wi-Fi",
+                "Emergency phone charging lockers",
+                "ADA accessible"
+            ],
+            "target_population": "Serving West Dallas tract with 45.2% zero-vehicle households and pre-1970 housing stock"
+        },
+        {
+            "facility_name": "Martin Luther King Jr. Branch Library",
+            "role": "South Dallas / Fair Park Resilience Sanctuary",
+            "census_tract": "48113020300",
+            "address": "2922 MLK Jr Blvd, Dallas, TX 75215",
+            "coordinates": {"latitude": 32.7600, "longitude": -96.7600},
+            "regular_hours": "Closes 6:00 PM",
+            "emergency_extended_hours": "Extended to 8:00 PM (Emergency Heat Protocol Active)",
+            "cooling_capacity": "High-capacity air-conditioned assembly rooms (69°F indoor)",
+            "transit_access": "DART Green Line (MLK Jr. Station) & Bus #047",
+            "amenities": [
+                "Free bottled water & electrolyte packs",
+                "Medical heat exhaustion triage area",
+                "Senior cooling room",
+                "Free public Wi-Fi & device charging"
+            ],
+            "target_population": "38.5% zero-vehicle households and vulnerable elderly residents living in older homes"
+        }
+    ]
     
     selected_targets = DISPATCH_TARGETS[:effective_units]
     
     return {
         "status": "success",
-        "challenge_track": "Track 1: Today — it is 102° tomorrow. Where do the hydration trucks and wellness checks go?",
+        "challenge_track": "Track 1: Today — it is 102° tomorrow. Where do the hydration trucks, wellness checks, and extended library hours go?",
         "weather_scenario": {
             "forecast_ambient_temp_f": ambient_temp_f,
             "condition": "Severe Acute Heat Emergency",
-            "activation_trigger": "Ambient temperature exceeding 100°F threshold"
+            "activation_trigger": "Ambient temperature exceeding 100°F threshold (NOAA HeatRisk Level 2/3)"
         },
         "dispatch_summary": {
             "units_deployed": len(selected_targets),
             "total_population_protected": sum(t["vulnerability_profile"]["population"] for t in selected_targets),
             "primary_staging_area": selected_targets[0]["staging_intersection"],
-            "peak_modeled_offset": f"+{selected_targets[0]['predicted_heat_offset_f']}°F (Tract {selected_targets[0]['census_tract']})"
+            "peak_modeled_offset": f"+{selected_targets[0]['predicted_heat_offset_f']}°F (Tract {selected_targets[0]['census_tract']})",
+            "extended_libraries_activated": len(EXTENDED_LIBRARY_HOURS),
+            "extended_closing_time": "8:00 PM (All Anchor Branches)"
         },
         "recommended_dispatch_targets": selected_targets,
+        "extended_library_hours": EXTENDED_LIBRARY_HOURS,
         "coordination_brief": (
-            f"Under a forecasted {ambient_temp_f}°F heat wave, mobile hydration resources must deploy to neighborhoods "
-            "where severe modeled urban heat offsets (+0.96°F to +1.24°F) collide with extreme transit dependency. "
-            f"Unit Alpha will stage at {selected_targets[0]['staging_intersection']} (Tract {selected_targets[0]['census_tract']}), "
-            f"which runs +{selected_targets[0]['predicted_heat_offset_f']}°F above the city baseline. Emergency wellness check "
-            "teams should walk the designated high-density residential corridors to reach elderly and non-car-owning residents "
-            "who cannot travel to distant cooling shelters."
+            f"Under a forecasted {ambient_temp_f}°F heat wave (triggering Dallas Emergency Heat Action protocols at >=100°F), "
+            "mobile hydration resources deploy to neighborhoods where severe modeled urban heat offsets (+0.96°F to +1.24°F) "
+            "collide with extreme transit dependency. Unit Alpha stages at Coit Rd & Frankford Rd (Tract 48085031720, +1.24°F offset). "
+            "Emergency wellness check teams conduct door-to-door welfare checks across designated high-density senior and multi-family "
+            "corridors along Frankford Rd, Skillman/Forest, and Singleton Blvd. Concurrently, 5 Dallas Public Library anchor branches "
+            "(Central Library, Hampton-Illinois, Pleasant Grove, Dallas West, and MLK Jr.) activate emergency extended operating hours "
+            "until 8:00 PM, providing cold air conditioning (70°F), free ice water refill, Wi-Fi, and transit-accessible shelter."
         ),
         "data_source": "bigquery_ml_operational_dispatch"
     }
