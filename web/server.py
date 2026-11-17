@@ -45,6 +45,14 @@ class ChatRequest(BaseModel):
 def get_sites():
     return tools.rank_cooling_center_sites(top_n=5, prioritize_vulnerability=True)
 
+@app.get("/api/hydration")
+def get_hydration(temp: float = 102.0):
+    return tools.plan_emergency_hydration_dispatch(ambient_temp_f=temp)
+
+@app.get("/api/trees")
+def get_trees():
+    return tools.evaluate_tree_planting_roi(top_n=5)
+
 @app.get("/api/audit")
 def get_audit():
     return tools.run_equity_audit()
