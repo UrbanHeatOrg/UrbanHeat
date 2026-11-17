@@ -636,11 +636,6 @@
               </p>
             </div>
           </div>
-
-          <a href="tel:311" class="w-full sm:w-auto min-h-[44px] px-3.5 py-2 bg-red-600/30 hover:bg-red-600/40 text-red-200 border border-red-500/40 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition flex-shrink-0 shadow-sm" title="Call 311 for Free City Transit Ride to Cooling Center">
-            <i class="fa-solid fa-phone text-xs"></i>
-            <span id="res-dial-311">Call 311 for Free Transit Ride</span>
-          </a>
         </div>
 
         <!-- Mobile Segmented View Switcher (Live Map vs Cool Spots List) -->
@@ -904,19 +899,32 @@
           <div class="space-y-1.5 mt-3 text-xs overflow-y-auto max-h-[260px] pr-1">
             
             <!-- Layer 1: NOAA Surface Heat & Inversion Traverses -->
-            <label class="flex items-center justify-between p-2 rounded-xl bg-obsidian-900/80 border border-white/5 hover:border-amber-400/40 transition cursor-pointer">
-              <div class="flex items-center gap-2">
-                <input type="checkbox" id="layer-3d-heat" checked onchange="toggleRiskLayers()" class="rounded accent-amber-400">
-                <div>
-                  <div class="font-bold text-white text-[11px] flex items-center gap-1.5">
-                    <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-                    <span>NOAA Surface Heat Traverses</span>
+            <div class="p-2.5 rounded-xl bg-obsidian-900/80 border border-white/5 hover:border-amber-400/40 transition">
+              <label class="flex items-center justify-between cursor-pointer">
+                <div class="flex items-center gap-2">
+                  <input type="checkbox" id="layer-3d-heat" checked onchange="toggleRiskLayers()" class="rounded accent-amber-400">
+                  <div>
+                    <div class="font-bold text-white text-[11px] flex items-center gap-1.5">
+                      <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                      <span>NOAA Surface Heat Traverses</span>
+                    </div>
+                    <div class="text-[9px] text-slate-400">Intra-City Inversion (+9.2°F Δ)</div>
                   </div>
-                  <div class="text-[9px] text-slate-400">Intra-City Inversion (+9.2°F Δ)</div>
                 </div>
+                <span class="text-[9px] font-mono text-amber-300 bg-amber-500/10 px-1.5 py-0.5 rounded">19,491 OBS</span>
+              </label>
+              <!-- Direct Action Controls -->
+              <div class="flex items-center justify-between mt-2 pt-1.5 border-t border-white/5 text-[9px] font-mono">
+                <button type="button" id="btn-focus-heat-traverses" onclick="focusHeatTraverses()" title="Fly 3D Camera to Peak Heat Inversion Corridor" class="px-2 py-1 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30 transition flex items-center gap-1 font-bold cursor-pointer">
+                  <i class="fa-solid fa-crosshairs text-[8px]"></i>
+                  <span>Fly to Peak (+9.2°F)</span>
+                </button>
+                <button type="button" id="btn-inspect-heat-traverses" onclick="inspectPeakHeatObservation()" title="Inspect NOAA Microclimate Sensor Telemetry" class="px-2 py-1 rounded bg-white/5 text-slate-300 hover:text-white transition flex items-center gap-1 cursor-pointer">
+                  <i class="fa-solid fa-chart-line text-[8px]"></i>
+                  <span>Inspect Data</span>
+                </button>
               </div>
-              <span class="text-[9px] font-mono text-amber-300 bg-amber-500/10 px-1.5 py-0.5 rounded">19,491 OBS</span>
-            </label>
+            </div>
 
             <!-- Layer 2: Climate TRACE Industrial Plumes -->
             <label class="flex items-center justify-between p-2 rounded-xl bg-obsidian-900/80 border border-white/5 hover:border-rose-400/40 transition cursor-pointer">
@@ -2271,8 +2279,6 @@
       });
       const searchInput = document.getElementById('res-search-input');
       if (searchInput) searchInput.placeholder = dict.searchPlaceholder;
-      const dial311 = document.getElementById('res-dial-311');
-      if (dial311) dial311.innerText = dict.freeRide;
 
       // Update chip texts
       const chipContainer = document.getElementById('res-quick-chips');
@@ -3602,6 +3608,23 @@
               inspectAsset(matchedBuilding, 'building', true);
               return;
             }
+            if (entityName.includes('NOAA Heat Observation') || entityName.includes('NOAA Thermal Footprint')) {
+              const matchedHeat = (currentHeatObservations || []).find(h => {
+                const tempStr = (h.temp_f || 0).toFixed(1);
+                return entityName.includes(tempStr);
+              }) || (currentHeatObservations && currentHeatObservations[0]) || {
+                temp_f: 107.6,
+                heat_offset_f: 9.2,
+                latitude: 32.8073,
+                longitude: -96.8315,
+                pop_density_per_sqmi: 7062,
+                svi_overall_pctile: 0.88,
+                national_walkability_index: 18.0,
+                geo_id: "48113000401"
+              };
+              inspectAsset(matchedHeat, 'heat', true);
+              return;
+            }
           }
         }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
@@ -4059,7 +4082,7 @@
         });
       }
 
-      // 3. NOAA Surface Heat Traverses (Volumetric 3D Heat Pillars)
+      // 3. NOAA Surface Heat Traverses (Volumetric 3D Heat Pillars & Floating Telemetry)
       if (showHeat) {
         const ptsToRender = (typeof currentHeatObservations !== 'undefined' && currentHeatObservations && currentHeatObservations.length > 0)
           ? currentHeatObservations
@@ -4078,30 +4101,80 @@
               { longitude: -96.7450, latitude: 32.7150, temp_f: 105.0, heat_offset_f: 2.3 }
             ];
 
-        const step = Math.max(1, Math.floor(ptsToRender.length / 80));
+        // Sample up to 120 points for smooth 60fps rendering in Cesium
+        const step = Math.max(1, Math.floor(ptsToRender.length / 120));
         for (let i = 0; i < ptsToRender.length; i += step) {
           const hp = ptsToRender[i];
           const temp = hp.temp_f || 95.0;
           const offset = hp.heat_offset_f || 0.0;
-          const col = temp >= 100 ? Cesium.Color.fromCssColorString('#f43f5e') :
-                      temp >= 92 ? Cesium.Color.fromCssColorString('#f97316') :
-                      temp >= 85 ? Cesium.Color.fromCssColorString('#f59e0b') :
+          const col = temp >= 105 ? Cesium.Color.fromCssColorString('#ef4444') :
+                      temp >= 100 ? Cesium.Color.fromCssColorString('#f97316') :
+                      temp >= 92 ? Cesium.Color.fromCssColorString('#f59e0b') :
                       Cesium.Color.fromCssColorString('#06b6d4');
-          const h = Math.max(80, Math.min(320, 120 + offset * 25));
+          
+          // Enhanced 3D heat pillar height and radii for dramatic visibility
+          const h = Math.max(160, Math.min(480, 180 + offset * 35));
           const p = cesiumViewer.entities.add({
             name: `NOAA Heat Observation: ${temp.toFixed(1)}°F (Offset: ${offset >= 0 ? '+' : ''}${offset.toFixed(1)}°F)`,
             position: Cesium.Cartesian3.fromDegrees(hp.longitude, hp.latitude, 140.0 + h / 2.0),
             cylinder: {
               length: h,
-              topRadius: 18.0,
-              bottomRadius: 28.0,
-              material: col.withAlpha(0.80),
+              topRadius: 36.0,
+              bottomRadius: 54.0,
+              material: col.withAlpha(0.85),
               outline: true,
               outlineColor: Cesium.Color.fromCssColorString('#fde047'),
               shadows: Cesium.ShadowMode.ENABLED
             }
           });
           cesiumEntities.push(p);
+
+          // Glowing Top Beacon Point
+          const beacon = cesiumViewer.entities.add({
+            name: `NOAA Heat Observation Beacon: ${temp.toFixed(1)}°F`,
+            position: Cesium.Cartesian3.fromDegrees(hp.longitude, hp.latitude, 140.0 + h + 15.0),
+            point: {
+              pixelSize: 12,
+              color: col,
+              outlineColor: Cesium.Color.WHITE,
+              outlineWidth: 2
+            }
+          });
+          cesiumEntities.push(beacon);
+
+          // Ground Thermal Footprint Ellipse
+          const footprint = cesiumViewer.entities.add({
+            name: `NOAA Thermal Footprint: ${temp.toFixed(1)}°F`,
+            position: Cesium.Cartesian3.fromDegrees(hp.longitude, hp.latitude, 141.5),
+            ellipse: {
+              semiMinorAxis: 70.0,
+              semiMajorAxis: 70.0,
+              material: col.withAlpha(0.25),
+              outline: true,
+              outlineColor: col.withAlpha(0.8),
+              outlineWidth: 2
+            }
+          });
+          cesiumEntities.push(footprint);
+
+          // For the hottest points (or top thermal anomalies), add floating temperature label
+          if (temp >= 106.0 || (i % 8 === 0 && temp >= 102.0)) {
+            const labelEntity = cesiumViewer.entities.add({
+              name: `NOAA Heat Observation: ${temp.toFixed(1)}°F`,
+              position: Cesium.Cartesian3.fromDegrees(hp.longitude, hp.latitude, 140.0 + h + 35.0),
+              label: {
+                text: `${temp.toFixed(1)}°F`,
+                font: 'bold 12px "JetBrains Mono", monospace',
+                fillColor: Cesium.Color.WHITE,
+                outlineColor: Cesium.Color.BLACK,
+                outlineWidth: 3,
+                style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+                pixelOffset: new Cesium.Cartesian2(0, -5),
+                distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 18000)
+              }
+            });
+            cesiumEntities.push(labelEntity);
+          }
         }
       }
 
@@ -4386,12 +4459,110 @@
       });
     }
 
+    function showLayerToast(icon, title, message) {
+      let toast = document.getElementById('layer-status-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'layer-status-toast';
+        toast.className = 'fixed top-20 right-8 z-[9999] bg-obsidian-900/95 border border-amber-500/40 shadow-2xl rounded-2xl p-3.5 flex items-center gap-3 backdrop-blur-xl transition-all duration-300 transform translate-y-[-10px] opacity-0 pointer-events-none';
+        document.body.appendChild(toast);
+      }
+      toast.innerHTML = `
+        <div class="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 text-sm">
+          <span>${icon}</span>
+        </div>
+        <div>
+          <div class="text-[10px] uppercase font-mono tracking-wider text-amber-400 font-bold">${typeof escapeHtml === 'function' ? escapeHtml(title) : title}</div>
+          <div class="text-xs font-bold text-white">${typeof escapeHtml === 'function' ? escapeHtml(message) : message}</div>
+        </div>
+      `;
+      toast.classList.remove('opacity-0', 'translate-y-[-10px]');
+      toast.classList.add('opacity-100', 'translate-y-0');
+      clearTimeout(window._layerToastTimeout);
+      window._layerToastTimeout = setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', 'translate-y-[-10px]');
+      }, 3500);
+    }
+    window.showLayerToast = showLayerToast;
+
     function toggleRiskLayers() {
       renderCesiumRiskLayers();
       if (typeof updateAllLayers === 'function') {
         updateAllLayers();
       }
+      const showHeat = document.getElementById('layer-3d-heat')?.checked;
+      if (showHeat) {
+        showLayerToast('🔥', 'NOAA Heat Traverses Enabled', '19,491 mobile thermal observations active (+9.2°F UHI)');
+      } else {
+        showLayerToast('❄️', 'NOAA Heat Traverses Hidden', 'Volumetric thermal pillars & transects toggled off');
+      }
     }
+    window.toggleRiskLayers = toggleRiskLayers;
+
+    function focusHeatTraverses() {
+      // 1. Ensure the NOAA heat layer checkbox is enabled
+      const chk = document.getElementById('layer-3d-heat');
+      if (chk && !chk.checked) {
+        chk.checked = true;
+        toggleRiskLayers();
+      }
+      
+      // 2. Identify the peak heat observation in the active city
+      let peak = null;
+      if (currentHeatObservations && currentHeatObservations.length > 0) {
+        peak = currentHeatObservations.reduce((max, cur) => ((cur.temp_f || 0) > (max.temp_f || 0) ? cur : max), currentHeatObservations[0]);
+      }
+      
+      const lon = peak ? peak.longitude : -96.8315;
+      const lat = peak ? peak.latitude : 32.8073;
+      const temp = peak ? (peak.temp_f || 107.6).toFixed(1) : "107.6";
+      const offset = peak ? (peak.heat_offset_f || 9.2).toFixed(1) : "9.2";
+      
+      // 3. Fly Cesium camera right over the active thermal transect
+      flyCesiumTo(lon, lat, 1150, -32, 45);
+      
+      // 4. Also pan Google Maps if active
+      if (typeof map !== 'undefined' && map) {
+        map.panTo({ lat: lat, lng: lon });
+        map.setZoom(13.5);
+      }
+      
+      // 5. Show prominent toast
+      showLayerToast('🔥', 'NOAA Thermal Transect', `Peak Inversion: ${temp}°F (+${offset}°F Δ above baseline)`);
+      
+      // 6. Inspect the peak observation
+      inspectAsset(peak || {
+        latitude: 32.8073,
+        longitude: -96.8315,
+        temp_f: 107.6,
+        heat_offset_f: 9.2,
+        pop_density_per_sqmi: 7062,
+        svi_overall_pctile: 0.88,
+        national_walkability_index: 18.0,
+        geo_id: "48113000401"
+      }, 'heat', true);
+    }
+    window.focusHeatTraverses = focusHeatTraverses;
+
+    function inspectPeakHeatObservation() {
+      let peak = null;
+      if (currentHeatObservations && currentHeatObservations.length > 0) {
+        peak = currentHeatObservations.reduce((max, cur) => ((cur.temp_f || 0) > (max.temp_f || 0) ? cur : max), currentHeatObservations[0]);
+      }
+      const target = peak || {
+        latitude: 32.8073,
+        longitude: -96.8315,
+        temp_f: 107.6,
+        heat_offset_f: 9.2,
+        pop_density_per_sqmi: 7062,
+        svi_overall_pctile: 0.88,
+        national_walkability_index: 18.0,
+        geo_id: "48113000401"
+      };
+      inspectAsset(target, 'heat', true);
+    }
+    window.inspectPeakHeatObservation = inspectPeakHeatObservation;
 
     // Camera Fly-To Bookmarks in Cesium
     function flyCesiumTo(lon, lat, height, pitchDeg, headingDeg) {
@@ -4657,8 +4828,8 @@
     function updateAllLayers() {
       if (!deckOverlay) return;
 
-      const showHeat = document.getElementById('layer-3d-heat').checked;
-      const showEmissions = document.getElementById('layer-emissions').checked;
+      const showHeat = document.getElementById('layer-3d-heat') ? document.getElementById('layer-3d-heat').checked : false;
+      const showEmissions = document.getElementById('layer-emissions') ? document.getElementById('layer-emissions').checked : false;
       const layers = [];
 
       // Render Mobile Thermal Traverse Points
@@ -4667,15 +4838,20 @@
           id: 'deck-traverse-points',
           data: currentHeatObservations,
           getPosition: d => [d.longitude, d.latitude],
-          getRadius: 40,
+          getRadius: 90,
+          radiusMinPixels: 4,
+          radiusMaxPixels: 20,
           getFillColor: d => {
             const t = d.temp_f || 95;
-            if (t >= 100) return [244, 63, 94, 210];
-            if (t >= 92) return [249, 115, 22, 190];
-            if (t >= 85) return [245, 158, 11, 180];
+            if (t >= 105) return [239, 68, 68, 230];
+            if (t >= 100) return [249, 115, 22, 210];
+            if (t >= 92) return [245, 158, 11, 190];
             return [6, 182, 212, 170];
           },
-          pickable: true
+          pickable: true,
+          onClick: info => {
+            if (info.object) inspectAsset(info.object, 'heat', true);
+          }
         }));
       }
 
@@ -5060,6 +5236,68 @@
             const loadingEl = document.getElementById('building-solar-loading');
             if (loadingEl) loadingEl.innerText = "Google Solar API data offline (using estimated insolation)";
           });
+      }
+      else if (type === 'heat') {
+        const temp = (asset.temp_f || 95.0).toFixed(1);
+        const offset = (asset.heat_offset_f || 0.0);
+        const offsetStr = `${offset >= 0 ? '+' : ''}${offset.toFixed(1)}°F`;
+        const lat = (asset.latitude || 32.8073).toFixed(5);
+        const lon = (asset.longitude || -96.8315).toFixed(5);
+        const geoId = asset.geo_id || asset.census_tract || '48113000401';
+        const popDens = asset.pop_density_per_sqmi ? Math.round(asset.pop_density_per_sqmi).toLocaleString() : '7,062';
+        const svi = asset.svi_overall_pctile ? (asset.svi_overall_pctile * 100).toFixed(0) + '%' : '88%';
+        const walkability = asset.national_walkability_index ? asset.national_walkability_index.toFixed(1) : '18.0';
+
+        badge.innerText = "NOAA HEAT WATCH TRANSECT";
+        badge.className = "text-[10px] uppercase font-mono tracking-wider px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30";
+        title.innerText = `Microclimate Observation (${temp}°F)`;
+
+        content.innerHTML = `
+          <!-- Microclimate Telemetry Grid -->
+          <div class="grid grid-cols-2 gap-2">
+            <div class="bg-obsidian-900/80 border border-white/5 rounded-xl p-3">
+              <div class="text-[9px] font-mono text-slate-400 uppercase">Surface Air Temp</div>
+              <div class="text-xl font-black font-mono text-rose-400 mt-0.5">${temp}°F</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">National Heat Watch Sensor</div>
+            </div>
+            <div class="bg-obsidian-900/80 border border-white/5 rounded-xl p-3">
+              <div class="text-[9px] font-mono text-slate-400 uppercase">Urban Heat Island Δ</div>
+              <div class="text-xl font-black font-mono text-amber-400 mt-0.5">${offsetStr}</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">Vs. Rural Baseline Reference</div>
+            </div>
+          </div>
+
+          <!-- Census Tract Demographic & Built Environment Context -->
+          <div class="bg-obsidian-900/80 border border-white/5 rounded-2xl p-3.5 space-y-2.5">
+            <div class="flex items-center justify-between text-xs font-bold text-white border-b border-white/5 pb-2">
+              <span class="flex items-center gap-1.5"><i class="fa-solid fa-map-location-dot text-amber-400"></i> Spatial & Demographics</span>
+              <span class="text-[9px] font-mono text-slate-400">TRACT ${geoId}</span>
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-[10px] font-mono">
+              <div><span class="text-slate-500 block text-[9px]">POP DENSITY</span><span class="text-white font-bold">${popDens} / sq mi</span></div>
+              <div><span class="text-slate-500 block text-[9px]">SVI VULNERABILITY</span><span class="text-rose-400 font-bold">${svi} Percentile</span></div>
+              <div><span class="text-slate-500 block text-[9px]">EPA WALKABILITY</span><span class="text-emerald-400 font-bold">${walkability} / 20</span></div>
+              <div><span class="text-slate-500 block text-[9px]">COORDINATES</span><span class="text-cyan-300 font-bold">${lat}, ${lon}</span></div>
+            </div>
+          </div>
+
+          <!-- NOAA Methodology Card -->
+          <div class="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-3 space-y-1.5 text-xs text-amber-200/90">
+            <div class="font-bold flex items-center gap-1.5 text-amber-300">
+              <i class="fa-solid fa-satellite-dish"></i>
+              <span>NOAA Heat Watch Mobile Transect</span>
+            </div>
+            <p class="text-[11px] leading-relaxed text-slate-300">
+              High-resolution vehicle and bicycle traverses equipped with fast-response thermistors capturing microscale canopy thermal variability across urban canyon asphalt and vegetative buffers.
+            </p>
+          </div>
+
+          <!-- Camera Fly To Action -->
+          <button onclick="flyCesiumTo(${lon}, ${lat}, 450, -32, 45)" class="w-full py-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
+            <i class="fa-solid fa-crosshairs text-xs"></i>
+            <span>Zoom In on Sensor Location (450m AGL)</span>
+          </button>
+        `;
       }
     }
 

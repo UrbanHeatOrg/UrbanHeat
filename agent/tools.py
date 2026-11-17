@@ -3951,6 +3951,31 @@ def resolve_dallas_location(query: str) -> Dict[str, Any]:
             "recommended_action": "Switch data lane configuration or load the corresponding city dataset."
         }
         
+    # Multi-City NOAA Heat Watch Network Resolution (68 Cities & 3,227 US Counties)
+    catalog_path = os.path.join(os.path.dirname(__file__), "..", "web", "static", "data", "multi_city_catalog.json")
+    if os.path.exists(catalog_path):
+        try:
+            with open(catalog_path, "r") as f:
+                cat = json.load(f)
+            for slug, info in cat.items():
+                c_name = info.get("name", "").lower()
+                if (slug in q_norm or (len(c_name) >= 3 and c_name in q_norm)):
+                    return {
+                        "status": "resolved",
+                        "matched_query": query,
+                        "location_name": f"{info.get('name')}, {info.get('state')} (NOAA Heat Watch City)",
+                        "city": info.get("name"),
+                        "state": info.get("state"),
+                        "county": info.get("county"),
+                        "latitude": info.get("lat"),
+                        "longitude": info.get("lon"),
+                        "census_tract_id": info.get("sample_tract"),
+                        "coverage": "NOAA Heat Watch 68-City Network",
+                        "resolution_method": "NOAA Heat Watch Multi-City Catalog"
+                    }
+        except Exception:
+            pass
+        
     # Known Dallas landmark & intersection registry
     dallas_directory = {
         "4th and marsalis": {"lat": 32.7483, "lon": -96.8142, "name": "4th St & S Marsalis Ave (Oak Cliff)", "tract": "48113004800"},
@@ -4011,11 +4036,42 @@ def resolve_dallas_location(query: str) -> Dict[str, Any]:
         except Exception:
             pass
 
+    # Major US Metropolitan Areas
+    major_us_metros = {
+        "phoenix": {"lat": 33.4484, "lon": -112.0740, "name": "Phoenix, Arizona", "county": "Maricopa", "state": "Arizona", "tract": "04013109802"},
+        "maricopa": {"lat": 33.4484, "lon": -112.0740, "name": "Phoenix (Maricopa County), Arizona", "county": "Maricopa", "state": "Arizona", "tract": "04013109802"},
+        "miami": {"lat": 25.7617, "lon": -80.1918, "name": "Miami, Florida", "county": "Miami-Dade", "state": "Florida", "tract": "12086000100"},
+        "denver": {"lat": 39.7392, "lon": -104.9903, "name": "Denver, Colorado", "county": "Denver", "state": "Colorado", "tract": "08031000100"},
+        "las vegas": {"lat": 36.1699, "lon": -115.1398, "name": "Las Vegas, Nevada", "county": "Clark", "state": "Nevada", "tract": "32003000100"},
+        "austin": {"lat": 30.2672, "lon": -97.7431, "name": "Austin, Texas", "county": "Travis", "state": "Texas", "tract": "48453000100"},
+        "san antonio": {"lat": 29.4241, "lon": -98.4936, "name": "San Antonio, Texas", "county": "Bexar", "state": "Texas", "tract": "48029110100"},
+        "san diego": {"lat": 32.7157, "lon": -117.1611, "name": "San Diego, California", "county": "San Diego", "state": "California", "tract": "06073000100"},
+        "san francisco": {"lat": 37.7749, "lon": -122.4194, "name": "San Francisco, California", "county": "San Francisco", "state": "California", "tract": "06075010100"},
+        "boston": {"lat": 42.3601, "lon": -71.0589, "name": "Boston, Massachusetts", "county": "Suffolk", "state": "Massachusetts", "tract": "25025000100"},
+        "dc": {"lat": 38.9072, "lon": -77.0369, "name": "Washington, District of Columbia", "county": "District of Columbia", "state": "District of Columbia", "tract": "11001000100"},
+        "washington dc": {"lat": 38.9072, "lon": -77.0369, "name": "Washington, District of Columbia", "county": "District of Columbia", "state": "District of Columbia", "tract": "11001000100"}
+    }
+    for m_key, m_info in major_us_metros.items():
+        if m_key in q_norm:
+            return {
+                "status": "resolved",
+                "matched_query": query,
+                "location_name": f"{m_info['name']} (US Resilience Network)",
+                "city": m_info["name"].split(",")[0],
+                "state": m_info["state"],
+                "county": m_info["county"],
+                "latitude": m_info["lat"],
+                "longitude": m_info["lon"],
+                "census_tract_id": m_info["tract"],
+                "coverage": "US Resilience Network",
+                "resolution_method": "US Metropolitan Directory"
+            }
+
     # Default fallback: return approximate Oak Cliff coordinates or request coordinates
     return {
         "status": "unresolved",
         "query": query,
-        "message": f"Unable to pinpoint exact coordinates for '{query}'. Please specify coordinates (e.g. 32.7483, -96.8142) or a recognized Dallas landmark/intersection."
+        "message": f"Unable to pinpoint exact coordinates for '{query}'. Please specify coordinates (e.g. 32.7483, -96.8142) or a recognized city/landmark/intersection."
     }
 
 
