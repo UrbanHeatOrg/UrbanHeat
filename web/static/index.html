@@ -105,6 +105,14 @@
       overscroll-behavior: none;
     }
     
+    /* Suppress Cesium unhandled error panel from intercepting pointer events */
+    .cesium-widget-errorPanel,
+    .cesium-widget-errorPanel * {
+      display: none !important;
+      pointer-events: none !important;
+      visibility: hidden !important;
+    }
+
     /* Climate TRACE & Singapore DUCT Glass Styling */
     .trace-card {
       background: rgba(7, 12, 23, 0.88);
@@ -858,7 +866,7 @@
               <span class="text-[9px] font-mono text-cyan-300">GPU CUSTOM SHADER</span>
             </div>
             <div class="grid grid-cols-2 gap-1.5 text-[10px] font-semibold">
-              <button onclick="setCesiumShader('flir')" id="btn-flir" class="p-1.5 rounded-xl bg-amber-500/25 border border-amber-500/50 text-amber-200 transition cursor-pointer text-center">
+              <button onclick="setCesiumShader('flir')" id="btn-flir" class="p-1.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 hover:text-white transition cursor-pointer text-center">
                 🔥 FLIR Thermal Heat
               </button>
               <button onclick="setCesiumShader('xray')" id="btn-xray" class="p-1.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 hover:text-white transition cursor-pointer text-center">
@@ -867,7 +875,7 @@
               <button onclick="setCesiumShader('anomaly')" id="btn-anomaly" class="p-1.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 hover:text-white transition cursor-pointer text-center">
                 🚨 Peak Heat (>102°F)
               </button>
-              <button onclick="setCesiumShader('mesh')" id="btn-mesh" class="p-1.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 hover:text-white transition cursor-pointer text-center">
+              <button onclick="setCesiumShader('mesh')" id="btn-mesh" class="p-1.5 rounded-xl bg-cyan-500/25 border border-cyan-500/50 text-cyan-200 transition cursor-pointer text-center font-bold">
                 🏙️ Photorealistic Mesh
               </button>
             </div>
@@ -1030,11 +1038,10 @@
         <!-- 3D Camera & Fly-To Bookmarks HUD -->
         <div class="pt-3 border-t border-white/10 space-y-2">
           <div class="flex items-center justify-between">
-            <button id="btn-camera-action" onclick="toggleCesiumOrbit()" class="flex-1 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
-              <i class="fa-solid fa-rotate"></i>
-              <span id="txt-camera-action">3D Orbit: Off</span>
-            </button>
-            <button onclick="openApiKeyModal()" class="ml-2 px-2.5 py-1.5 bg-white/5 hover:bg-white/10 text-slate-300 rounded-xl text-[10px] font-mono transition cursor-pointer" title="Configure Google 3D Tiles API Key">
+            <span class="text-[10px] font-mono font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+              <i class="fa-solid fa-camera text-cyan-400"></i> Viewport Bookmarks
+            </span>
+            <button onclick="openApiKeyModal()" class="px-2.5 py-1 bg-white/5 hover:bg-white/10 text-slate-300 rounded-lg text-[10px] font-mono transition cursor-pointer" title="Configure Google 3D Tiles API Key">
               <i class="fa-solid fa-key text-cyan-300"></i> Key
             </button>
           </div>
@@ -2824,8 +2831,13 @@
           baseLayer: new Cesium.ImageryLayer(darkProvider)
         });
 
-        if (citizenCesiumViewer.cesiumWidget && citizenCesiumViewer.cesiumWidget.creditContainer) {
-          citizenCesiumViewer.cesiumWidget.creditContainer.style.display = "none";
+        if (citizenCesiumViewer.cesiumWidget) {
+          if (citizenCesiumViewer.cesiumWidget.creditContainer) {
+            citizenCesiumViewer.cesiumWidget.creditContainer.style.display = "none";
+          }
+          citizenCesiumViewer.cesiumWidget.showErrorPanel = function(title, message, error) {
+            console.warn("Citizen Cesium Widget Error (suppressed):", title, message);
+          };
         }
 
         citizenCesiumViewer.scene.globe.enableLighting = true;
@@ -2896,11 +2908,15 @@
         console.warn("Google 3D Tiles restricted or unavailable. Falling back to OSM 3D buildings mesh.", err);
       }
 
-      // Fallback: Global OpenStreetMap 3D Buildings Mesh
+      // Fallback: Global OpenStreetMap 3D Buildings Mesh (requires Cesium ion token)
       try {
-        citizenCesiumTileset = await Cesium.createOsmBuildingsAsync();
-        citizenCesiumViewer.scene.primitives.add(citizenCesiumTileset);
-        console.log("Loaded OSM 3D Buildings mesh for Citizen Map.");
+        if (Cesium.Ion && Cesium.Ion.defaultAccessToken) {
+          citizenCesiumTileset = await Cesium.createOsmBuildingsAsync();
+          citizenCesiumViewer.scene.primitives.add(citizenCesiumTileset);
+          console.log("Loaded OSM 3D Buildings mesh for Citizen Map.");
+        } else {
+          console.log("Cesium ion token not configured; utilizing local high-precision 3D extruded cooling center geometry.");
+        }
       } catch (e) {
         console.warn("3D Buildings mesh fallback skipped. Standard OSM street & terrain base layer active.", e);
       }
@@ -3316,16 +3332,12 @@
     let tempChartInstance = null;
     let currentMode = 'cesium'; // Default to Singapore DUCT 3D Heat X-Ray!
     let isTilt = true;
-    let isOrbiting = false;
-    let orbitTimer = null;
 
     // Cesium State
     let cesiumViewer = null;
     let cesiumTileset = null;
     let cesiumEntities = [];
-    let isCesiumOrbiting = false;
-    let cesiumOrbitRemoveListener = null;
-    let currentCesiumShaderMode = 'flir';
+    let currentCesiumShaderMode = 'mesh';
     let googleMapsApiKey = "AIzaSyAruft4_u7ERcieBTw1_gY7NPGyCbLyJxY";
 
     // Award-Winning Dark Vector Styling for Google Maps Viewport
@@ -3375,9 +3387,14 @@
           baseLayer: new Cesium.ImageryLayer(darkProvider)
         });
 
-        // Hide default credits for clean full-bleed cockpit
-        if (cesiumViewer.cesiumWidget && cesiumViewer.cesiumWidget.creditContainer) {
-          cesiumViewer.cesiumWidget.creditContainer.style.display = "none";
+        // Hide default credits and suppress intrusive error panels for clean cockpit
+        if (cesiumViewer.cesiumWidget) {
+          if (cesiumViewer.cesiumWidget.creditContainer) {
+            cesiumViewer.cesiumWidget.creditContainer.style.display = "none";
+          }
+          cesiumViewer.cesiumWidget.showErrorPanel = function(title, message, error) {
+            console.warn("Cesium Widget Error (suppressed):", title, message);
+          };
         }
 
         // Configure Scene atmosphere & lighting with dynamic sun and shadow casting
@@ -4373,29 +4390,6 @@
         }
       } catch (err) {
         console.error("Explain fetch error:", err);
-      }
-    }
-
-    function toggleCesiumOrbit() {
-      if (!cesiumViewer) return;
-      isCesiumOrbiting = !isCesiumOrbiting;
-      const btn = document.getElementById('txt-camera-action');
-      const actionBtn = document.getElementById('btn-camera-action');
-
-      if (isCesiumOrbiting) {
-        btn.innerText = "3D Orbit: On";
-        actionBtn.className = "flex-1 py-1.5 bg-amber-500/40 text-amber-200 border border-amber-400 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer";
-        
-        cesiumOrbitRemoveListener = cesiumViewer.scene.postUpdate.addEventListener(() => {
-          cesiumViewer.camera.rotateRight(0.003);
-        });
-      } else {
-        btn.innerText = "3D Orbit: Off";
-        actionBtn.className = "flex-1 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer";
-        if (cesiumOrbitRemoveListener) {
-          cesiumOrbitRemoveListener();
-          cesiumOrbitRemoveListener = null;
-        }
       }
     }
 

@@ -5,7 +5,7 @@ HeatShield AI elevates urban climate planning from static thermal mapping into a
 **Target GitHub Repository:** [https://github.com/UrbanHeatOrg/UrbanHeat](https://github.com/UrbanHeatOrg/UrbanHeat)  
 **Walkthrough Document:** [https://github.com/UrbanHeatOrg/UrbanHeat/blob/main/WALKTHROUGH.md](https://github.com/UrbanHeatOrg/UrbanHeat/blob/main/WALKTHROUGH.md)  
 **Implementation Blueprint:** [https://github.com/UrbanHeatOrg/UrbanHeat/blob/main/IMPLEMENTATION_PLAN.md](https://github.com/UrbanHeatOrg/UrbanHeat/blob/main/IMPLEMENTATION_PLAN.md)  
-**Production Cloud Run URL:** [https://dallas-heat-app-447063751013.us-central1.run.app](https://dallas-heat-app-447063751013.us-central1.run.app) (Revision: `dallas-heat-app-00024-fgn`)  
+**Production Cloud Run URL:** [https://dallas-heat-app-447063751013.us-central1.run.app](https://dallas-heat-app-447063751013.us-central1.run.app) (Revision: `dallas-heat-app-00025-mt2` — Google Map Tiles API Enabled)  
 
 ![HeatShield AI Google Isochrones API Cooling Accessibility Bubbles](docs/images/cloud_run_isochrones_v15.png)
 *Figure 1: Cooling Accessibility Bubbles powered by Google Isochrones API methodology live on Cloud Run. Features multi-tier pedestrian accessibility tiers (5-min immediate refuge, 10-min core buffer, 15-min Title VI boundary), interactive walking speed selector (1.0, 1.2, 1.4 m/s), and real-time demographic reach indicators.*
