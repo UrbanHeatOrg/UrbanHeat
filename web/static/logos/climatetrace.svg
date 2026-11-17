@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 60" width="100%" height="100%">
+  <defs>
+    <linearGradient id="ct-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#34D399"/>
+    </linearGradient>
+  </defs>
+  <!-- Concentric radar circles -->
+  <g transform="translate(10, 6)">
+    <circle cx="24" cy="24" r="22" stroke="#38BDF8" stroke-width="2.5" stroke-opacity="0.35" fill="none"/>
+    <circle cx="24" cy="24" r="15" stroke="#34D399" stroke-width="2.5" stroke-opacity="0.55" fill="none"/>
+    <circle cx="24" cy="24" r="8" stroke="#FBBF24" stroke-width="2.5" stroke-opacity="0.8" fill="none"/>
+    <circle cx="24" cy="24" r="3.5" fill="#EF4444"/>
+    <path d="M24 2 L24 46 M2 24 L46 24" stroke="#38BDF8" stroke-width="1.5" stroke-opacity="0.4" stroke-dasharray="2 2"/>
+  </g>
+  <!-- Bold modern wordmark -->
+  <text x="68" y="37" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-weight="800" font-size="24" fill="#FFFFFF" letter-spacing="1.5">CLIMATE <tspan fill="url(#ct-grad)">TRACE</tspan></text>
+</svg>

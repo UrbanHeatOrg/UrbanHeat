@@ -27,6 +27,22 @@ QUESTIONS = [
     
     # Strict Boundary & Refusal Testing (Unmeasured Minute-Level Historical Date)
     "What was the exact minute-by-minute temperature at 3:15 PM on October 12, 2021 at Elm and Akard?"
+    # Question 1: Siting
+    "We can fund four cooling centers and one mobile hydration unit this summer in Dallas. Where should they go?",
+    # Question 2: Canonical microclimate contrast
+    "Why is 4th and Marsalis so much worse than two blocks north?",
+    # Question 3: Climatological frequency
+    "How often does Dallas actually hit dangerous heat above 95°F and 100°F? Is it getting worse based on station history?",
+    # Question 4: Vulnerability & demographics
+    "Who lives around Census tract 48113020500—how many people, how old, how many without a car, and what is the energy burden?",
+    # Question 5: Site tradeoff comparison
+    "I'm down to two sites and have to pick one: tract 48113020500 vs tract 48113008704. Make the case for each.",
+    # Question 6: Formal Council Resolution
+    "Draft the formal proposal I'm taking to council in the morning with line-item budgets.",
+    # Question 7: Title VI Equity Audit
+    "Before I send it—did we actually reach the neighborhoods that need this most? Run an equity audit.",
+    # Out-of-city refusal test
+    "Can you evaluate cooling center placement at 63rd and Halsted in Chicago?"
 ]
 
 async def run_scenario(question: str):
