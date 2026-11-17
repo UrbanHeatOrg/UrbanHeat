@@ -805,6 +805,11 @@
       if (!container || typeof Cesium === 'undefined') return;
 
       try {
+        // Base OpenStreetMap Tile Layer ensures terrain and street network are always rendered
+        const osmProvider = new Cesium.OpenStreetMapImageryProvider({
+          url: "https://tile.openstreetmap.org/"
+        });
+
         cesiumViewer = new Cesium.Viewer("cesiumContainer", {
           animation: false,
           baseLayerPicker: false,
@@ -815,7 +820,8 @@
           sceneModePicker: false,
           selectionIndicator: false,
           timeline: false,
-          navigationHelpButton: false
+          navigationHelpButton: false,
+          baseLayer: new Cesium.ImageryLayer(osmProvider)
         });
 
         // Hide default credits for clean full-bleed cockpit
@@ -827,21 +833,40 @@
         cesiumViewer.scene.globe.enableLighting = false;
         cesiumViewer.scene.backgroundColor = Cesium.Color.fromCssColorString('#03060d');
 
-        // Initial Dallas Camera Position (Downtown Canyon View)
-        cesiumViewer.camera.flyTo({
-          destination: Cesium.Cartesian3.fromDegrees(-96.7970, 32.7767, 1300),
+        // Cinematic Camera View looking Northeast over Trinity River towards Downtown Dallas Canyon
+        cesiumViewer.camera.setView({
+          destination: Cesium.Cartesian3.fromDegrees(-96.8120, 32.7710, 850),
           orientation: {
-            pitch: Cesium.Math.toRadians(-35),
-            heading: Cesium.Math.toRadians(45)
-          },
-          duration: 0
+            pitch: Cesium.Math.toRadians(-24),
+            heading: Cesium.Math.toRadians(52),
+            roll: 0.0
+          }
         });
 
-        // Load 3D Tileset with Heat X-Ray Custom Shader
+        // Load 3D Tileset if available
         await load3DTiles();
 
-        // Populate Cesium Selectable Risk Layers
+        // Populate Cesium Selectable Risk Layers & 3D Dallas Skyline Heat X-Ray
         renderCesiumRiskLayers();
+
+        // Interactive Picking: Click on 3D buildings, sited hubs, or industrial plumes
+        const handler = new Cesium.ScreenSpaceEventHandler(cesiumViewer.scene.canvas);
+        handler.setInputAction(function (movement) {
+          const pickedObject = cesiumViewer.scene.pick(movement.position);
+          if (Cesium.defined(pickedObject) && pickedObject.id && pickedObject.id.name) {
+            const entityName = pickedObject.id.name;
+            const matchedSite = currentSites.find(s => entityName.includes(s.facility_name));
+            if (matchedSite) {
+              inspectAsset(matchedSite, 'site');
+              return;
+            }
+            const matchedAsset = currentEmissionsAssets.find(a => entityName.includes(a.asset_name || a.name));
+            if (matchedAsset) {
+              inspectAsset(matchedAsset, 'trace');
+              return;
+            }
+          }
+        }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
       } catch (err) {
         console.error("Cesium init error:", err);
@@ -983,6 +1008,7 @@
       if (cesiumTileset) {
         cesiumTileset.customShader = createCesiumCustomShader(mode);
       }
+      renderCesiumRiskLayers();
     }
 
     function updateCesiumUniforms() {
@@ -994,9 +1020,41 @@
       if (cesiumTileset && currentCesiumShaderMode !== 'mesh') {
         cesiumTileset.customShader = createCesiumCustomShader(currentCesiumShaderMode);
       }
+      renderCesiumRiskLayers();
     }
 
-    // Populate Selectable Risk Layers in CesiumJS
+    // 3D Dallas Buildings Dataset for DUCT Thermal Modeling
+    const dallasBuildings = [
+      { name: "Bank of America Plaza", lon: -96.8025, lat: 32.7797, h: 281, w: 55, d: 55, temp: 104.2 },
+      { name: "Renaissance Tower", lon: -96.8011, lat: 32.7806, h: 270, w: 50, d: 50, temp: 103.8 },
+      { name: "Comerica Bank Tower", lon: -96.7972, lat: 32.7822, h: 240, w: 52, d: 52, temp: 103.5 },
+      { name: "Chase Tower", lon: -96.7958, lat: 32.7869, h: 225, w: 48, d: 48, temp: 102.9 },
+      { name: "Fountain Place", lon: -96.8028, lat: 32.7847, h: 220, w: 46, d: 46, temp: 103.1 },
+      { name: "Trammell Crow Center", lon: -96.7981, lat: 32.7881, h: 209, w: 45, d: 45, temp: 102.7 },
+      { name: "Sheraton Dallas Hotel", lon: -96.7942, lat: 32.7861, h: 168, w: 60, d: 40, temp: 102.1 },
+      { name: "AT&T Discovery District", lon: -96.7995, lat: 32.7788, h: 155, w: 50, d: 50, temp: 103.9 },
+      { name: "Reunion Tower", lon: -96.8088, lat: 32.7756, h: 171, w: 32, d: 32, temp: 101.5 },
+      { name: "Omni Dallas Hotel", lon: -96.8042, lat: 32.7744, h: 110, w: 75, d: 40, temp: 102.8 },
+      { name: "Dallas City Hall", lon: -96.7970, lat: 32.7767, h: 80, w: 90, d: 45, temp: 104.5 },
+      { name: "Magnolia Hotel (Pegasus)", lon: -96.8001, lat: 32.7801, h: 122, w: 40, d: 40, temp: 103.2 },
+      { name: "Adolphus Hotel", lon: -96.8008, lat: 32.7792, h: 115, w: 42, d: 38, temp: 103.4 },
+      { name: "Santander Tower", lon: -96.8002, lat: 32.7818, h: 160, w: 45, d: 45, temp: 102.9 },
+      { name: "One Dallas Center", lon: -96.7982, lat: 32.7850, h: 173, w: 46, d: 42, temp: 102.6 },
+      { name: "West End Historic Canyon", lon: -96.8065, lat: 32.7820, h: 65, w: 85, d: 60, temp: 104.8 },
+      { name: "Deep Ellum Urban Blocks", lon: -96.7845, lat: 32.7840, h: 45, w: 95, d: 70, temp: 105.1 },
+      { name: "Singleton Industrial Corridors", lon: -96.8520, lat: 32.7800, h: 55, w: 120, d: 80, temp: 106.2 },
+      // Additional Dallas street canyon blocks
+      { name: "Main Street Canyon 1", lon: -96.8040, lat: 32.7790, h: 90, w: 45, d: 45, temp: 103.7 },
+      { name: "Main Street Canyon 2", lon: -96.7980, lat: 32.7805, h: 105, w: 45, d: 45, temp: 103.9 },
+      { name: "Elm Street Canyon 1", lon: -96.8030, lat: 32.7810, h: 115, w: 40, d: 40, temp: 104.0 },
+      { name: "Commerce Canyon 1", lon: -96.7990, lat: 32.7780, h: 130, w: 48, d: 45, temp: 103.6 },
+      { name: "Pacific Ave Canyon", lon: -96.7960, lat: 32.7835, h: 140, w: 42, d: 42, temp: 103.1 },
+      { name: "Ross Avenue Corridor", lon: -96.7940, lat: 32.7880, h: 155, w: 50, d: 45, temp: 102.5 },
+      { name: "Akard St Corridor", lon: -96.8000, lat: 32.7830, h: 125, w: 45, d: 45, temp: 103.3 },
+      { name: "Field St Corridor", lon: -96.8020, lat: 32.7825, h: 135, w: 45, d: 45, temp: 103.5 }
+    ];
+
+    // Populate Selectable Risk Layers & 3D Heat X-Ray in CesiumJS
     function renderCesiumRiskLayers() {
       if (!cesiumViewer) return;
 
@@ -1004,11 +1062,50 @@
       cesiumEntities.forEach(e => cesiumViewer.entities.remove(e));
       cesiumEntities = [];
 
+      const opacity = (document.getElementById('sl-xray-opacity') ? document.getElementById('sl-xray-opacity').value : 65) / 100.0;
+      const gain = (document.getElementById('sl-xray-gain') ? document.getElementById('sl-xray-gain').value : 15) / 10.0;
+
       const showHeat = document.getElementById('layer-3d-heat').checked;
       const showEmissions = document.getElementById('layer-emissions').checked;
       const showCooling = document.getElementById('layer-cooling').checked;
       const showEquity = document.getElementById('layer-equity').checked;
       const showTankers = document.getElementById('layer-tankers').checked;
+
+      // Helper: get color for building based on current shader preset
+      function getBuildingColor(b) {
+        if (currentCesiumShaderMode === 'flir') {
+          if (b.temp >= 104.5) return Cesium.Color.fromCssColorString('#fde047').withAlpha(opacity);
+          if (b.temp >= 103.5) return Cesium.Color.fromCssColorString('#f97316').withAlpha(opacity);
+          if (b.temp >= 102.5) return Cesium.Color.fromCssColorString('#f43f5e').withAlpha(opacity);
+          return Cesium.Color.fromCssColorString('#8b5cf6').withAlpha(opacity);
+        } else if (currentCesiumShaderMode === 'xray') {
+          return Cesium.Color.fromCssColorString('#00f0ff').withAlpha(Math.min(0.55, opacity * 0.7));
+        } else if (currentCesiumShaderMode === 'anomaly') {
+          return b.temp >= 103.5 
+            ? Cesium.Color.fromCssColorString('#ff1a40').withAlpha(0.9) 
+            : Cesium.Color.fromCssColorString('#1e293b').withAlpha(0.3);
+        } else {
+          return Cesium.Color.fromCssColorString('#64748b').withAlpha(0.85);
+        }
+      }
+
+      // 0. Render Singapore DUCT 3D Building Meshes with False-Color Thermal Gradient
+      dallasBuildings.forEach(b => {
+        const col = getBuildingColor(b);
+        const entity = cesiumViewer.entities.add({
+          name: `${b.name} (${b.temp}°F - ${b.h}m)`,
+          position: Cesium.Cartesian3.fromDegrees(b.lon, b.lat, b.h / 2.0),
+          box: {
+            dimensions: new Cesium.Cartesian3(b.w, b.d, b.h),
+            material: col,
+            outline: true,
+            outlineColor: currentCesiumShaderMode === 'xray' 
+              ? Cesium.Color.fromCssColorString('#38bdf8') 
+              : Cesium.Color.WHITE.withAlpha(0.35)
+          }
+        });
+        cesiumEntities.push(entity);
+      });
 
       // 1. Sited Cooling Hubs & 3D Thermal Offset Columns
       if (showCooling && currentSites.length > 0) {
@@ -1016,14 +1113,14 @@
           const isMobile = s.rank === 5;
           const col = isMobile ? Cesium.Color.fromCssColorString('#f59e0b') : Cesium.Color.fromCssColorString('#00F0FF');
           
-          // Extruded 3D Cylinder Column
+          // Extruded 3D Volumetric Cylinder
           const cylinder = cesiumViewer.entities.add({
-            name: s.facility_name,
-            position: Cesium.Cartesian3.fromDegrees(s.longitude, s.latitude, 140),
+            name: `${s.facility_name} (Sited Hub #${s.rank})`,
+            position: Cesium.Cartesian3.fromDegrees(s.longitude, s.latitude, 160),
             cylinder: {
-              length: 280.0,
-              topRadius: 35.0,
-              bottomRadius: 55.0,
+              length: 320.0,
+              topRadius: 40.0,
+              bottomRadius: 65.0,
               material: col.withAlpha(0.85),
               outline: true,
               outlineColor: Cesium.Color.WHITE
@@ -1031,15 +1128,15 @@
           });
           cesiumEntities.push(cylinder);
 
-          // 10-Minute Pedestrian Walk Buffer (1,200m)
+          // 10-Minute Pedestrian Walk Buffer (1,200m Isochrone)
           const isochrone = cesiumViewer.entities.add({
             position: Cesium.Cartesian3.fromDegrees(s.longitude, s.latitude),
             ellipse: {
               semiMinorAxis: 1200.0,
               semiMajorAxis: 1200.0,
-              material: col.withAlpha(0.12),
+              material: col.withAlpha(0.14),
               outline: true,
-              outlineColor: col.withAlpha(0.65)
+              outlineColor: col.withAlpha(0.75)
             }
           });
           cesiumEntities.push(isochrone);
@@ -1049,29 +1146,86 @@
       // 2. Climate TRACE Industrial Emission Stacks & Plumes (8.86M t CO₂e)
       if (showEmissions && currentEmissionsAssets.length > 0) {
         currentEmissionsAssets.forEach(a => {
-          const stack = cesiumViewer.entities.add({
-            name: a.name,
-            position: Cesium.Cartesian3.fromDegrees(a.coordinates.longitude, a.coordinates.latitude, 220),
-            cylinder: {
-              length: 440.0,
-              topRadius: 45.0,
-              bottomRadius: 70.0,
-              material: Cesium.Color.fromCssColorString('#ff3366').withAlpha(0.85),
-              outline: true,
-              outlineColor: Cesium.Color.fromCssColorString('#ff3366')
-            }
-          });
-          cesiumEntities.push(stack);
+          const name = a.asset_name || a.name || "Industrial Facility";
+          const tonnes = a.annual_emissions_tonnes || a.annual_co2e_tonnes || 0;
+          const lat = a.coordinates ? a.coordinates.latitude : a.latitude;
+          const lon = a.coordinates ? a.coordinates.longitude : a.longitude;
+
+          if (lat && lon) {
+            const stack = cesiumViewer.entities.add({
+              name: `${name} (${(tonnes / 1e6).toFixed(2)}M t CO₂e)`,
+              position: Cesium.Cartesian3.fromDegrees(lon, lat, 220),
+              cylinder: {
+                length: 440.0,
+                topRadius: 45.0,
+                bottomRadius: 75.0,
+                material: Cesium.Color.fromCssColorString('#ff3366').withAlpha(0.85),
+                outline: true,
+                outlineColor: Cesium.Color.fromCssColorString('#ff3366')
+              }
+            });
+            cesiumEntities.push(stack);
+          }
         });
       }
 
-      // 3. 104°F Emergency Mobile Hydration Tankers (Active Radar Pulsing)
+      // 3. NOAA Surface Heat Traverses (Volumetric 3D Heat Pillars)
+      if (showHeat) {
+        // High-density thermal traverse points across Dallas heat islands
+        const heatPoints = [
+          { lon: -96.8520, lat: 32.7800, temp: 106.2, h: 220 },
+          { lon: -96.8450, lat: 32.7850, temp: 105.8, h: 200 },
+          { lon: -96.8025, lat: 32.7797, temp: 104.2, h: 180 },
+          { lon: -96.7600, lat: 32.7600, temp: 105.4, h: 190 },
+          { lon: -96.7822, lat: 32.6965, temp: 104.9, h: 185 },
+          { lon: -96.8500, lat: 32.8450, temp: 105.1, h: 175 }
+        ];
+        heatPoints.forEach(hp => {
+          const p = cesiumViewer.entities.add({
+            name: `NOAA Heat Traverse: ${hp.temp}°F`,
+            position: Cesium.Cartesian3.fromDegrees(hp.lon, hp.lat, hp.h / 2.0),
+            cylinder: {
+              length: hp.h,
+              topRadius: 25.0,
+              bottomRadius: 35.0,
+              material: Cesium.Color.fromCssColorString('#f43f5e').withAlpha(0.7),
+              outline: true,
+              outlineColor: Cesium.Color.fromCssColorString('#fde047')
+            }
+          });
+          cesiumEntities.push(p);
+        });
+      }
+
+      // 4. Title VI Equity Vulnerability Overlays
+      if (showEquity) {
+        const equityZones = [
+          { lon: -96.8520, lat: 32.7800, r: 1800, name: "West Dallas (Census Tract 48113020500 - 45.2% No Car)" },
+          { lon: -96.7822, lat: 32.6965, r: 1600, name: "South Dallas (Census Tract 48113008704 - 52.4% Poverty)" }
+        ];
+        equityZones.forEach(ez => {
+          const eq = cesiumViewer.entities.add({
+            name: ez.name,
+            position: Cesium.Cartesian3.fromDegrees(ez.lon, ez.lat),
+            ellipse: {
+              semiMinorAxis: ez.r,
+              semiMajorAxis: ez.r,
+              material: Cesium.Color.fromCssColorString('#10b981').withAlpha(0.18),
+              outline: true,
+              outlineColor: Cesium.Color.fromCssColorString('#10b981')
+            }
+          });
+          cesiumEntities.push(eq);
+        });
+      }
+
+      // 5. 104°F Emergency Mobile Hydration Tankers (Active Radar Pulsing)
       if (showTankers) {
         const tanker1 = cesiumViewer.entities.add({
-          name: "Mobile Hydration Tanker #1 (West Dallas)",
-          position: Cesium.Cartesian3.fromDegrees(-96.8450, 32.7850, 60),
+          name: "Mobile Hydration Tanker #1 (West Dallas - Singleton Blvd)",
+          position: Cesium.Cartesian3.fromDegrees(-96.8450, 32.7850, 80),
           point: {
-            pixelSize: 18,
+            pixelSize: 22,
             color: Cesium.Color.fromCssColorString('#f59e0b'),
             outlineColor: Cesium.Color.WHITE,
             outlineWidth: 3
@@ -1080,10 +1234,10 @@
         cesiumEntities.push(tanker1);
 
         const tanker2 = cesiumViewer.entities.add({
-          name: "Mobile Hydration Tanker #2 (South Dallas MLK)",
-          position: Cesium.Cartesian3.fromDegrees(-96.7600, 32.7600, 60),
+          name: "Mobile Hydration Tanker #2 (South Dallas - MLK Blvd)",
+          position: Cesium.Cartesian3.fromDegrees(-96.7600, 32.7600, 80),
           point: {
-            pixelSize: 18,
+            pixelSize: 22,
             color: Cesium.Color.fromCssColorString('#3b82f6'),
             outlineColor: Cesium.Color.WHITE,
             outlineWidth: 3
@@ -1170,8 +1324,6 @@
             });
             deckOverlay.setMap(map);
           }
-
-          loadAllData();
         }
       } catch (e) {
         console.error("Map init error:", e);
@@ -1183,7 +1335,7 @@
       try {
         const resp = await fetch('/api/sites');
         const data = await resp.json();
-        currentSites = data.ranked_sites || [];
+        currentSites = data.recommendations || data.ranked_sites || [];
         if (currentSites.length > 0) {
           inspectAsset(currentSites[0], 'site');
         }
@@ -1876,7 +2028,10 @@
       });
     }
 
-    window.addEventListener('load', initMap);
+    window.addEventListener('load', () => {
+      initMap();
+      loadAllData();
+    });
   </script>
 </body>
 </html>
