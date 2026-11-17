@@ -3,7 +3,7 @@ set -eo pipefail
 
 PROJECT_ID="${GOOGLE_CLOUD_PROJECT:-qwiklabs-gcp-04-4753f87c7a64}"
 REGION="${GOOGLE_CLOUD_REGION:-us-west2}"
-SERVICE_NAME="urbanheat"
+SERVICE_NAME="heatshieldai"
 IMAGE_TAG="gcr.io/${PROJECT_ID}/${SERVICE_NAME}:latest"
 
 echo "=== 1. Building Container Image with Google Cloud Build ==="

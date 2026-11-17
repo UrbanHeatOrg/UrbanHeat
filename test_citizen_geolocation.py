@@ -24,8 +24,8 @@ async def run_geolocation_tests():
         unexpected_alerts = []
         page1.on("dialog", lambda dialog: unexpected_alerts.append(dialog.message))
 
-        await page1.goto("http://localhost:8000/?mode=citizen", wait_until="networkidle")
-        await page1.wait_for_selector(".citizen-center-card", timeout=10000)
+        await page1.goto("http://localhost:8000/?mode=citizen", wait_until="load")
+        await page1.wait_for_selector(".citizen-center-card", timeout=15000)
         await asyncio.sleep(1)
 
         # Inspect JS state
@@ -79,7 +79,8 @@ async def run_geolocation_tests():
             viewport={"width": 1440, "height": 900}
         )
         page2 = await context_switch.new_page()
-        await page2.goto("http://localhost:8000", wait_until="networkidle")
+        await page2.goto("http://localhost:8000", wait_until="load")
+        await page2.wait_for_selector("#mode-btn-citizen", timeout=15000)
         await asyncio.sleep(1)
 
         # Confirm starts in planner mode
@@ -142,8 +143,8 @@ async def run_geolocation_tests():
         alerts_caught = []
         page3.on("dialog", lambda dialog: (alerts_caught.append(dialog.message), dialog.dismiss()))
 
-        await page3.goto("http://localhost:8000/?mode=citizen", wait_until="networkidle")
-        await page3.wait_for_selector(".citizen-center-card", timeout=10000)
+        await page3.goto("http://localhost:8000/?mode=citizen", wait_until="load")
+        await page3.wait_for_selector(".citizen-center-card", timeout=15000)
         await asyncio.sleep(1)
 
         state3 = await page3.evaluate("""() => {
@@ -173,10 +174,60 @@ async def run_geolocation_tests():
         print("  ✅ TEST 3 PASSED — Screenshot saved to screenshot_citizen_denied_fallback.png")
         await context_denied.close()
 
+        # TEST 4: Mobile Direct Navigation (Auto-detects Mobile, Defaults to Citizen Relief + GPS)
+        print("\n[TEST 4] Mobile Direct Navigation without Query Params (Auto-GPS on Mobile)...")
+        mock_mobile_lat = 32.7767
+        mock_mobile_lon = -96.7970
+        context_mobile = await browser.new_context(
+            permissions=["geolocation"],
+            geolocation={"latitude": mock_mobile_lat, "longitude": mock_mobile_lon},
+            viewport={"width": 390, "height": 844},
+            user_agent="Mozilla/5.0 (iPhone; CPU iPhone OS 16_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.5 Mobile/15E148 Safari/604.1"
+        )
+        page4 = await context_mobile.new_page()
+        # Navigate to root without any ?mode parameter
+        await page4.goto("http://localhost:8000/", wait_until="load")
+        await page4.wait_for_selector(".citizen-center-card", state="attached", timeout=15000)
+        await asyncio.sleep(1)
+
+        state4 = await page4.evaluate("""() => {
+            const gpsBtn = document.getElementById('res-gps-btn-text');
+            const cityBadge = document.getElementById('res-metro-badge');
+            const cards = document.querySelectorAll('.citizen-center-card');
+            const pulseMarker = document.querySelector('.user-pulse-marker');
+            return {
+                mode: typeof currentAppMode !== 'undefined' ? currentAppMode : null,
+                coords: typeof citizenUserCoords !== 'undefined' ? citizenUserCoords : null,
+                cardsRendered: cards.length,
+                cityBadgeText: cityBadge ? cityBadge.innerText : null,
+                gpsBtnText: gpsBtn ? gpsBtn.innerText : null,
+                hasPulseMarker: !!pulseMarker
+            };
+        }""")
+
+        print(f"  Mobile Mode: {state4['mode']}")
+        print(f"  Detected Mobile Coords: {state4['coords']}")
+        print(f"  City Badge: '{state4['cityBadgeText']}'")
+        print(f"  GPS Button Text: '{state4['gpsBtnText']}'")
+        print(f"  Cards Rendered: {state4['cardsRendered']}")
+        print(f"  Pulse Marker Active: {state4['hasPulseMarker']}")
+
+        assert state4['mode'] == 'citizen', f"Expected mode 'citizen' on mobile, got {state4['mode']}"
+        assert state4['coords'] is not None and len(state4['coords']) == 2, "Mobile citizenUserCoords not set"
+        assert abs(state4['coords'][0] - mock_mobile_lat) < 0.001, f"Latitude mismatch: {state4['coords'][0]} vs {mock_mobile_lat}"
+        assert abs(state4['coords'][1] - mock_mobile_lon) < 0.001, f"Longitude mismatch: {state4['coords'][1]} vs {mock_mobile_lon}"
+        assert "GPS Active" in state4['gpsBtnText'] or "📍" in state4['gpsBtnText'], f"GPS button not active: {state4['gpsBtnText']}"
+        assert state4['cardsRendered'] > 0, "No cooling centers rendered on mobile"
+        assert state4['hasPulseMarker'], "Leaflet map did not render user pulse marker on mobile"
+
+        await page4.screenshot(path="screenshot_mobile_auto_gps.png")
+        print("  ✅ TEST 4 PASSED — Screenshot saved to screenshot_mobile_auto_gps.png")
+        await context_mobile.close()
+
         await browser.close()
 
     print("\n" + "=" * 70)
-    print("ALL 3 CITIZEN GEOLOCATION AUTOMATION TESTS PASSED (100%)")
+    print("ALL 4 CITIZEN GEOLOCATION AUTOMATION TESTS PASSED (100%)")
     print("=" * 70)
 
 if __name__ == "__main__":

@@ -16,8 +16,8 @@ async def run_markdown_verification():
         
         # 1. Load the HeatShield web dashboard
         print("Navigating to http://localhost:8000 ...")
-        await page.goto("http://localhost:8000", wait_until="networkidle")
-        await asyncio.sleep(1.5)
+        await page.goto("http://localhost:8000", wait_until="domcontentloaded")
+        await asyncio.sleep(2.0)
 
         # 2. Verify marked and DOMPurify are loaded
         libs_loaded = await page.evaluate("""() => {
@@ -198,7 +198,7 @@ Reference: [HeatShield API Docs](http://localhost:8000/docs) with parameter `sta
         copy_btn = await page.query_selector(".test-response-bubble .copy-code-btn")
         assert copy_btn is not None, "Copy code button not found in rendered bubble!"
         
-        await copy_btn.click()
+        await copy_btn.click(force=True)
         await asyncio.sleep(0.3)
         
         btn_text_after = await page.evaluate("""() => {

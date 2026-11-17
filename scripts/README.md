@@ -35,7 +35,7 @@ From the **root of the repo** in Cloud Shell:
 bash scripts/deploy.sh
 
 # Deploy with a custom service name (e.g. personal test deployment):
-bash scripts/deploy.sh --service urbanheat-track1
+bash scripts/deploy.sh --service heatshieldai-track1
 
 # Deploy with an AI Studio Gemini API key:
 bash scripts/deploy.sh --api-key AIzaSy...

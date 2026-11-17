@@ -28,7 +28,7 @@ fail() { printf '\n\033[1;31mERROR:\033[0m %s\n\n' "$*" >&2; exit 1; }
 DEFAULT_PROJECT="$(gcloud config get-value project 2>/dev/null || echo 'climate-heat-challenge')"
 PROJECT_ID="${GOOGLE_CLOUD_PROJECT:-$DEFAULT_PROJECT}"
 REGION="${GOOGLE_CLOUD_LOCATION:-us-west1}"
-SERVICE_NAME="urbanheat"
+SERVICE_NAME="heatshieldai"
 API_KEY="${GEMINI_API_KEY:-}"
 USE_VERTEX="1"
 
@@ -60,12 +60,12 @@ while [[ $# -gt 0 ]]; do
       echo "Options:"
       echo "  -p, --project  <PROJECT_ID>   Google Cloud Project ID (default: current gcloud project)"
       echo "  -r, --region   <REGION>       Cloud Run Region (default: us-west1)"
-      echo "  -s, --service  <SERVICE_NAME> Service Name in Cloud Run (default: urbanheat)"
+      echo "  -s, --service  <SERVICE_NAME> Service Name in Cloud Run (default: heatshieldai)"
       echo "  -k, --api-key  <KEY>          Google AI Studio Gemini API Key (bypasses Vertex AI terms)"
       echo "  -h, --help                    Show this help message and exit"
       echo
       echo "Example:"
-      echo "  bash scripts/deploy.sh --service urbanheat-track1 --region us-west1"
+      echo "  bash scripts/deploy.sh --service heatshieldai-track1 --region us-west1"
       exit 0
       ;;
     *)

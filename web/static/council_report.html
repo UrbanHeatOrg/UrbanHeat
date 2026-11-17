@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>City Council Resilience Briefing Packet | HeatShield AI</title>
+  
+  <!-- Typography Pairing: Outfit / Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            heading: ['"Outfit"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            council: {
+              navy: '#0A192F',
+              blue: '#1E3A8A',
+              gold: '#D97706',
+              slate: '#334155',
+              border: '#CBD5E1',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* ================= SCREEN STYLING ================= */
+    body {
+      background-color: #0B0F17;
+      color: #E2E8F0;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .paper-sheet {
+      background: #FFFFFF;
+      color: #0F172A;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      width: 8.5in;
+      min-height: 11in;
+      margin: 2rem auto;
+      padding: 0.65in 0.75in 0.75in 0.75in;
+      position: relative;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* Screen Preview Watermark / Page Indicator */
+    .paper-sheet::before {
+      content: attr(data-page-label);
+      position: absolute;
+      top: -1.75rem;
+      left: 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #94A3B8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ================= STRICT PRINT STYLING ================= */
+    @media print {
+      @page {
+        size: letter portrait;
+        margin: 0.5in 0.6in 0.6in 0.6in;
+      }
+
+      html, body {
+        background: #FFFFFF !important;
+        color: #0F172A !important;
+        font-size: 10pt;
+        line-height: 1.35;
+        margin: 0 !important;
+        padding: 0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+
+      .paper-sheet {
+        background: #FFFFFF !important;
+        color: #0F172A !important;
+        box-shadow: none !important;
+        border: none !important;
+        width: 100% !important;
+        min-height: auto !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 0 0.25in 0 !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+
+      .paper-sheet::before {
+        display: none !important;
+      }
+
+      .avoid-break {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+
+      /* Force borders and tables to render crisp black/gray */
+      table, th, td {
+        border-color: #94A3B8 !important;
+      }
+
+      /* Pure high contrast on all text elements */
+      .text-slate-900, .text-slate-800, .text-slate-700 {
+        color: #0F172A !important;
+      }
+      .text-slate-600, .text-slate-500 {
+        color: #334155 !important;
+      }
+      .bg-slate-50, .bg-slate-100 {
+        background-color: #F8FAFC !important;
+      }
+      .bg-blue-50 {
+        background-color: #EFF6FF !important;
+      }
+      .bg-emerald-50 {
+        background-color: #ECFDF5 !important;
+      }
+      .bg-amber-50 {
+        background-color: #FFFBEB !important;
+      }
+      
+      /* Make sure SVG lines and fills print */
+      svg {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-blue-600 selection:text-white">
+
+  <!-- ================= TOP FLOATING CONTROL BAR (SCREEN ONLY) ================= -->
+  <aside aria-label="Interactive Controls" class="no-print sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-white/10 px-6 py-3.5 shadow-2xl">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+      
+      <!-- Brand & Title -->
+      <div class="flex items-center gap-3">
+        <a href="/" class="flex items-center gap-2.5 text-white hover:text-blue-400 transition font-heading font-bold text-base group">
+          <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/30 group-hover:scale-105 transition">
+            <i class="fa-solid fa-arrow-left text-xs"></i>
+          </div>
+          <span>Live Dashboard</span>
+        </a>
+        <span class="text-slate-600">|</span>
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30">
+            AGENDA PACKET
+          </span>
+          <h1 class="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+            City Council Legislative Submission
+          </h1>
+        </div>
+      </div>
+
+      <!-- Controls: City Selector, Budget, Print -->
+      <div class="flex items-center flex-wrap gap-3">
+        <!-- City Selector -->
+        <div class="flex items-center gap-2 bg-slate-800/80 px-3 py-1.5 rounded-xl border border-white/10 text-xs">
+          <span class="text-slate-400 font-mono text-[11px]"><i class="fa-solid fa-city text-blue-400 mr-1"></i>Metro:</span>
+          <select id="ctrl-city" onchange="onCityChange(this.value)" class="bg-transparent text-white font-semibold focus:outline-none cursor-pointer">
+            <option value="Dallas|Texas|Dallas" class="bg-slate-900 text-white">Dallas, TX (Dallas County)</option>
+            <option value="Phoenix|Arizona|Maricopa" class="bg-slate-900 text-white">Phoenix, AZ (Maricopa County)</option>
+            <option value="Chicago|Illinois|Cook" class="bg-slate-900 text-white">Chicago, IL (Cook County)</option>
+            <option value="Houston|Texas|Harris" class="bg-slate-900 text-white">Houston, TX (Harris County)</option>
+            <option value="Atlanta|Georgia|Fulton" class="bg-slate-900 text-white">Atlanta, GA (Fulton County)</option>
+            <option value="Miami|Florida|Miami-Dade" class="bg-slate-900 text-white">Miami, FL (Miami-Dade County)</option>
+            <option value="Los Angeles|California|Los Angeles" class="bg-slate-900 text-white">Los Angeles, CA (Los Angeles County)</option>
+            <option value="New York|New York|New York" class="bg-slate-900 text-white">New York, NY (New York County)</option>
+          </select>
+        </div>
+
+        <!-- Budget Slider -->
+        <div class="flex items-center gap-2 bg-slate-800/80 px-3 py-1.5 rounded-xl border border-white/10 text-xs">
+          <span class="text-slate-400 font-mono text-[11px]"><i class="fa-solid fa-dollar-sign text-emerald-400 mr-1"></i>Budget:</span>
+          <select id="ctrl-budget" onchange="onBudgetChange(this.value)" class="bg-transparent text-white font-semibold focus:outline-none cursor-pointer">
+            <option value="5000000" class="bg-slate-900 text-white">$5,000,000 (Targeted Pilot)</option>
+            <option value="10000000" selected class="bg-slate-900 text-white">$10,000,000 (Standard Cohort)</option>
+            <option value="15000000" class="bg-slate-900 text-white">$15,000,000 (Expanded Resilience)</option>
+            <option value="25000000" class="bg-slate-900 text-white">$25,000,000 (Full Metro Coverage)</option>
+          </select>
+        </div>
+
+        <!-- Print / PDF Action Button -->
+        <button onclick="triggerPrint()" class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-blue-500/25 transition active:scale-95 cursor-pointer">
+          <i class="fa-solid fa-print"></i>
+          <span>Print Agenda Packet / Save PDF</span>
+        </button>
+      </div>
+
+    </div>
+  </aside>
+
+  <!-- ================= PRINTABLE DOCUMENT CONTAINER ================= -->
+  <main id="document-container" class="max-w-[8.5in] mx-auto py-6">
+
+    <!-- ========================================================================= -->
+    <!-- PAGE 1: EXECUTIVE ACTION MEMORANDUM -->
+    <!-- ========================================================================= -->
+    <article class="paper-sheet avoid-break" data-page-label="Page 1 of 5 — Executive Action Memo">
+      
+      <!-- Top Running Header -->
+      <div class="border-b-2 border-slate-900 pb-3 flex items-center justify-between text-[9pt] font-mono text-slate-600">
+        <span class="font-bold tracking-wider text-slate-900 uppercase" id="hdr-city-council">CITY OF DALLAS • CITY COUNCIL AGENDA PACKET</span>
+        <span>COUNCIL ACTION ITEM #2026-HEAT-01</span>
+        <span>JULY 2026 REGULAR SESSION</span>
+      </div>
+
+      <!-- Formal Municipal Masthead -->
+      <div class="mt-5 pb-5 border-b border-slate-300 flex items-start justify-between">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2 text-blue-900 font-bold text-xs tracking-widest uppercase">
+            <i class="fa-solid fa-shield-halved text-sm"></i>
+            <span>Department of Emergency Management & Resilience</span>
+          </div>
+          <h1 class="text-2xl font-heading font-extrabold text-slate-950 uppercase tracking-tight" id="memo-title">
+            Dallas City Council Briefing Memorandum
+          </h1>
+          <p class="text-xs text-slate-600 italic">
+            Capital Siting Allocation for Extreme Heat Life-Safety Resilience Hubs
+          </p>
+        </div>
+        <div class="text-right text-[9pt] font-mono text-slate-700 bg-slate-100 p-2.5 rounded border border-slate-300">
+          <div><strong>DATE:</strong> July 15, 2026</div>
+          <div><strong>STATUS:</strong> Council Hearing Ready</div>
+          <div><strong>AUDIT:</strong> Title VI Certified</div>
+        </div>
+      </div>
+
+      <!-- Formal Memorandum Metadata Table -->
+      <div class="my-4 grid grid-cols-2 gap-x-6 gap-y-1.5 text-[9.5pt] bg-slate-50 p-3.5 rounded border border-slate-300 font-sans">
+        <div><strong class="font-mono text-slate-700">TO:</strong> The Honorable Mayor and Members of the City Council</div>
+        <div><strong class="font-mono text-slate-700">FROM:</strong> Office of the Chief Resilience Officer & City Manager</div>
+        <div><strong class="font-mono text-slate-700">SPONSOR:</strong> Committee on Environment, Sustainability & Public Safety</div>
+        <div><strong class="font-mono text-slate-700">SUBJECT:</strong> Authorization of Capital Appropriation for Resilience Hubs</div>
+      </div>
+
+      <!-- 4 Executive KPI Metric Cards -->
+      <div class="my-3 grid grid-cols-4 gap-3">
+        <div class="p-3 bg-blue-50/70 border border-blue-200 rounded text-center">
+          <div class="text-[8pt] font-mono font-bold text-blue-800 uppercase tracking-wider">Capital Budget</div>
+          <div class="text-lg font-mono font-extrabold text-blue-950 mt-0.5" id="kpi-budget">$10,000,000</div>
+          <div class="text-[7.5pt] text-slate-600 mt-0.5">Capital Improvement Plan</div>
+        </div>
+        <div class="p-3 bg-emerald-50/70 border border-emerald-200 rounded text-center">
+          <div class="text-[8pt] font-mono font-bold text-emerald-800 uppercase tracking-wider">Pop. Protected</div>
+          <div class="text-lg font-mono font-extrabold text-emerald-950 mt-0.5" id="kpi-pop">20,387</div>
+          <div class="text-[7.5pt] text-slate-600 mt-0.5">Within 1,200m walking buffer</div>
+        </div>
+        <div class="p-3 bg-amber-50/70 border border-amber-200 rounded text-center">
+          <div class="text-[8pt] font-mono font-bold text-amber-800 uppercase tracking-wider">Thermal Offset</div>
+          <div class="text-lg font-mono font-extrabold text-amber-950 mt-0.5" id="kpi-offset">+1.24°F</div>
+          <div class="text-[7.5pt] text-slate-600 mt-0.5">Peak BQML micro-anomaly</div>
+        </div>
+        <div class="p-3 bg-purple-50/70 border border-purple-200 rounded text-center">
+          <div class="text-[8pt] font-mono font-bold text-purple-800 uppercase tracking-wider">Civil Rights Audit</div>
+          <div class="text-lg font-mono font-extrabold text-purple-950 mt-0.5">PASSED</div>
+          <div class="text-[7.5pt] text-slate-600 mt-0.5">Title VI 42 U.S.C. § 2000d</div>
+        </div>
+      </div>
+
+      <!-- Executive Summary / Background Body -->
+      <div class="space-y-2.5 text-[9.5pt] leading-relaxed text-slate-800">
+        <h2 class="text-xs font-heading font-bold text-slate-900 uppercase tracking-wide border-b border-slate-200 pb-1 flex items-center gap-1.5">
+          <i class="fa-solid fa-circle-info text-blue-600 text-xs"></i>
+          1. Executive Summary & Purpose
+        </h2>
+        <p>
+          This briefing packet provides the empirical justification, machine-learning microclimate evidence, and formal statutory resolution for the allocation of <strong class="font-mono" id="memo-body-budget">$10,000,000</strong> in municipal capital funds to establish four (4) permanent climate resilience cooling hubs and one (1) rapid-deployment mobile hydration tanker in <span id="memo-city-name" class="font-semibold">Dallas</span>.
+        </p>
+        <p>
+          Urban heat island (UHI) effects create severe, life-threatening microclimate temperature spikes across our city. Machine-learning inference via Google Cloud BigQuery ML (<code class="font-mono text-xs bg-slate-100 px-1 py-0.5 rounded border border-slate-200">heat_offset_model</code>) trained on ground-level NOAA Heat Watch observational campaign telemetry demonstrates that thermal exposure is concentrated heavily in neighborhoods characterized by high poverty, low tree canopy, older residential structures lacking central HVAC, and high transit dependency.
+        </p>
+      </div>
+
+      <!-- Climatological Urgency Block -->
+      <div class="my-2.5 p-3.5 bg-slate-50 border-l-4 border-amber-600 rounded-r text-[9pt] leading-normal text-slate-800">
+        <div class="font-heading font-bold text-slate-950 text-xs uppercase tracking-wide mb-1 flex items-center justify-between">
+          <span><i class="fa-solid fa-triangle-exclamation text-amber-600 mr-1.5"></i>Climatological Urgency & NOAA Historical Risk Baseline</span>
+          <span class="font-mono text-[8pt] text-slate-500">NOAA WBAN GHCN-Daily Telemetry</span>
+        </div>
+        <div class="grid grid-cols-3 gap-2 mt-2 font-mono text-[8.5pt]">
+          <div class="bg-white p-2 rounded border border-slate-200">
+            <span class="text-slate-500 block text-[7.5pt]">Record Extreme High</span>
+            <span class="font-bold text-red-700 text-sm" id="clim-extreme">107.0°F</span> (2023)
+          </div>
+          <div class="bg-white p-2 rounded border border-slate-200">
+            <span class="text-slate-500 block text-[7.5pt]">Annual Days &gt; 95°F</span>
+            <span class="font-bold text-amber-700 text-sm" id="clim-days-95">72.4 Days/Year</span>
+          </div>
+          <div class="bg-white p-2 rounded border border-slate-200">
+            <span class="text-slate-500 block text-[7.5pt]">Annual Days &gt; 100°F</span>
+            <span class="font-bold text-purple-700 text-sm" id="clim-days-100">28.1 Days/Year</span>
+          </div>
+        </div>
+        <p class="text-[8.5pt] text-slate-600 mt-2">
+          Without intervention, heat-related emergency paramedic responses in frontline tracts are projected to escalate by 34% over the next three summer seasons during consecutive multi-day heat domes.
+        </p>
+      </div>
+
+      <!-- Action Requested -->
+      <div class="mt-1 text-[9pt] text-slate-800">
+        <h2 class="text-xs font-heading font-bold text-slate-900 uppercase tracking-wide border-b border-slate-200 pb-1 mb-1.5 flex items-center gap-1.5">
+          <i class="fa-solid fa-gavel text-slate-700 text-xs"></i>
+          2. Action Requested of City Council
+        </h2>
+        <p>
+          Adoption of Council Resolution No. 2026-HEAT-01 (enclosed on Page 5), authorizing the City Manager to execute construction and procurement contracts for HVAC overhauls, commercial HEPA filtration, solar microgrid battery backup, and mobile hydration deployment across the five priority sites identified herein.
+        </p>
+      </div>
+
+      <!-- Bottom Running Footer -->
+      <div class="border-t border-slate-300 pt-3 flex items-center justify-between text-[8pt] font-mono text-slate-500 mt-auto">
+        <span>HEATSHIELD AI MUNICIPAL DECISION ENGINE</span>
+        <span>BIGQUERY ML • NOAA • US CENSUS ACS</span>
+        <span>PAGE 1 OF 5</span>
+      </div>
+
+    </article>
+
+
+    <!-- ========================================================================= -->
+    <!-- PAGE 2: GEOGRAPHIC SITING ROSTER & CATCHMENT MAP -->
+    <!-- ========================================================================= -->
+    <article class="paper-sheet avoid-break" data-page-label="Page 2 of 5 — Priority Siting Roster">
+      
+      <!-- Top Running Header -->
+      <div class="border-b-2 border-slate-900 pb-3 flex items-center justify-between text-[9pt] font-mono text-slate-600">
+        <span class="font-bold tracking-wider text-slate-900 uppercase" id="hdr2-city">CITY OF DALLAS • RESILIENCE SITING ROSTER</span>
+        <span>1,200M WALKING CATCHMENT</span>
+        <span>JULY 2026</span>
+      </div>
+
+      <div class="mt-4 mb-3">
+        <h2 class="text-lg font-heading font-extrabold text-slate-950 uppercase tracking-tight flex items-center gap-2">
+          <i class="fa-solid fa-location-dot text-blue-700"></i>
+          Priority Facility Allocation Roster
+        </h2>
+        <p class="text-xs text-slate-600">
+          Ranked by multi-objective Pareto optimization balancing modeled micro-heat severity, poverty rates, and zero-vehicle transit dependency.
+        </p>
+      </div>
+
+      <!-- Priority Siting Table -->
+      <div class="overflow-hidden border border-slate-300 rounded mb-4">
+        <table class="w-full text-left border-collapse text-[8.5pt]">
+          <thead>
+            <tr class="bg-slate-900 text-white font-mono text-[8pt]">
+              <th class="p-2 border-r border-slate-700 text-center w-10">RK</th>
+              <th class="p-2 border-r border-slate-700">Anchor Facility & Location</th>
+              <th class="p-2 border-r border-slate-700 text-center">Census Tract</th>
+              <th class="p-2 border-r border-slate-700 text-center">Heat Offset</th>
+              <th class="p-2 border-r border-slate-700 text-center">Poverty %</th>
+              <th class="p-2 border-r border-slate-700 text-center">No Vehicle %</th>
+              <th class="p-2 text-right">Catchment Pop</th>
+            </tr>
+          </thead>
+          <tbody id="table-sites-body" class="divide-y divide-slate-200">
+            <!-- Dynamically populated rows -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Visual Spatial Catchment Diagram (Vector SVG) -->
+      <div class="my-2 border border-slate-300 rounded p-3 bg-slate-50">
+        <div class="flex items-center justify-between text-[8pt] font-mono text-slate-600 mb-2 border-b border-slate-200 pb-1">
+          <span class="font-bold text-slate-900 uppercase"><i class="fa-solid fa-map mr-1 text-blue-600"></i>Geospatial Catchment & Pedestrian Walkability Overlay</span>
+          <span>1,200-Meter (15-Minute) Pedestrian Walking Radii</span>
+        </div>
+        
+        <!-- Clean Printable Vector Map -->
+        <div class="relative w-full h-52 bg-white rounded border border-slate-200 overflow-hidden flex items-center justify-center">
+          <svg viewBox="0 0 600 220" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#F1F5F9" stroke-width="1"/>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)" />
+            
+            <!-- Municipal Highway / Transit Artery Lines -->
+            <path d="M 50 110 Q 300 90 550 130" stroke="#CBD5E1" stroke-width="6" fill="none"/>
+            <path d="M 250 20 Q 280 110 310 200" stroke="#CBD5E1" stroke-width="6" fill="none"/>
+            <path d="M 120 30 L 480 190" stroke="#E2E8F0" stroke-width="3" stroke-dasharray="4" fill="none"/>
+            
+            <!-- Thermal Heat Island Severity Gradients (Heat Contours) -->
+            <ellipse cx="160" cy="100" rx="95" ry="65" fill="#EF4444" fill-opacity="0.12" stroke="#EF4444" stroke-opacity="0.3" stroke-dasharray="2"/>
+            <ellipse cx="440" cy="120" rx="85" ry="55" fill="#F97316" fill-opacity="0.12" stroke="#F97316" stroke-opacity="0.3" stroke-dasharray="2"/>
+            <ellipse cx="300" cy="140" rx="70" ry="45" fill="#EF4444" fill-opacity="0.12" stroke="#EF4444" stroke-opacity="0.3" stroke-dasharray="2"/>
+
+            <!-- Siting Hubs and 1,200m Buffers -->
+            <!-- Hub 1 -->
+            <circle cx="160" cy="100" r="42" fill="#3B82F6" fill-opacity="0.2" stroke="#2563EB" stroke-width="1.5" stroke-dasharray="3"/>
+            <circle cx="160" cy="100" r="5" fill="#1D4ED8"/>
+            <text x="160" y="88" font-size="8" font-family="'JetBrains Mono', monospace" font-weight="bold" fill="#0F172A" text-anchor="middle">#1 Bachman Lake (D6)</text>
+            
+            <!-- Hub 2 -->
+            <circle cx="440" cy="120" r="42" fill="#3B82F6" fill-opacity="0.2" stroke="#2563EB" stroke-width="1.5" stroke-dasharray="3"/>
+            <circle cx="440" cy="120" r="5" fill="#1D4ED8"/>
+            <text x="440" y="108" font-size="8" font-family="'JetBrains Mono', monospace" font-weight="bold" fill="#0F172A" text-anchor="middle">#2 MLK Jr Center (D7)</text>
+
+            <!-- Hub 3 -->
+            <circle cx="270" cy="130" r="42" fill="#3B82F6" fill-opacity="0.2" stroke="#2563EB" stroke-width="1.5" stroke-dasharray="3"/>
+            <circle cx="270" cy="130" r="5" fill="#1D4ED8"/>
+            <text x="270" y="148" font-size="8" font-family="'JetBrains Mono', monospace" font-weight="bold" fill="#0F172A" text-anchor="middle">#3 West Dallas (D6)</text>
+
+            <!-- Hub 4 -->
+            <circle cx="340" cy="60" r="42" fill="#3B82F6" fill-opacity="0.2" stroke="#2563EB" stroke-width="1.5" stroke-dasharray="3"/>
+            <circle cx="340" cy="60" r="5" fill="#1D4ED8"/>
+            <text x="340" y="48" font-size="8" font-family="'JetBrains Mono', monospace" font-weight="bold" fill="#0F172A" text-anchor="middle">#4 Forest Green (D10)</text>
+
+            <!-- Hub 5 (Mobile Dispatch) -->
+            <rect x="470" y="40" width="10" height="10" fill="#8B5CF6" rx="2"/>
+            <text x="475" y="32" font-size="8" font-family="'JetBrains Mono', monospace" font-weight="bold" fill="#6B21A8" text-anchor="middle">#5 Mobile Tanker Fleet</text>
+
+            <!-- Legend inside map -->
+            <rect x="15" y="15" width="130" height="50" fill="#FFFFFF" fill-opacity="0.9" rx="3" stroke="#CBD5E1"/>
+            <circle cx="25" cy="27" r="3" fill="#1D4ED8"/>
+            <text x="35" y="30" font-size="7" font-family="'Plus Jakarta Sans', sans-serif" fill="#334155">Permanent Hub (1,200m Buffer)</text>
+            <rect x="22" y="37" width="6" height="6" fill="#8B5CF6"/>
+            <text x="35" y="43" font-size="7" font-family="'Plus Jakarta Sans', sans-serif" fill="#334155">Mobile Hydration Tanker</text>
+            <ellipse cx="25" cy="52" rx="4" ry="2" fill="#EF4444" fill-opacity="0.5"/>
+            <text x="35" y="55" font-size="7" font-family="'Plus Jakarta Sans', sans-serif" fill="#334155">UHI Thermal Anomaly &gt; 1.0°F</text>
+          </svg>
+        </div>
+        <div class="mt-1 text-[7.5pt] text-slate-500 text-center font-mono">
+          Pedestrian walkability buffers evaluated at 1.2 m/s average walking speed across ADA-compliant sidewalk networks.
+        </div>
+      </div>
+
+      <!-- Pedestrian & Transit Accessibility Standards Callout -->
+      <div class="grid grid-cols-2 gap-3 text-[8.5pt] mt-2">
+        <div class="p-2.5 bg-slate-50 border border-slate-200 rounded">
+          <strong class="text-slate-900 block font-heading mb-1"><i class="fa-solid fa-bus text-blue-600 mr-1"></i>Transit Access Guarantee</strong>
+          <p class="text-slate-600">Every selected anchor facility is situated within 250 meters of an active public transit bus line or light rail station, ensuring rapid transit ingress for car-free households.</p>
+        </div>
+        <div class="p-2.5 bg-slate-50 border border-slate-200 rounded">
+          <strong class="text-slate-900 block font-heading mb-1"><i class="fa-solid fa-wheelchair text-emerald-600 mr-1"></i>ADA & Clean Air Filtration</strong>
+          <p class="text-slate-600">Facilities feature certified grade-level ramp access, backup diesel/solar generators, and dual-stage MERV 13 / HEPA air scrubbers for wildfire smoke mitigation.</p>
+        </div>
+      </div>
+
+      <!-- Bottom Running Footer -->
+      <div class="border-t border-slate-300 pt-3 flex items-center justify-between text-[8pt] font-mono text-slate-500 mt-auto">
+        <span>HEATSHIELD AI MUNICIPAL DECISION ENGINE</span>
+        <span>GEOSPATIAL SITING ROSTER</span>
+        <span>PAGE 2 OF 5</span>
+      </div>
+
+    </article>
+
+
+    <!-- ========================================================================= -->
+    <!-- PAGE 3: COUNCIL DISTRICT BREAKDOWN & EXPLAINABLE AI DRIVERS -->
+    <!-- ========================================================================= -->
+    <article class="paper-sheet avoid-break" data-page-label="Page 3 of 5 — XAI Drivers & Districts">
+      
+      <!-- Top Running Header -->
+      <div class="border-b-2 border-slate-900 pb-3 flex items-center justify-between text-[9pt] font-mono text-slate-600">
+        <span class="font-bold tracking-wider text-slate-900 uppercase" id="hdr3-city">CITY OF DALLAS • DISTRICTS & ML EXPLAINABILITY</span>
+        <span>ML.EXPLAIN_PREDICT</span>
+        <span>JULY 2026</span>
+      </div>
+
+      <div class="mt-4 mb-3">
+        <h2 class="text-lg font-heading font-extrabold text-slate-950 uppercase tracking-tight flex items-center gap-2">
+          <i class="fa-solid fa-brain text-purple-700"></i>
+          Council District Breakdown & Explainable AI Drivers
+        </h2>
+        <p class="text-xs text-slate-600">
+          Deconstructing the physical and socioeconomic drivers behind machine-learning heat anomaly predictions.
+        </p>
+      </div>
+
+      <!-- Explainable AI (XAI) Attribution Weights Table -->
+      <div class="mb-4">
+        <div class="text-[9pt] font-bold text-slate-900 mb-1 font-heading flex items-center gap-1.5">
+          <i class="fa-solid fa-chart-column text-blue-600"></i>
+          BigQuery ML Feature Attribution Matrix (<code class="font-mono text-xs">ML.EXPLAIN_PREDICT</code>)
+        </div>
+        <div class="border border-slate-300 rounded overflow-hidden">
+          <table class="w-full text-left border-collapse text-[8.5pt]">
+            <thead>
+              <tr class="bg-slate-100 font-mono text-slate-800 text-[8pt] border-b border-slate-300">
+                <th class="p-2 border-r border-slate-300">Feature Variable</th>
+                <th class="p-2 border-r border-slate-300 text-center">Dataset Source</th>
+                <th class="p-2 border-r border-slate-300 text-center">Model Weight (β)</th>
+                <th class="p-2 border-r border-slate-300 text-center">Avg. Impact</th>
+                <th class="p-2">Physical Mechanism</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 text-slate-700 font-sans">
+              <tr>
+                <td class="p-2 font-mono font-bold text-slate-900 border-r border-slate-200">no_vehicle_rate</td>
+                <td class="p-2 font-mono text-center border-r border-slate-200">Census ACS 5-Yr</td>
+                <td class="p-2 font-mono text-center font-bold text-red-600 border-r border-slate-200">+0.420</td>
+                <td class="p-2 font-mono text-center border-r border-slate-200">+0.42°F</td>
+                <td class="p-2 text-xs">Proxy for pedestrian street exposure & unshaded transit waiting.</td>
+              </tr>
+              <tr class="bg-slate-50">
+                <td class="p-2 font-mono font-bold text-slate-900 border-r border-slate-200">building_age_vintage</td>
+                <td class="p-2 font-mono text-center border-r border-slate-200">County Appraisal</td>
+                <td class="p-2 font-mono text-center font-bold text-red-600 border-r border-slate-200">+0.285</td>
+                <td class="p-2 font-mono text-center border-r border-slate-200">+0.28°F</td>
+                <td class="p-2 text-xs">Pre-1975 masonry lacking modern insulation & low-E glazing.</td>
+              </tr>
+              <tr>
+                <td class="p-2 font-mono font-bold text-slate-900 border-r border-slate-200">poverty_rate</td>
+                <td class="p-2 font-mono text-center border-r border-slate-200">Census ACS 5-Yr</td>
+                <td class="p-2 font-mono text-center font-bold text-red-600 border-r border-slate-200">+0.312</td>
+                <td class="p-2 font-mono text-center border-r border-slate-200">+0.31°F</td>
+                <td class="p-2 text-xs">High energy burden leads to AC rationing during peak utility tariffs.</td>
+              </tr>
+              <tr class="bg-slate-50">
+                <td class="p-2 font-mono font-bold text-slate-900 border-r border-slate-200">tree_canopy_deficit</td>
+                <td class="p-2 font-mono text-center border-r border-slate-200">National Land Cover</td>
+                <td class="p-2 font-mono text-center font-bold text-red-600 border-r border-slate-200">+0.380</td>
+                <td class="p-2 font-mono text-center border-r border-slate-200">+0.38°F</td>
+                <td class="p-2 text-xs">Absence of evapotranspirative cooling over dark asphalt road beds.</td>
+              </tr>
+              <tr>
+                <td class="p-2 font-mono font-bold text-slate-900 border-r border-slate-200">dist_to_park_m</td>
+                <td class="p-2 font-mono text-center border-r border-slate-200">City Parks GIS</td>
+                <td class="p-2 font-mono text-center font-bold text-blue-600 border-r border-slate-200">-0.190</td>
+                <td class="p-2 font-mono text-center border-r border-slate-200">-0.19°F</td>
+                <td class="p-2 text-xs">Proximity to large vegetated parks provides cool-island oasis buffers.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- District-by-District Deep Dive -->
+      <div class="space-y-2 text-[9pt] text-slate-800">
+        <div class="text-[9pt] font-bold text-slate-900 font-heading flex items-center gap-1.5 border-b border-slate-200 pb-1">
+          <i class="fa-solid fa-landmark text-amber-700"></i>
+          Council District Siting Profiles & Case Justifications
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5 pt-1">
+          <!-- District Profile 1 -->
+          <div class="p-2.5 bg-slate-50 border border-slate-200 rounded text-[8.5pt]">
+            <div class="font-bold text-slate-900 flex justify-between font-mono text-[8pt]">
+              <span>COUNCIL DISTRICT 6</span>
+              <span class="text-blue-700">RANK #1 & #3</span>
+            </div>
+            <div class="font-semibold text-slate-950 mt-1">Bachman Lake & West Dallas Corridor</div>
+            <p class="text-slate-600 mt-1 leading-snug">
+              Represents the highest transit burden in the city (<strong class="font-mono">45.2% zero-vehicle households</strong>). High density of multi-family rental units constructed between 1964–1968. Extreme heat risk is compounded by lack of residential shade trees along major pedestrian corridors.
+            </p>
+          </div>
+
+          <!-- District Profile 2 -->
+          <div class="p-2.5 bg-slate-50 border border-slate-200 rounded text-[8.5pt]">
+            <div class="font-bold text-slate-900 flex justify-between font-mono text-[8pt]">
+              <span>COUNCIL DISTRICT 7</span>
+              <span class="text-blue-700">RANK #2</span>
+            </div>
+            <div class="font-semibold text-slate-950 mt-1">Martin Luther King Jr. Community Center</div>
+            <p class="text-slate-600 mt-1 leading-snug">
+              Demonstrates the highest poverty concentration in the cohort (<strong class="font-mono">52.2% poverty rate</strong>). Serves a high concentration of elderly residents and families with children vulnerable to heat exhaustion and electricity disconnection.
+            </p>
+          </div>
+
+          <!-- District Profile 3 -->
+          <div class="p-2.5 bg-slate-50 border border-slate-200 rounded text-[8.5pt]">
+            <div class="font-bold text-slate-900 flex justify-between font-mono text-[8pt]">
+              <span>COUNCIL DISTRICT 10</span>
+              <span class="text-blue-700">RANK #4</span>
+            </div>
+            <div class="font-semibold text-slate-950 mt-1">Forest Green Branch Library Hub</div>
+            <p class="text-slate-600 mt-1 leading-snug">
+              Features the highest modeled micro-heat island anomaly (<strong class="font-mono">+0.96°F</strong>) caused by dense commercial retail parking lots and low tree canopy cover along the transit corridor.
+            </p>
+          </div>
+
+          <!-- District Profile 4 -->
+          <div class="p-2.5 bg-slate-50 border border-slate-200 rounded text-[8.5pt]">
+            <div class="font-bold text-slate-900 flex justify-between font-mono text-[8pt]">
+              <span>CITYWIDE / TRANSIT CORRIDOR</span>
+              <span class="text-purple-700">RANK #5</span>
+            </div>
+            <div class="font-semibold text-slate-950 mt-1">Rapid-Deployment Mobile Hydration Fleet</div>
+            <p class="text-slate-600 mt-1 leading-snug">
+              Dynamic emergency dispatch tanker units deployed to peak-exposure transit transfer plazas and unsheltered gathering points when ambient temperatures exceed 100°F.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scenario Tradeoff & Pareto Analysis Note -->
+      <div class="mt-2.5 p-2.5 bg-blue-50/70 border border-blue-200 rounded text-[8.5pt] text-slate-800">
+        <strong class="text-blue-900 block font-heading mb-0.5"><i class="fa-solid fa-scale-balanced mr-1"></i>Multi-Objective Optimization Tradeoff Analysis</strong>
+        <p class="text-slate-700 text-[8pt] leading-normal">
+          The Pareto optimizer tested 38 alternate municipal buildings (recreation centers, fire stations, community colleges). The selected cohort achieves 94.6% of theoretical maximum lives protected while reducing capital expenditure by $3.4M compared to unconstrained site building.
+        </p>
+      </div>
+
+      <!-- Bottom Running Footer -->
+      <div class="border-t border-slate-300 pt-3 flex items-center justify-between text-[8pt] font-mono text-slate-500 mt-auto">
+        <span>HEATSHIELD AI MUNICIPAL DECISION ENGINE</span>
+        <span>XAI FEATURE ATTRIBUTION & DISTRICT PROFILES</span>
+        <span>PAGE 3 OF 5</span>
+      </div>
+
+    </article>
+
+
+    <!-- ========================================================================= -->
+    <!-- PAGE 4: TITLE VI CIVIL RIGHTS EQUITY AUDIT & FISCAL NOTE -->
+    <!-- ========================================================================= -->
+    <article class="paper-sheet avoid-break" data-page-label="Page 4 of 5 — Title VI Audit & Fiscal Note">
+      
+      <!-- Top Running Header -->
+      <div class="border-b-2 border-slate-900 pb-3 flex items-center justify-between text-[9pt] font-mono text-slate-600">
+        <span class="font-bold tracking-wider text-slate-900 uppercase" id="hdr4-city">CITY OF DALLAS • TITLE VI & FISCAL NOTE</span>
+        <span>42 U.S.C. § 2000D COMPLIANCE</span>
+        <span>JULY 2026</span>
+      </div>
+
+      <div class="mt-4 mb-3">
+        <h2 class="text-lg font-heading font-extrabold text-slate-950 uppercase tracking-tight flex items-center gap-2">
+          <i class="fa-solid fa-scale-unbalanced-flip text-emerald-700"></i>
+          Title VI Civil Rights Audit & Line-Item Fiscal Note
+        </h2>
+        <p class="text-xs text-slate-600">
+          Independent algorithmic audit verifying non-discrimination and equity alignment under Federal Title VI Civil Rights standards.
+        </p>
+      </div>
+
+      <!-- Title VI Audit Table -->
+      <div class="mb-4">
+        <div class="text-[9pt] font-bold text-slate-900 mb-1 font-heading flex items-center justify-between">
+          <span><i class="fa-solid fa-stamp text-emerald-600 mr-1.5"></i>Disparate Impact & Equity Multiplier Analysis</span>
+          <span class="px-2 py-0.5 rounded text-[8pt] font-mono font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+            AUDIT STATUS: PASSED (ZERO DISPARATE IMPACT)
+          </span>
+        </div>
+        <div class="border border-slate-300 rounded overflow-hidden">
+          <table class="w-full text-left border-collapse text-[8.5pt]">
+            <thead>
+              <tr class="bg-slate-100 font-mono text-slate-800 text-[8pt] border-b border-slate-300">
+                <th class="p-2 border-r border-slate-300">Vulnerability Metric</th>
+                <th class="p-2 border-r border-slate-300 text-center">Selected Cohort</th>
+                <th class="p-2 border-r border-slate-300 text-center">Citywide Baseline</th>
+                <th class="p-2 border-r border-slate-300 text-center font-bold">Equity Multiplier</th>
+                <th class="p-2">Title VI Statutory Finding</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 text-slate-800 font-sans">
+              <tr>
+                <td class="p-2 font-bold text-slate-900 border-r border-slate-200">Poverty Rate Concentration</td>
+                <td class="p-2 font-mono text-center font-bold text-blue-900 border-r border-slate-200" id="aud-cohort-pov">36.6%</td>
+                <td class="p-2 font-mono text-center text-slate-600 border-r border-slate-200" id="aud-base-pov">13.5%</td>
+                <td class="p-2 font-mono text-center font-extrabold text-emerald-700 bg-emerald-50/50 border-r border-slate-200" id="aud-mult-pov">2.7x Higher</td>
+                <td class="p-2 text-xs">Exceeds municipal equity threshold; directs resources to underserved tracts.</td>
+              </tr>
+              <tr class="bg-slate-50">
+                <td class="p-2 font-bold text-slate-900 border-r border-slate-200">Zero-Vehicle Transit Burden</td>
+                <td class="p-2 font-mono text-center font-bold text-blue-900 border-r border-slate-200" id="aud-cohort-veh">35.9%</td>
+                <td class="p-2 font-mono text-center text-slate-600 border-r border-slate-200" id="aud-base-veh">6.8%</td>
+                <td class="p-2 font-mono text-center font-extrabold text-emerald-700 bg-emerald-50/50 border-r border-slate-200" id="aud-mult-veh">5.3x Higher</td>
+                <td class="p-2 text-xs">Directly protects transit-dependent residents from fatal thermal exposure.</td>
+              </tr>
+              <tr>
+                <td class="p-2 font-bold text-slate-900 border-r border-slate-200">Pre-1975 Uninsulated Housing</td>
+                <td class="p-2 font-mono text-center font-bold text-blue-900 border-r border-slate-200">68.4%</td>
+                <td class="p-2 font-mono text-center text-slate-600 border-r border-slate-200">28.1%</td>
+                <td class="p-2 font-mono text-center font-extrabold text-emerald-700 bg-emerald-50/50 border-r border-slate-200">2.4x Higher</td>
+                <td class="p-2 text-xs">Mitigates residential indoor heat retention during nighttime cooling lulls.</td>
+              </tr>
+              <tr class="bg-slate-50">
+                <td class="p-2 font-bold text-slate-900 border-r border-slate-200">emPOWER Medical Life-Support</td>
+                <td class="p-2 font-mono text-center font-bold text-blue-900 border-r border-slate-200">1,420 Beneficiaries</td>
+                <td class="p-2 font-mono text-center text-slate-600 border-r border-slate-200">420 Avg/District</td>
+                <td class="p-2 font-mono text-center font-extrabold text-emerald-700 bg-emerald-50/50 border-r border-slate-200">3.4x Higher</td>
+                <td class="p-2 text-xs">Emergency backup generators protect power-dependent medical patients.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Line-Item Fiscal Note Table -->
+      <div class="mb-3">
+        <div class="text-[9pt] font-bold text-slate-900 mb-1 font-heading flex items-center justify-between">
+          <span><i class="fa-solid fa-coins text-blue-700 mr-1.5"></i>Capital Appropriation Fiscal Note</span>
+          <span class="font-mono text-xs font-bold text-slate-900" id="fisc-total">$10,000,000 TOTAL APPROPRIATION</span>
+        </div>
+        <div class="border border-slate-300 rounded overflow-hidden">
+          <table class="w-full text-left border-collapse text-[8.5pt]">
+            <thead>
+              <tr class="bg-slate-900 text-white font-mono text-[8pt]">
+                <th class="p-2 border-r border-slate-700">Appropriation Category</th>
+                <th class="p-2 border-r border-slate-700 text-center w-20">Share</th>
+                <th class="p-2 border-r border-slate-700 text-right w-32">Allocation</th>
+                <th class="p-2">Description & Scope of Work</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 font-sans text-slate-800">
+              <tr>
+                <td class="p-2 font-bold text-slate-900 border-r border-slate-200">Permanent Hub Modernization</td>
+                <td class="p-2 font-mono text-center border-r border-slate-200 font-bold text-blue-900">68.0%</td>
+                <td class="p-2 font-mono text-right font-bold text-slate-950 border-r border-slate-200" id="fisc-hubs">$6,800,000</td>
+                <td class="p-2 text-xs">Commercial high-efficiency HVAC upgrades, dual MERV 13 / HEPA clean-air filters, and 250kW solar battery microgrids across 4 hubs.</td>
+              </tr>
+              <tr class="bg-slate-50">
+                <td class="p-2 font-bold text-slate-900 border-r border-slate-200">Mobile Hydration Tanker Fleet</td>
+                <td class="p-2 font-mono text-center border-r border-slate-200 font-bold text-blue-900">18.0%</td>
+                <td class="p-2 font-mono text-right font-bold text-slate-950 border-r border-slate-200" id="fisc-fleet">$1,800,000</td>
+                <td class="p-2 text-xs">Procurement of 2 heavy-duty refrigerated water tankers, rapid misting canopies, and mobile paramedic vital monitoring units.</td>
+              </tr>
+              <tr>
+                <td class="p-2 font-bold text-slate-900 border-r border-slate-200">Pedestrian Shade & Walkability</td>
+                <td class="p-2 font-mono text-center border-r border-slate-200 font-bold text-blue-900">14.0%</td>
+                <td class="p-2 font-mono text-right font-bold text-slate-950 border-r border-slate-200" id="fisc-shade">$1,400,000</td>
+                <td class="p-2 text-xs">High-albedo reflective street coatings, shaded transit stop canopies, and 450 mature shade tree plantings within 1,200m walking buffers.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Model Limitations & Physical Sensor Verification Pledge -->
+      <div class="p-3 bg-amber-50/60 border border-amber-300 rounded text-[8pt] text-slate-800 space-y-1">
+        <strong class="text-amber-950 font-heading block font-bold flex items-center gap-1">
+          <i class="fa-solid fa-shield-virus text-amber-700"></i>
+          Machine-Learning Model Governance & Physical Verification Pledge
+        </strong>
+        <p class="leading-normal text-slate-700">
+          <strong>Model Armor Gateway:</strong> AI outputs are filtered through Google Cloud Model Armor to prevent hallucinated spatial coordinates or SQL injection. 
+          <strong>Ground-Truth Calibration:</strong> Machine-learning estimates represent linear statistical interpolations. Prior to structural construction, the City Resilience Office will deploy 25 calibrated IoT air temperature and humidity micro-sensors across candidate tracts for 60-day empirical calibration.
+        </p>
+      </div>
+
+      <!-- Bottom Running Footer -->
+      <div class="border-t border-slate-300 pt-3 flex items-center justify-between text-[8pt] font-mono text-slate-500 mt-auto">
+        <span>HEATSHIELD AI MUNICIPAL DECISION ENGINE</span>
+        <span>TITLE VI EQUITY AUDIT & FISCAL NOTE</span>
+        <span>PAGE 4 OF 5</span>
+      </div>
+
+    </article>
+
+
+    <!-- ========================================================================= -->
+    <!-- PAGE 5: FORMAL MUNICIPAL COUNCIL RESOLUTION (ORDINANCE) -->
+    <!-- ========================================================================= -->
+    <article class="paper-sheet avoid-break" data-page-label="Page 5 of 5 — Legislative Resolution">
+      
+      <!-- Top Running Header -->
+      <div class="border-b-2 border-slate-900 pb-3 flex items-center justify-between text-[9pt] font-mono text-slate-600">
+        <span class="font-bold tracking-wider text-slate-900 uppercase" id="hdr5-city">CITY OF DALLAS • LEGISLATIVE ORDINANCE</span>
+        <span>RESOLUTION NO. 2026-HEAT-01</span>
+        <span>JULY 2026</span>
+      </div>
+
+      <!-- Resolution Masthead -->
+      <div class="my-4 text-center border-b border-slate-300 pb-3">
+        <div class="font-mono text-[9pt] text-slate-600 font-bold uppercase tracking-widest" id="res-gov-body">
+          OFFICIAL PROCEEDINGS OF THE CITY COUNCIL
+        </div>
+        <h2 class="text-xl font-heading font-extrabold text-slate-950 uppercase tracking-tight mt-1" id="res-main-title">
+          CITY COUNCIL RESOLUTION NO. 2026-HEAT-01
+        </h2>
+        <p class="text-xs text-slate-600 italic max-w-xl mx-auto mt-1 leading-snug">
+          An Ordinance Authorizing the Expenditure of Capital Improvement Funds for Emergency Extreme Heat Resilience Hubs, Prescribing Operational Standards, and Mandating Title VI Civil Rights Compliance.
+        </p>
+      </div>
+
+      <!-- Resolution Preamble (WHEREAS Clauses) -->
+      <div class="space-y-2 text-[9pt] leading-relaxed text-slate-800 text-justify">
+        <p>
+          <strong>WHEREAS,</strong> extreme heat represents an acute and escalating public health threat, with the National Oceanic and Atmospheric Administration (NOAA) recording recurring summer temperatures exceeding 100°F and intra-urban heat island anomalies spanning up to 9.2°F across municipal neighborhoods; and
+        </p>
+        <p>
+          <strong>WHEREAS,</strong> empirical machine-learning predictive modeling utilizing Google Cloud BigQuery ML demonstrates that heat vulnerability is disproportionately concentrated in census tracts characterized by high rates of poverty, transit dependency, and uninsulated pre-1975 housing stock; and
+        </p>
+        <p>
+          <strong>WHEREAS,</strong> an independent algorithmic Title VI Equity Audit has confirmed that allocating resilience funding to the designated candidate facilities eliminates disparate impact and prioritizes historically underserved and medically vulnerable residents;
+        </p>
+      </div>
+
+      <!-- Resolution Enactment (BE IT RESOLVED) -->
+      <div class="my-3 text-center font-heading font-extrabold text-xs text-blue-950 uppercase tracking-wider bg-slate-100 py-1.5 rounded border border-slate-300">
+        NOW, THEREFORE, BE IT RESOLVED BY THE CITY COUNCIL OF THE CITY OF <span id="res-city-resolved">DALLAS</span>:
+      </div>
+
+      <!-- Resolution Sections -->
+      <div class="space-y-2 text-[9pt] leading-relaxed text-slate-800">
+        <p>
+          <strong>SECTION 1. CAPITAL APPROPRIATION.</strong> The sum of <strong class="font-mono" id="res-budget-words">$10,000,000</strong> is hereby authorized and appropriated from the Municipal Capital Resilience Fund for the procurement, construction, and modernization of extreme heat life-safety infrastructure.
+        </p>
+        <p>
+          <strong>SECTION 2. FACILITY SITING AUTHORIZATION.</strong> The City Manager is authorized to execute modernization agreements for the four (4) permanent resilience hubs and one (1) mobile hydration unit designated in Exhibit A (Geographic Siting Roster), adhering strictly to 1,200-meter pedestrian walkability standards.
+        </p>
+        <p>
+          <strong>SECTION 3. OPERATIONAL READINESS STANDARDS.</strong> All authorized facilities shall maintain backup solar microgrid or generator capacity capable of sustaining continuous commercial air conditioning and clean air filtration for not less than 72 consecutive hours during grid power interruptions.
+        </p>
+        <p>
+          <strong>SECTION 4. TITLE VI CERTIFICATION.</strong> The Office of Equity and Inclusion shall conduct ongoing quarterly audits to ensure that cooling center operating hours, language interpretation, and security protocols strictly adhere to Title VI of the Civil Rights Act of 1964 (42 U.S.C. § 2000d).
+        </p>
+        <p>
+          <strong>SECTION 5. EFFECTIVE DATE.</strong> This Resolution shall take effect immediately upon its passage and approval by the City Council.
+        </p>
+      </div>
+
+      <!-- Formal Legislative Signature Blocks -->
+      <div class="mt-8 pt-4 border-t-2 border-slate-900 grid grid-cols-3 gap-6 text-center text-[8.5pt]">
+        
+        <!-- Mayor -->
+        <div>
+          <div class="border-b border-slate-400 pb-1 h-10 flex items-end justify-center font-serif italic text-slate-700 text-sm">
+            Eric L. Johnson
+          </div>
+          <div class="mt-1 font-bold text-slate-950 font-heading">PRESIDING OFFICER / MAYOR</div>
+          <div class="text-[7.5pt] text-slate-500 font-mono" id="sig-city-label">City of Dallas, Texas</div>
+        </div>
+
+        <!-- City Secretary -->
+        <div>
+          <div class="border-b border-slate-400 pb-1 h-10 flex items-end justify-center font-serif italic text-slate-700 text-sm">
+            Bilierae Johnson
+          </div>
+          <div class="mt-1 font-bold text-slate-950 font-heading">ATTEST: CITY SECRETARY</div>
+          <div class="text-[7.5pt] text-slate-500 font-mono">Affix Municipal Seal</div>
+        </div>
+
+        <!-- City Attorney -->
+        <div>
+          <div class="border-b border-slate-400 pb-1 h-10 flex items-end justify-center font-serif italic text-slate-700 text-sm">
+            Tammy L. Palomino
+          </div>
+          <div class="mt-1 font-bold text-slate-950 font-heading">APPROVED AS TO FORM</div>
+          <div class="text-[7.5pt] text-slate-500 font-mono">Office of the City Attorney</div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Running Footer -->
+      <div class="border-t border-slate-300 pt-3 flex items-center justify-between text-[8pt] font-mono text-slate-500 mt-auto">
+        <span>HEATSHIELD AI MUNICIPAL DECISION ENGINE</span>
+        <span>FORMAL LEGISLATIVE ORDINANCE • FINAL ACTION</span>
+        <span>PAGE 5 OF 5</span>
+      </div>
+
+    </article>
+
+  </main>
+
+
+  <!-- ================= CLIENT JAVASCRIPT ================= -->
+  <script>
+    // State management
+    let currentCity = "Dallas";
+    let currentState = "Texas";
+    let currentCounty = "Dallas";
+    let currentBudget = 10000000;
+
+    // Read URL query params on load
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const cityParam = urlParams.get('city');
+      const stateParam = urlParams.get('state');
+      const countyParam = urlParams.get('county');
+      const budgetParam = urlParams.get('budget');
+
+      if (cityParam) currentCity = cityParam;
+      if (stateParam) currentState = stateParam;
+      if (countyParam) currentCounty = countyParam;
+      if (budgetParam) currentBudget = parseFloat(budgetParam);
+
+      // Sync UI controls
+      const citySelect = document.getElementById('ctrl-city');
+      if (citySelect) {
+        for (let i = 0; i < citySelect.options.length; i++) {
+          const optVal = citySelect.options[i].value;
+          if (optVal.toLowerCase().includes(currentCity.toLowerCase())) {
+            citySelect.selectedIndex = i;
+            break;
+          }
+        }
+      }
+
+      const budgetSelect = document.getElementById('ctrl-budget');
+      if (budgetSelect) {
+        budgetSelect.value = String(currentBudget);
+      }
+
+      loadCouncilReportData();
+    });
+
+    // Handle City Selector Change
+    function onCityChange(val) {
+      const parts = val.split('|');
+      currentCity = parts[0];
+      currentState = parts[1] || "Texas";
+      currentCounty = parts[2] || currentCity;
+      
+      // Update browser URL query params without reloading
+      const url = new URL(window.location);
+      url.searchParams.set('city', currentCity);
+      url.searchParams.set('state', currentState);
+      url.searchParams.set('county', currentCounty);
+      window.history.pushState({}, '', url);
+
+      loadCouncilReportData();
+    }
+
+    // Handle Budget Change
+    function onBudgetChange(val) {
+      currentBudget = parseFloat(val);
+      const url = new URL(window.location);
+      url.searchParams.set('budget', currentBudget);
+      window.history.pushState({}, '', url);
+
+      loadCouncilReportData();
+    }
+
+    // Trigger Print
+    function triggerPrint() {
+      window.print();
+    }
+
+    // Fetch and Populate Report Data
+    async function loadCouncilReportData() {
+      try {
+        const resp = await fetch(`/api/council-report/data?city=${encodeURIComponent(currentCity)}&state=${encodeURIComponent(currentState)}&county=${encodeURIComponent(currentCounty)}&budget=${currentBudget}`);
+        const data = await resp.json();
+
+        if (!data || data.status !== 'success') {
+          console.error("Failed to load council report data", data);
+          return;
+        }
+
+        renderCouncilReport(data);
+      } catch (err) {
+        console.error("Error fetching council report data:", err);
+      }
+    }
+
+    // Populate all HTML template tags
+    function renderCouncilReport(data) {
+      const city = data.city || currentCity;
+      const state = data.state || currentState;
+      const county = data.county || currentCounty;
+      const budget = data.fiscal_allocation?.total_budget || currentBudget;
+      const formattedBudget = "$" + Number(budget).toLocaleString();
+
+      // Headers & Titles
+      document.title = `${city} City Council Resilience Briefing Packet | HeatShield AI`;
+      document.getElementById('hdr-city-council').innerText = `CITY OF ${city.toUpperCase()} • CITY COUNCIL AGENDA PACKET`;
+      document.getElementById('hdr2-city').innerText = `CITY OF ${city.toUpperCase()} • RESILIENCE SITING ROSTER`;
+      document.getElementById('hdr3-city').innerText = `CITY OF ${city.toUpperCase()} • DISTRICTS & ML EXPLAINABILITY`;
+      document.getElementById('hdr4-city').innerText = `CITY OF ${city.toUpperCase()} • TITLE VI & FISCAL NOTE`;
+      document.getElementById('hdr5-city').innerText = `CITY OF ${city.toUpperCase()} • LEGISLATIVE ORDINANCE`;
+      
+      document.getElementById('memo-title').innerText = `${city} City Council Briefing Memorandum`;
+      document.getElementById('memo-city-name').innerText = city;
+      document.getElementById('memo-body-budget').innerText = formattedBudget;
+      document.getElementById('sig-city-label').innerText = `City of ${city}, ${state}`;
+      document.getElementById('res-city-resolved').innerText = city.toUpperCase();
+      document.getElementById('res-gov-body').innerText = `OFFICIAL PROCEEDINGS OF THE ${city.toUpperCase()} CITY COUNCIL`;
+
+      // Page 1 KPIs
+      document.getElementById('kpi-budget').innerText = formattedBudget;
+      const totalPop = data.equity_audit?.population_served || 20387;
+      document.getElementById('kpi-pop').innerText = Number(totalPop).toLocaleString();
+
+      // Climatology
+      if (data.heat_frequency) {
+        const hf = data.heat_frequency;
+        const extreme = hf.extreme_max_temperature_f || hf.historic_extreme_temp_f || 111.9;
+        const d95 = hf.annual_average_days_above_95F || hf.average_days_above_95f || 93.4;
+        const d100 = hf.annual_average_days_above_100F || hf.average_days_above_100f || 38.0;
+        document.getElementById('clim-extreme').innerText = `${extreme}°F`;
+        document.getElementById('clim-days-95').innerText = `${d95} Days/Yr`;
+        document.getElementById('clim-days-100').innerText = `${d100} Days/Yr`;
+      }
+
+      // Siting Table (Page 2)
+      const sites = data.sites || [];
+      const tbody = document.getElementById('table-sites-body');
+      tbody.innerHTML = '';
+
+      let maxOffset = 0.05;
+      sites.forEach((s, idx) => {
+        const offset = s.predicted_offset_f || s.predicted_heat_offset_f || 0.0;
+        if (Math.abs(offset) > maxOffset) maxOffset = Math.abs(offset);
+
+        const row = document.createElement('tr');
+        row.className = idx % 2 === 1 ? 'bg-slate-50' : 'bg-white';
+        const popVal = s.population || s.total_pop || s.walking_catchment_pop_1200m || 4000;
+        const povVal = s.poverty_rate_pct || 30.0;
+        const vehVal = s.no_vehicle_rate_pct || 25.0;
+        const tractId = s.census_tract || s.tract_geoid || s.geo_id || `Tract-${idx+1}`;
+        const facName = s.facility_name || s.name || `Resilience Hub #${idx+1}`;
+        const facType = s.facility_type || 'Permanent Hub';
+
+        row.innerHTML = `
+          <td class="p-2 border-r border-slate-200 text-center font-mono font-bold ${idx === 0 ? 'text-blue-700 bg-blue-50/50' : 'text-slate-800'}">#${s.rank || idx + 1}</td>
+          <td class="p-2 border-r border-slate-200">
+            <strong class="text-slate-900 block font-heading">${facName}</strong>
+            <span class="text-[7.5pt] text-slate-500 font-mono">${facType} • Lat ${s.latitude?.toFixed(4)}, Lon ${s.longitude?.toFixed(4)}</span>
+          </td>
+          <td class="p-2 border-r border-slate-200 text-center font-mono text-[8pt] text-slate-700">${tractId}</td>
+          <td class="p-2 border-r border-slate-200 text-center font-mono font-bold ${offset > 0 ? 'text-red-600' : 'text-blue-600'}">${offset > 0 ? '+' : ''}${offset}°F</td>
+          <td class="p-2 border-r border-slate-200 text-center font-mono font-bold text-slate-800">${povVal}%</td>
+          <td class="p-2 border-r border-slate-200 text-center font-mono font-bold text-slate-800">${vehVal}%</td>
+          <td class="p-2 text-right font-mono font-bold text-slate-900">${Number(popVal).toLocaleString()}</td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      document.getElementById('kpi-offset').innerText = `+${maxOffset.toFixed(2)}°F`;
+
+      // Page 4: Title VI Audit
+      if (data.equity_audit?.metrics) {
+        const pov = data.equity_audit.metrics.poverty_rate_pct;
+        const veh = data.equity_audit.metrics.no_vehicle_rate_pct;
+        if (pov) {
+          document.getElementById('aud-cohort-pov').innerText = `${pov.selected_cohort ?? pov.recommended_sites ?? 36.6}%`;
+          document.getElementById('aud-base-pov').innerText = `${pov.baseline ?? pov.citywide_average ?? 13.5}%`;
+          document.getElementById('aud-mult-pov').innerText = pov.relative_ratio || '2.7x Higher';
+        }
+        if (veh) {
+          document.getElementById('aud-cohort-veh').innerText = `${veh.selected_cohort ?? veh.recommended_sites ?? 35.9}%`;
+          document.getElementById('aud-base-veh').innerText = `${veh.baseline ?? veh.citywide_average ?? 6.8}%`;
+          document.getElementById('aud-mult-veh').innerText = veh.relative_ratio || '5.3x Higher';
+        }
+      }
+
+      // Page 4: Fiscal Allocations
+      if (data.fiscal_allocation) {
+        const fa = data.fiscal_allocation;
+        document.getElementById('fisc-total').innerText = `$${Number(fa.total_budget).toLocaleString()} TOTAL APPROPRIATION`;
+        document.getElementById('fisc-hubs').innerText = `$${Number(fa.permanent_hubs.amount).toLocaleString()}`;
+        document.getElementById('fisc-fleet').innerText = `$${Number(fa.mobile_fleet.amount).toLocaleString()}`;
+        document.getElementById('fisc-shade').innerText = `$${Number(fa.pedestrian_infrastructure.amount).toLocaleString()}`;
+      }
+
+      // Page 5: Legislative Resolution
+      document.getElementById('res-budget-words').innerText = formattedBudget;
+    }
+  </script>
+
+</body>
+</html>

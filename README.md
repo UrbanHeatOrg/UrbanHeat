@@ -124,7 +124,7 @@ Anyone on the team can deploy the live application and AI planning agent to Goog
 bash scripts/deploy.sh
 
 # Deploy with custom service name (e.g. personal testing):
-bash scripts/deploy.sh --service urbanheat-track1
+bash scripts/deploy.sh --service heatshieldai-track1
 
 # Deploy with a Google AI Studio API key:
 bash scripts/deploy.sh --api-key AIzaSy...

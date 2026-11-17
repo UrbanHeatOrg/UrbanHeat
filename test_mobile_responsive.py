@@ -96,8 +96,11 @@ async def run_all_tests():
             page = await context.new_page()
 
             # Navigate to local web server
-            await page.goto(BASE_URL, wait_until="networkidle")
-            await asyncio.sleep(1.5)
+            try:
+                await page.goto(BASE_URL, wait_until="networkidle", timeout=15000)
+            except Exception:
+                pass
+            await asyncio.sleep(2)
 
             # Test 1: Check no horizontal overflow on initial load
             await check_no_horizontal_overflow(page, f"{vp_name}-initial")

@@ -496,13 +496,14 @@
     <div class="flex items-center gap-2 sm:gap-3 pointer-events-auto">
       <div class="trace-card rounded-2xl px-2.5 sm:px-3.5 py-1.5 sm:py-2 flex items-center gap-2 sm:gap-3 border border-white/10 shadow-2xl">
         <div class="relative flex items-center justify-center">
-          <img src="/static/team_aura_logo.png" alt="Team AURA" class="w-8 h-8 rounded-xl object-cover border border-cyan-400/50 shadow-lg shadow-cyan-500/40">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-cyan-500 via-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/30 border border-cyan-400/40">
+            <i class="fa-solid fa-shield-halved text-sm text-cyan-200"></i>
+          </div>
           <span class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping"></span>
         </div>
         <div>
           <div class="flex items-center gap-1.5 sm:gap-2">
             <h1 class="font-extrabold text-xs sm:text-sm text-white tracking-tight">HeatShield AI</h1>
-            <span class="hidden sm:inline-block text-[9px] font-mono px-2 py-0.5 rounded-full bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-indigo-500/20 text-cyan-300 border border-cyan-500/40 font-bold tracking-wider">TEAM AURA</span>
           </div>
           <p class="hidden 2xl:block text-[10px] text-slate-400 font-medium"><span class="text-cyan-400 font-semibold">Climate Orchestration Lab</span> • 74,133 US Tracts</p>
         </div>
@@ -524,7 +525,7 @@
     </div>
 
     <!-- Center: Segmented Navigation Pill (Planner Mode Tracks: Map, Plan, Budget, Evidence) -->
-    <nav id="planner-nav-bar" class="hidden 2xl:flex trace-card rounded-2xl p-1 items-center gap-1 pointer-events-auto border border-white/10 shadow-2xl transition-all duration-300">
+    <nav id="planner-nav-bar" class="hidden xl:flex trace-card rounded-2xl p-1 items-center gap-1 pointer-events-auto border border-white/10 shadow-2xl transition-all duration-300">
       <button id="nav-cesium" onclick="setMode('cesium')" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition active-flir-pill cursor-pointer whitespace-nowrap flex-shrink-0" title="3D GIS Heat Map">
         <i class="fa-solid fa-map text-amber-400 text-xs"></i>
         <span class="font-bold">Map</span>
@@ -540,6 +541,10 @@
       <button id="nav-sources" onclick="toggleDataSourcesModal(true)" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/5 flex items-center gap-1.5 transition cursor-pointer whitespace-nowrap flex-shrink-0" title="12 Data Provenance Sources">
         <i class="fa-solid fa-database text-blue-400 text-xs"></i>
         <span>Evidence</span>
+      </button>
+      <button id="nav-council-report" onclick="openCouncilReport()" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-indigo-300 hover:text-white hover:bg-indigo-600/20 border border-indigo-500/30 flex items-center gap-1.5 transition cursor-pointer whitespace-nowrap flex-shrink-0" title="Printable City Council Briefing Packet">
+        <i class="fa-solid fa-print text-indigo-400 text-xs"></i>
+        <span>Council Packet</span>
       </button>
     </nav>
 
@@ -576,11 +581,7 @@
   </header>
 
   <!-- Mobile & Tablet Horizontal Track Navigator -->
-  <div id="mobile-track-bar" class="2xl:hidden absolute top-14 sm:top-16 left-2 right-2 z-40 flex items-center gap-1.5 overflow-x-auto no-scrollbar pointer-events-auto py-1.5 px-2 bg-obsidian-950/90 backdrop-blur-md rounded-2xl border border-white/10 shadow-xl touch-momentum">
-    <button id="nav-mobile-resident" onclick="toggleResidentPortal(true)" class="px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition bg-gradient-to-r from-cyan-500/30 to-blue-500/30 text-cyan-300 border border-cyan-400/50 cursor-pointer whitespace-nowrap flex-shrink-0 shadow-sm min-h-[44px]">
-      <i class="fa-solid fa-snowflake text-cyan-400 text-xs"></i>
-      <span>Find Cool Now</span>
-    </button>
+  <div id="mobile-track-bar" class="xl:hidden absolute top-14 sm:top-16 left-2 right-2 z-40 flex items-center gap-1.5 overflow-x-auto no-scrollbar pointer-events-auto py-1.5 px-2 bg-obsidian-950/90 backdrop-blur-md rounded-2xl border border-white/10 shadow-xl touch-momentum">
     <button id="nav-mobile-cesium" onclick="setMode('cesium')" class="px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition active-flir-pill cursor-pointer whitespace-nowrap flex-shrink-0 min-h-[44px]">
       <i class="fa-solid fa-map text-amber-400 text-xs"></i>
       <span>Map</span>
@@ -612,7 +613,7 @@
     <div id="view-citizen" class="w-full h-full absolute inset-0 hidden flex-col md:flex-row pt-[56px] sm:pt-[64px] md:pt-[76px] pb-14 md:pb-0 bg-obsidian-950 z-30">
       
       <!-- Left Column / Full Screen on Mobile: Citizen Relief Directory & Navigation -->
-      <aside id="citizen-sidebar" class="w-full md:w-[460px] lg:w-[480px] h-full flex flex-col border-r border-white/10 bg-slate-950/95 backdrop-blur-xl z-20 shadow-2xl overflow-hidden order-1 transition-all duration-300">
+      <aside id="citizen-sidebar" class="w-full md:w-[460px] lg:w-[480px] h-full hidden md:flex flex-col border-r border-white/10 bg-slate-950/95 backdrop-blur-xl z-20 shadow-2xl overflow-hidden order-1 transition-all duration-300">
         
         <!-- Emergency Weather Alert Card -->
         <div id="res-hero-banner" class="px-3 sm:px-4 py-2.5 sm:py-3 bg-gradient-to-r from-red-950/80 via-amber-950/50 to-slate-950 border-b border-red-500/25 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 flex-shrink-0">
@@ -642,15 +643,15 @@
           </a>
         </div>
 
-        <!-- Mobile Segmented View Switcher (Cool Spots List vs Live Map) -->
+        <!-- Mobile Segmented View Switcher (Live Map vs Cool Spots List) -->
         <div class="md:hidden px-3 py-2 bg-slate-900/90 border-b border-white/10 flex items-center gap-2 flex-shrink-0">
-          <button id="mob-tab-btn-list" onclick="setCitizenMobileTab('list')" class="flex-1 min-h-[44px] py-2 rounded-xl text-xs font-bold bg-cyan-500 text-white shadow-md transition flex items-center justify-center gap-1.5 cursor-pointer">
-            <i class="fa-solid fa-list-check text-xs"></i>
-            <span>Cool Spots (<span id="mob-centers-count">7</span>)</span>
-          </button>
-          <button id="mob-tab-btn-map" onclick="setCitizenMobileTab('map')" class="flex-1 min-h-[44px] py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5 cursor-pointer">
+          <button id="mob-tab-btn-map" onclick="setCitizenMobileTab('map')" class="flex-1 min-h-[44px] py-2 rounded-xl text-xs font-bold bg-cyan-500 text-white shadow-md transition flex items-center justify-center gap-1.5 cursor-pointer">
             <i class="fa-solid fa-map-location-dot text-xs text-cyan-400"></i>
             <span>Interactive Map</span>
+          </button>
+          <button id="mob-tab-btn-list" onclick="setCitizenMobileTab('list')" class="flex-1 min-h-[44px] py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5 cursor-pointer">
+            <i class="fa-solid fa-list-check text-xs"></i>
+            <span>Cool Spots (<span id="mob-centers-count">7</span>)</span>
           </button>
         </div>
 
@@ -744,7 +745,7 @@
       </aside>
 
       <!-- Right Column: Interactive Built-in Citizen Map (Leaflet.js + Google Photorealistic 3D Tiles) -->
-      <div id="citizen-map-container" class="w-full md:flex-1 h-full relative order-2 hidden md:block">
+      <div id="citizen-map-container" class="w-full md:flex-1 h-full relative order-2 block">
         <div id="citizen-map" class="w-full h-full hidden z-0"></div>
         <div id="citizen-cesium-container" class="w-full h-full absolute inset-0 z-10"></div>
 
@@ -880,8 +881,8 @@
               </button>
             </div>
 
-            <!-- X-Ray Transparency & Gain Sliders -->
-            <div class="pt-2 border-t border-white/10 space-y-2">
+            <!-- X-Ray Transparency & Gain Sliders (Hidden from UI per user request) -->
+            <div id="xray-opacity-gain-controls" class="hidden pt-2 border-t border-white/10 space-y-2">
               <div>
                 <div class="flex justify-between text-[10px] text-slate-400">
                   <span>Building X-Ray Opacity</span>
@@ -1047,10 +1048,10 @@
           </div>
 
           <div class="grid grid-cols-4 gap-1 text-[10px] font-medium text-slate-400">
-            <button onclick="flyCesiumTo(-96.7970, 32.7767, 1200, -35, 45)" class="p-1 rounded bg-white/5 hover:bg-white/10 hover:text-white transition text-center cursor-pointer">Downtown</button>
-            <button onclick="flyCesiumTo(-96.8736, 32.8048, 900, -30, 60)" class="p-1 rounded bg-white/5 hover:bg-white/10 hover:text-white transition text-center cursor-pointer">W. Dallas</button>
-            <button onclick="flyCesiumTo(-96.7822, 32.6965, 950, -40, 20)" class="p-1 rounded bg-white/5 hover:bg-white/10 hover:text-white transition text-center cursor-pointer">S. Dallas</button>
-            <button onclick="flyCesiumTo(-96.8500, 32.8450, 1100, -35, 90)" class="p-1 rounded bg-white/5 hover:bg-white/10 hover:text-white transition text-center cursor-pointer">Love Field</button>
+            <button id="btn-bm-downtown" onclick="flyCesiumTo(-96.7970, 32.7767, 1200, -35, 45)" class="p-1 rounded bg-white/5 hover:bg-white/10 hover:text-white transition text-center cursor-pointer">Downtown</button>
+            <button id="btn-bm-wdallas" onclick="flyCesiumTo(-96.8623, 32.7834, 1100, -32, 45)" class="p-1 rounded bg-white/5 hover:bg-white/10 hover:text-white transition text-center cursor-pointer">W. Dallas</button>
+            <button id="btn-bm-sdallas" onclick="flyCesiumTo(-96.8155, 32.6912, 1100, -35, 45)" class="p-1 rounded bg-white/5 hover:bg-white/10 hover:text-white transition text-center cursor-pointer">S. Dallas</button>
+            <button id="btn-bm-lovefield" onclick="flyCesiumTo(-96.8512, 32.8481, 1200, -32, 45)" class="p-1 rounded bg-white/5 hover:bg-white/10 hover:text-white transition text-center cursor-pointer">Love Field</button>
           </div>
         </div>
       </div>
@@ -1205,63 +1206,204 @@
       </div>
     </div>
 
-    <!-- ================= FLOATING BOTTOM DRAWER: $50M PARETO & CLIMATOLOGY ================= -->
-    <div id="bottom-drawer" class="fixed md:absolute left-2 right-2 sm:left-4 sm:right-4 lg:left-[360px] lg:right-[460px] bottom-16 sm:bottom-20 md:bottom-4 z-30 transition-all duration-300 transform translate-y-[calc(100%+140px)] pointer-events-auto max-h-[82vh] overflow-y-auto no-scrollbar touch-momentum">
-      <div class="trace-card rounded-3xl p-4 sm:p-5 border border-white/10 shadow-2xl flex flex-col gap-3.5 sm:gap-4">
+    <!-- ================= MODAL: CLIMATE INTERVENTION SIMULATOR ($50M PARETO) ================= -->
+    <div id="bottom-drawer" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-4 md:p-6 transition-all duration-300" onclick="if(event.target===this) toggleBottomDrawer(false)">
+      <div class="glass-panel w-full max-w-5xl max-h-[92vh] rounded-3xl border border-white/15 shadow-2xl overflow-hidden flex flex-col bg-slate-950/95" onclick="event.stopPropagation()">
         
-        <!-- Drawer Header -->
-        <div class="flex items-center justify-between pb-3 border-b border-white/10">
-          <div class="flex items-center gap-2.5 sm:gap-3">
-            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-cyan-300 text-xs sm:text-sm">
+        <!-- Modal Header -->
+        <div class="p-4 sm:p-5 border-b border-white/10 flex items-center justify-between bg-slate-900/80">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-lg flex-shrink-0">
               <i class="fa-solid fa-chart-line"></i>
             </div>
             <div>
-              <h3 class="font-bold text-xs sm:text-sm text-white">Climate Intervention Simulator ($50M Pareto)</h3>
-              <p class="hidden sm:block text-[10px] text-slate-400">Extreme Heat Adaptation vs. Climate TRACE CO₂e Abatement</p>
+              <div class="flex items-center gap-2 flex-wrap">
+                <h3 class="text-sm sm:text-base font-bold text-white">Climate Intervention Simulator ($50M Pareto)</h3>
+                <span id="drawer-budget-readout" class="text-[11px] font-mono font-bold text-cyan-300 bg-cyan-500/10 px-2.5 py-0.5 rounded-full border border-cyan-500/30">$50M Portfolio</span>
+                <span id="drawer-policy-tag" class="text-[11px] font-mono font-bold text-emerald-300 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/30">Balanced Baseline</span>
+              </div>
+              <p class="text-xs text-slate-400 mt-0.5">Multi-Objective Optimization: Extreme Heat Adaptation (Tracks 1 & 2) vs. Climate TRACE Decarbonization (Track 3)</p>
             </div>
           </div>
-          <div class="flex items-center gap-2 sm:gap-3">
-            <span class="text-[10px] sm:text-xs font-mono font-bold text-cyan-300 bg-cyan-500/10 px-2 sm:px-3 py-1 rounded-xl border border-cyan-500/30" id="drawer-budget-readout">$50M Allocation</span>
-            <button onclick="toggleBottomDrawer(false)" class="text-slate-400 hover:text-white text-base p-1 cursor-pointer">
-              <i class="fa-solid fa-chevron-down"></i>
-            </button>
-          </div>
+          <button onclick="toggleBottomDrawer(false)" class="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-white/5 cursor-pointer transition min-w-[44px] min-h-[44px] flex items-center justify-center flex-shrink-0" title="Close Simulator" aria-label="Close Climate Intervention Simulator">
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
         </div>
 
-        <!-- Slider Controls & Charts Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
-          <!-- Left: Sliders & Pareto Frontier -->
-          <div class="lg:col-span-7 flex flex-col justify-between">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 mb-3 bg-obsidian-900/60 p-3 rounded-2xl border border-white/5">
-              <div>
-                <div class="flex justify-between text-xs mb-1">
-                  <span class="text-slate-300 font-semibold">Total Capital Allocation</span>
-                  <span id="txt-slider-budget" class="font-mono text-cyan-300">$50M</span>
-                </div>
-                <input type="range" id="sim-budget" min="10" max="100" value="50" oninput="recalcPareto()" class="w-full accent-cyan-400 cursor-pointer">
+        <!-- Modal Body (Scrollable) -->
+        <div class="p-4 sm:p-6 overflow-y-auto space-y-4 sm:space-y-5 flex-1 text-slate-300">
+          
+          <!-- Dual Sliders Controls Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+            
+            <!-- Slider 1: Total Capital Budget -->
+            <div class="bg-obsidian-900/90 p-4 rounded-2xl border border-white/10 space-y-2.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                  <i class="fa-solid fa-coins text-cyan-400"></i>
+                  Total Capital Allocation
+                </span>
+                <span id="txt-slider-budget" class="font-mono text-cyan-300 font-bold text-sm">$50M</span>
               </div>
-              <div>
-                <div class="flex justify-between text-xs mb-1">
-                  <span class="text-slate-300 font-semibold">Policy Weight (Adapt / Mitig)</span>
-                  <span id="txt-slider-weight" class="font-mono text-emerald-300">50% / 50%</span>
-                </div>
-                <input type="range" id="sim-weight" min="0" max="100" value="50" oninput="recalcPareto()" class="w-full accent-emerald-400 cursor-pointer">
+              <input type="range" id="sim-budget" min="10" max="100" step="5" value="50" oninput="recalcPareto()" class="w-full accent-cyan-400 cursor-pointer h-2 bg-slate-800 rounded-lg">
+              <div class="flex items-center justify-between gap-1 text-[11px]">
+                <button type="button" onclick="setSimBudget(25)" class="px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 font-mono transition cursor-pointer border border-white/5 min-h-[36px]">$25M</button>
+                <button type="button" onclick="setSimBudget(50)" class="px-2.5 py-1.5 rounded-lg bg-cyan-500/20 text-cyan-300 font-mono font-bold transition cursor-pointer border border-cyan-500/30 min-h-[36px]">$50M (Approved)</button>
+                <button type="button" onclick="setSimBudget(75)" class="px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 font-mono transition cursor-pointer border border-white/5 min-h-[36px]">$75M</button>
+                <button type="button" onclick="setSimBudget(100)" class="px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 font-mono transition cursor-pointer border border-white/5 min-h-[36px]">$100M Max</button>
               </div>
             </div>
-            <div class="h-[180px] w-full">
-              <canvas id="paretoChartCanvas"></canvas>
+
+            <!-- Slider 2: Policy Weight -->
+            <div class="bg-obsidian-900/90 p-4 rounded-2xl border border-white/10 space-y-2.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                  <i class="fa-solid fa-scale-balanced text-emerald-400"></i>
+                  Policy Weight (Adaptation vs Mitigation)
+                </span>
+                <span id="txt-slider-weight" class="font-mono text-emerald-300 font-bold text-sm">50% / 50%</span>
+              </div>
+              <input type="range" id="sim-weight" min="0" max="100" step="5" value="50" oninput="recalcPareto()" class="w-full accent-emerald-400 cursor-pointer h-2 bg-slate-800 rounded-lg">
+              <div class="flex items-center justify-between gap-1 text-[11px]">
+                <button type="button" onclick="setSimWeight(80)" class="px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 transition cursor-pointer border border-white/5 min-h-[36px]">Life Safety (80/20)</button>
+                <button type="button" onclick="setSimWeight(50)" class="px-2.5 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-300 font-bold transition cursor-pointer border border-emerald-500/30 min-h-[36px]">Balanced (50/50)</button>
+                <button type="button" onclick="setSimWeight(20)" class="px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 transition cursor-pointer border border-white/5 min-h-[36px]">Decarb (20/80)</button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Real-Time KPI Telemetry Cards (4 Cards) -->
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
+            <div class="p-3 sm:p-3.5 rounded-2xl bg-obsidian-900/80 border border-white/10 flex flex-col justify-between">
+              <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Residents Shielded</span>
+              <div class="my-1">
+                <span id="kpi-sim-residents" class="text-xl sm:text-2xl font-mono font-bold text-cyan-300">235,000</span>
+              </div>
+              <span class="text-[10px] text-slate-500 leading-tight">Within 1,200m 10-min pedestrian walk</span>
+            </div>
+
+            <div class="p-3 sm:p-3.5 rounded-2xl bg-obsidian-900/80 border border-white/10 flex flex-col justify-between">
+              <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">CO₂e Abated Annually</span>
+              <div class="my-1">
+                <span id="kpi-sim-co2e" class="text-xl sm:text-2xl font-mono font-bold text-emerald-400">365,000 t</span>
+              </div>
+              <span class="text-[10px] text-slate-500 leading-tight">Climate TRACE point emitters</span>
+            </div>
+
+            <div class="p-3 sm:p-3.5 rounded-2xl bg-obsidian-900/80 border border-white/10 flex flex-col justify-between">
+              <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">UHI Street Canyon ΔT</span>
+              <div class="my-1">
+                <span id="kpi-sim-offset" class="text-xl sm:text-2xl font-mono font-bold text-rose-400">-2.0°F</span>
+              </div>
+              <span class="text-[10px] text-slate-500 leading-tight">Peak reduction via canopy & cool pave</span>
+            </div>
+
+            <div class="p-3 sm:p-3.5 rounded-2xl bg-obsidian-900/80 border border-white/10 flex flex-col justify-between">
+              <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Prevented ER Visits</span>
+              <div class="my-1">
+                <span id="kpi-sim-er" class="text-xl sm:text-2xl font-mono font-bold text-amber-300">99 / yr</span>
+              </div>
+              <span class="text-[10px] text-slate-500 leading-tight">Dallas HHS heat-illness model</span>
             </div>
           </div>
 
-          <!-- Right: 7-Year NOAA Climatology Escalation -->
-          <div class="lg:col-span-5 flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-white/10 pt-3 lg:pt-0 lg:pl-5">
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-xs font-bold text-slate-300">7-Year NOAA Escalation (2019–2025)</span>
-              <span class="text-[10px] font-mono text-amber-400">111.9°F Dallas Peak</span>
+          <!-- Multi-Track Siting Allocation Breakdown Bar -->
+          <div class="p-3 sm:p-4 rounded-2xl bg-obsidian-900/80 border border-white/10 space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-bold text-white flex items-center gap-1.5">
+                <i class="fa-solid fa-layer-group text-cyan-400"></i>
+                Three-Track Capital Deployment Plan
+              </span>
+              <span class="font-mono text-slate-400 text-[11px]">Total: <strong id="bar-total-capital" class="text-white">$50.0M</strong></span>
             </div>
-            <div class="h-[180px] w-full">
-              <canvas id="tempChartCanvas"></canvas>
+
+            <!-- Segmented visual bar -->
+            <div class="w-full h-3 rounded-full bg-slate-800 overflow-hidden flex">
+              <div id="bar-seg-track1" class="bg-amber-400 h-full transition-all duration-300" style="width: 14%;" title="Track 1: Emergency Operations"></div>
+              <div id="bar-seg-track2" class="bg-cyan-400 h-full transition-all duration-300" style="width: 46%;" title="Track 2: Permanent Sited Hubs"></div>
+              <div id="bar-seg-track3" class="bg-emerald-400 h-full transition-all duration-300" style="width: 40%;" title="Track 3: Canopy & Industrial Retrofits"></div>
             </div>
+
+            <!-- Track Legend & Amounts -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 text-[11px] font-mono">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-400 flex-shrink-0"></span>
+                <span class="text-slate-400">Track 1 (Emergency):</span>
+                <strong id="alloc-track1" class="text-amber-300 ml-auto">$3.5M (7%)</strong>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 flex-shrink-0"></span>
+                <span class="text-slate-400">Track 2 (Permanent Hubs):</span>
+                <strong id="alloc-track2" class="text-cyan-300 ml-auto">$17.5M (35%)</strong>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 flex-shrink-0"></span>
+                <span class="text-slate-400">Track 3 (Canopy/Retrofit):</span>
+                <strong id="alloc-track3" class="text-emerald-300 ml-auto">$29.0M (58%)</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Grid (2 Columns) -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            <!-- Left: Pareto Frontier with Moving Current Policy Marker -->
+            <div class="lg:col-span-7 bg-obsidian-900/60 p-3.5 sm:p-4 rounded-2xl border border-white/10 flex flex-col justify-between">
+              <div class="flex items-center justify-between mb-2">
+                <div>
+                  <h4 class="text-xs font-bold text-white flex items-center gap-1.5">
+                    <i class="fa-solid fa-bezier-curve text-cyan-400"></i>
+                    Pareto Multi-Objective Frontier
+                  </h4>
+                  <p class="text-[10px] text-slate-400">Life Safety (Residents Covered) vs. Climate TRACE Carbon Decarbonization</p>
+                </div>
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">LIVE BQML OPTIMIZER</span>
+              </div>
+              <div class="h-[210px] w-full">
+                <canvas id="paretoChartCanvas"></canvas>
+              </div>
+            </div>
+
+            <!-- Right: Capital & 10-Year Monetized Societal Return -->
+            <div class="lg:col-span-5 bg-obsidian-900/60 p-3.5 sm:p-4 rounded-2xl border border-white/10 flex flex-col justify-between">
+              <div class="flex items-center justify-between mb-2">
+                <div>
+                  <h4 class="text-xs font-bold text-white flex items-center gap-1.5">
+                    <i class="fa-solid fa-chart-column text-emerald-400"></i>
+                    10-Year Public Return & BCR
+                  </h4>
+                  <p class="text-[10px] text-slate-400">EPA Social Cost of Carbon ($190/t) + HHS ER Savings</p>
+                </div>
+                <span id="kpi-sim-bcr" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">3.2x BCR</span>
+              </div>
+              <div class="h-[210px] w-full">
+                <canvas id="tempChartCanvas"></canvas>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Modal Footer Actions -->
+        <div class="p-3 sm:p-4 border-t border-white/10 flex items-center justify-between bg-slate-900/80 gap-2 flex-wrap">
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="openResolutionModal()" class="px-3.5 py-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/30 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer min-h-[44px]">
+              <i class="fa-solid fa-file-signature"></i>
+              <span>Council Ordinance</span>
+            </button>
+            <button type="button" onclick="openScenarioModal()" class="px-3.5 py-2 bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer min-h-[44px]">
+              <i class="fa-solid fa-code-compare"></i>
+              <span>Compare Scenarios</span>
+            </button>
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="applySimulatedPlan()" class="px-4 py-2 bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-400 hover:to-teal-400 text-obsidian-950 font-bold rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer shadow-lg shadow-cyan-500/20 min-h-[44px]">
+              <i class="fa-solid fa-check"></i>
+              <span>Apply Portfolio to Map</span>
+            </button>
+            <button type="button" onclick="toggleBottomDrawer(false)" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold transition cursor-pointer min-h-[44px]">
+              Close
+            </button>
           </div>
         </div>
 
@@ -1294,23 +1436,23 @@
         </button>
       </div>
 
-      <!-- Citizen Relief Mode Mobile Dock Buttons (List, Map, Call 311, Ask Dana) -->
+      <!-- Citizen Relief Mode Mobile Dock Buttons (Map, List, Call 311, Ask CoolAid) -->
       <div id="dock-citizen-items" class="hidden items-center justify-around w-full gap-1">
-        <button id="dock-btn-res-list" onclick="setCitizenMobileTab('list')" class="flex-1 min-h-[44px] flex flex-col items-center justify-center gap-1 py-1.5 px-1 rounded-xl text-xs font-bold text-cyan-400 bg-white/10 transition cursor-pointer">
-          <i class="fa-solid fa-list-check text-sm"></i>
-          <span>List</span>
-        </button>
-        <button id="dock-btn-res-map" onclick="setCitizenMobileTab('map')" class="flex-1 min-h-[44px] flex flex-col items-center justify-center gap-1 py-1.5 px-1 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition cursor-pointer">
+        <button id="dock-btn-res-map" onclick="setCitizenMobileTab('map')" class="flex-1 min-h-[44px] flex flex-col items-center justify-center gap-1 py-1.5 px-1 rounded-xl text-xs font-bold text-cyan-400 bg-white/10 transition cursor-pointer">
           <i class="fa-solid fa-map-location-dot text-sm"></i>
           <span>Map</span>
+        </button>
+        <button id="dock-btn-res-list" onclick="setCitizenMobileTab('list')" class="flex-1 min-h-[44px] flex flex-col items-center justify-center gap-1 py-1.5 px-1 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition cursor-pointer">
+          <i class="fa-solid fa-list-check text-sm"></i>
+          <span>List</span>
         </button>
         <a id="dock-btn-res-call" href="tel:311" class="flex-1 min-h-[44px] flex flex-col items-center justify-center gap-1 py-1.5 px-1 rounded-xl text-xs font-bold text-rose-400 hover:text-rose-300 transition cursor-pointer">
           <i class="fa-solid fa-phone text-sm"></i>
           <span>Call 311</span>
         </a>
-        <button id="dock-btn-res-dana" onclick="toggleCopilot()" class="flex-1 min-h-[44px] flex flex-col items-center justify-center gap-1 py-1.5 px-1 rounded-xl text-xs font-bold text-purple-400 hover:text-purple-300 transition cursor-pointer">
+        <button id="dock-btn-res-coolaid" onclick="toggleCopilot()" class="flex-1 min-h-[44px] flex flex-col items-center justify-center gap-1 py-1.5 px-1 rounded-xl text-xs font-bold text-purple-400 hover:text-purple-300 transition cursor-pointer">
           <i class="fa-solid fa-microphone text-sm"></i>
-          <span>Ask Dana</span>
+          <span>Ask CoolAid</span>
         </button>
       </div>
     </nav>
@@ -1616,14 +1758,24 @@
           <p><strong>WHEREAS,</strong> the City of Dallas experienced an observed intra-city thermal spread of 9.2°F during the 2024 NOAA Heat Watch Campaign; and</p>
           <p><strong>WHEREAS,</strong> Census Tracts 48113020500 and 48113008704 demonstrate transit dependency rates of up to 45.2% and poverty concentrations exceeding 52%;</p>
           <p><strong>NOW, THEREFORE, BE IT RESOLVED BY THE CITY COUNCIL OF THE CITY OF DALLAS:</strong></p>
-          <p><strong>SECTION 1.</strong> That a capital allocation of <strong>$10,000,000</strong> is hereby authorized for four permanent climate resilience hubs and one rapid-deployment mobile hydration tanker.</p>
+          <p><strong>SECTION 1.</strong> That a capital allocation of <strong id="resolution-capital-amount">$10,000,000</strong> is hereby authorized for four permanent climate resilience hubs and one rapid-deployment mobile hydration tanker.</p>
           <p><strong>SECTION 2.</strong> That all facilities adhere to Title VI Disparate Impact standards as validated by HeatShield AI.</p>
         </div>
       </div>
-      <div class="p-4 border-t border-white/10 flex justify-end">
-        <button onclick="closeModal('modal-resolution')" class="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition cursor-pointer">
-          Export Document & Close
-        </button>
+      <div class="p-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 bg-slate-900/60">
+        <span class="text-[11px] text-slate-400 font-mono flex items-center gap-1.5">
+          <i class="fa-solid fa-file-pdf text-red-400"></i>
+          <span>Official 5-Page Duplex Letter Format • Title VI Certified</span>
+        </span>
+        <div class="flex items-center gap-2">
+          <button onclick="closeModal('modal-resolution')" class="px-4 py-2 bg-white/10 hover:bg-white/15 text-slate-300 rounded-xl text-xs font-semibold transition cursor-pointer">
+            Close
+          </button>
+          <button onclick="closeModal('modal-resolution'); openCouncilReport();" class="px-5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-2 shadow-lg shadow-blue-500/25">
+            <i class="fa-solid fa-print"></i>
+            <span>Open & Print 5-Page Council Packet</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -1800,7 +1952,7 @@
     };
 
     // ================= CITIZEN MOBILE CONTROLLER (LIST vs MAP vs ROUTE) =================
-    let currentCitizenMobileTab = 'list';
+    let currentCitizenMobileTab = 'map';
 
     function setCitizenMobileTab(tab) {
       currentCitizenMobileTab = tab;
@@ -1815,29 +1967,29 @@
       // Update Sub-tab Pill Switcher buttons
       if (btnList && btnMap) {
         if (tab === 'list') {
-          btnList.className = "flex-1 py-1.5 rounded-xl text-xs font-bold bg-cyan-500 text-white shadow-md transition flex items-center justify-center gap-1.5 cursor-pointer";
-          btnMap.className = "flex-1 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5 cursor-pointer";
+          btnList.className = "flex-1 min-h-[44px] py-2 rounded-xl text-xs font-bold bg-cyan-500 text-white shadow-md transition flex items-center justify-center gap-1.5 cursor-pointer";
+          btnMap.className = "flex-1 min-h-[44px] py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5 cursor-pointer";
         } else {
-          btnMap.className = "flex-1 py-1.5 rounded-xl text-xs font-bold bg-cyan-500 text-white shadow-md transition flex items-center justify-center gap-1.5 cursor-pointer";
-          btnList.className = "flex-1 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5 cursor-pointer";
+          btnMap.className = "flex-1 min-h-[44px] py-2 rounded-xl text-xs font-bold bg-cyan-500 text-white shadow-md transition flex items-center justify-center gap-1.5 cursor-pointer";
+          btnList.className = "flex-1 min-h-[44px] py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5 cursor-pointer";
         }
       }
 
       // Update Dock Citizen Buttons
       if (dockList) {
         dockList.className = tab === 'list'
-          ? "flex-1 flex flex-col items-center gap-0.5 py-1 px-1 rounded-xl text-[10px] font-bold text-cyan-400 bg-white/10 transition cursor-pointer"
-          : "flex-1 flex flex-col items-center gap-0.5 py-1 px-1 rounded-xl text-[10px] font-bold text-slate-400 hover:text-white transition cursor-pointer";
+          ? "flex-1 min-h-[44px] flex flex-col items-center justify-center gap-1 py-1.5 px-1 rounded-xl text-xs font-bold text-cyan-400 bg-white/10 transition cursor-pointer"
+          : "flex-1 min-h-[44px] flex flex-col items-center justify-center gap-1 py-1.5 px-1 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition cursor-pointer";
       }
       if (dockMap) {
         dockMap.className = (tab === 'map' || tab === 'route')
-          ? "flex-1 flex flex-col items-center gap-0.5 py-1 px-1 rounded-xl text-[10px] font-bold text-cyan-400 bg-white/10 transition cursor-pointer"
-          : "flex-1 flex flex-col items-center gap-0.5 py-1 px-1 rounded-xl text-[10px] font-bold text-slate-400 hover:text-white transition cursor-pointer";
+          ? "flex-1 min-h-[44px] flex flex-col items-center justify-center gap-1 py-1.5 px-1 rounded-xl text-xs font-bold text-cyan-400 bg-white/10 transition cursor-pointer"
+          : "flex-1 min-h-[44px] flex flex-col items-center justify-center gap-1 py-1.5 px-1 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition cursor-pointer";
       }
       if (dockRoute) {
         dockRoute.className = tab === 'route'
-          ? "flex-1 flex flex-col items-center gap-0.5 py-1 px-1 rounded-xl text-[10px] font-bold text-emerald-400 bg-white/10 transition cursor-pointer"
-          : "flex-1 flex flex-col items-center gap-0.5 py-1 px-1 rounded-xl text-[10px] font-bold text-slate-400 hover:text-emerald-300 transition cursor-pointer";
+          ? "flex-1 min-h-[44px] flex flex-col items-center justify-center gap-1 py-1.5 px-1 rounded-xl text-xs font-bold text-emerald-400 bg-white/10 transition cursor-pointer"
+          : "flex-1 min-h-[44px] flex flex-col items-center justify-center gap-1 py-1.5 px-1 rounded-xl text-xs font-bold text-slate-400 hover:text-emerald-300 transition cursor-pointer";
       }
 
       if (window.innerWidth >= 768) {
@@ -1845,6 +1997,7 @@
         if (sidebar) sidebar.classList.remove('hidden');
         if (mapContainer) mapContainer.classList.remove('hidden');
         if (citizenMap) citizenMap.invalidateSize();
+        if (typeof citizenCesiumViewer !== 'undefined' && citizenCesiumViewer) citizenCesiumViewer.resize();
         return;
       }
 
@@ -1858,6 +2011,7 @@
         if (mapContainer) mapContainer.classList.remove('hidden');
         setTimeout(() => {
           if (citizenMap) citizenMap.invalidateSize();
+          if (typeof citizenCesiumViewer !== 'undefined' && citizenCesiumViewer) citizenCesiumViewer.resize();
         }, 60);
 
         if (tab === 'route' && selectedCenterId) {
@@ -1940,7 +2094,7 @@
 
         // Initialize mobile tab
         if (window.innerWidth < 768) {
-          setCitizenMobileTab('list');
+          setCitizenMobileTab('map');
         } else {
           const sidebar = document.getElementById('citizen-sidebar');
           const mapContainer = document.getElementById('citizen-map-container');
@@ -2218,6 +2372,7 @@
         return;
       }
 
+      const isMobileDevice = window.innerWidth < 768 || /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           const lat = pos.coords.latitude;
@@ -2236,7 +2391,7 @@
             loadResidentCoolingCenters();
           }
         },
-        { timeout: 8000, maximumAge: 120000, enableHighAccuracy: false }
+        { timeout: 10000, maximumAge: 60000, enableHighAccuracy: isMobileDevice }
       );
     }
 
@@ -3386,6 +3541,7 @@
           navigationHelpButton: false,
           baseLayer: new Cesium.ImageryLayer(darkProvider)
         });
+        window.cesiumViewer = cesiumViewer;
 
         // Hide default credits and suppress intrusive error panels for clean cockpit
         if (cesiumViewer.cesiumWidget) {
@@ -3459,6 +3615,10 @@
       const opacity = (document.getElementById('sl-xray-opacity') ? document.getElementById('sl-xray-opacity').value : 65) / 100.0;
       const gain = (document.getElementById('sl-xray-gain') ? document.getElementById('sl-xray-gain').value : 15) / 10.0;
 
+      if (mode === 'mesh') {
+        return null;
+      }
+
       if (mode === 'flir') {
         return new Cesium.CustomShader({
           lightingModel: Cesium.LightingModel.UNLIT,
@@ -3468,26 +3628,20 @@
           },
           fragmentShaderText: `
             void fragmentMain(FragmentInput fsInput, inout czm_modelMaterial material) {
-              float height = fsInput.positionWC.z;
-              float rim = 1.0 - abs(dot(fsInput.normalEC, normalize(fsInput.eyeDirectionEC)));
-              rim = pow(rim, 2.0);
-
-              // Singapore DUCT Street Canyon Heat Entrapment Simulation
-              float heatFactor = clamp((height - 110.0) / 220.0, 0.0, 1.0);
+              vec3 col = material.diffuse;
+              float lum = clamp(dot(col, vec3(0.299, 0.587, 0.114)) * u_gain, 0.0, 1.0);
 
               // FLIR Thermal Ramp: Deep Violet -> Amber Asphalt -> Crimson Facade -> Radiant Yellow
               vec3 coolColor = vec3(0.08, 0.02, 0.22);
               vec3 midColor = vec3(0.95, 0.25, 0.05);
               vec3 hotColor = vec3(1.0, 0.90, 0.20);
 
-              vec3 thermal = heatFactor < 0.5 
-                ? mix(coolColor, midColor, heatFactor * 2.0)
-                : mix(midColor, hotColor, (heatFactor - 0.5) * 2.0);
-
-              thermal += vec3(rim * 0.7 * u_gain, rim * 0.35 * u_gain, rim * 0.1);
+              vec3 thermal = lum < 0.5 
+                ? mix(coolColor, midColor, lum * 2.0)
+                : mix(midColor, hotColor, (lum - 0.5) * 2.0);
 
               material.diffuse = thermal;
-              material.alpha = clamp(u_opacity + rim * 0.45, 0.15, 1.0);
+              material.alpha = clamp(u_opacity, 0.2, 1.0);
             }
           `
         });
@@ -3500,10 +3654,11 @@
           },
           fragmentShaderText: `
             void fragmentMain(FragmentInput fsInput, inout czm_modelMaterial material) {
-              float rim = 1.0 - abs(dot(fsInput.normalEC, normalize(fsInput.eyeDirectionEC)));
-              rim = pow(rim, 2.2);
-              material.diffuse = vec3(0.0, 0.95, 1.0);
-              material.alpha = clamp(u_opacity * 0.35 + rim * 0.8, 0.1, 0.95);
+              vec3 col = material.diffuse;
+              float lum = clamp(dot(col, vec3(0.299, 0.587, 0.114)), 0.0, 1.0);
+              vec3 cyan = vec3(0.0, 0.95, 1.0);
+              material.diffuse = mix(vec3(0.02, 0.1, 0.2), cyan, lum);
+              material.alpha = clamp(u_opacity * 0.5, 0.15, 0.95);
             }
           `
         });
@@ -3516,17 +3671,16 @@
           },
           fragmentShaderText: `
             void fragmentMain(FragmentInput fsInput, inout czm_modelMaterial material) {
-              float height = fsInput.positionWC.z;
-              float rim = 1.0 - abs(dot(fsInput.normalEC, normalize(fsInput.eyeDirectionEC)));
-              rim = pow(rim, 2.5);
+              vec3 col = material.diffuse;
+              float lum = dot(col, vec3(0.299, 0.587, 0.114));
 
               // Highlights building crowns and asphalt hot-spots exceeding 102°F
-              if (height > 180.0 || rim > 0.6) {
-                material.diffuse = vec3(1.0, 0.1, 0.2) * u_gain;
-                material.alpha = 0.9;
+              if (lum > 0.48) {
+                material.diffuse = vec3(1.0, 0.15, 0.2) * u_gain;
+                material.alpha = 0.95;
               } else {
                 material.diffuse = vec3(0.04, 0.06, 0.12);
-                material.alpha = 0.3;
+                material.alpha = 0.35;
               }
             }
           `
@@ -3540,16 +3694,16 @@
           },
           fragmentShaderText: `
             void fragmentMain(FragmentInput fsInput, inout czm_modelMaterial material) {
-              float height = fsInput.positionWC.z;
-              float fluxNorm = clamp((height - 110.0) / 200.0, 0.0, 1.0);
+              vec3 col = material.diffuse;
+              float lum = clamp(dot(col, vec3(0.299, 0.587, 0.114)), 0.0, 1.0);
               // Google Solar Flux Color Ramp: 1,100 to 1,850 kWh/m2/yr
               vec3 shadowInsolation = vec3(0.20, 0.15, 0.55);
               vec3 midInsolation = vec3(0.95, 0.45, 0.05);
               vec3 peakInsolation = vec3(1.0, 0.85, 0.15);
-              vec3 col = fluxNorm < 0.5 
-                ? mix(shadowInsolation, midInsolation, fluxNorm * 2.0)
-                : mix(midInsolation, peakInsolation, (fluxNorm - 0.5) * 2.0);
-              material.diffuse = col * u_gain;
+              vec3 colOut = lum < 0.5 
+                ? mix(shadowInsolation, midInsolation, lum * 2.0)
+                : mix(midInsolation, peakInsolation, (lum - 0.5) * 2.0);
+              material.diffuse = colOut * u_gain;
               material.alpha = 0.92;
             }
           `
@@ -3751,7 +3905,7 @@
         const col = getBuildingColor(b);
         const entity = cesiumViewer.entities.add({
           name: `${b.name} (${b.temp}°F - ${b.h}m)`,
-          position: Cesium.Cartesian3.fromDegrees(b.lon, b.lat, b.h / 2.0),
+          position: Cesium.Cartesian3.fromDegrees(b.lon, b.lat, 140.0 + b.h / 2.0),
           box: {
             dimensions: new Cesium.Cartesian3(b.w, b.d, b.h),
             material: col,
@@ -3766,15 +3920,24 @@
       });
 
       // 1. Sited Cooling Hubs & 3D Thermal Offset Columns + Solar PV Microgrids
-      if (showCooling && currentSites.length > 0) {
-        currentSites.forEach(s => {
+      if (showCooling) {
+        const defaultSites = [
+          { rank: 1, facility_name: "Bachman Lake Branch Library & Recreation Center", latitude: 32.8687, longitude: -96.8624, address: "9480 Webb Chapel Rd, Dallas, TX" },
+          { rank: 2, facility_name: "Nash-Davis Recreation Center", latitude: 32.7808, longitude: -96.8576, address: "3710 N Hampton Rd, Dallas, TX" },
+          { rank: 3, facility_name: "Martin Luther King Jr Community Center", latitude: 32.7686, longitude: -96.7649, address: "2922 MLK Jr Blvd, Dallas, TX" },
+          { rank: 4, facility_name: "Reverchon Recreation Center", latitude: 32.7988, longitude: -96.8152, address: "3505 Maple Ave, Dallas, TX" },
+          { rank: 5, facility_name: "Eloise Lundy Recreation Center (Mobile Fleet Hub)", latitude: 32.7820, longitude: -96.8490, address: "1229 Rev Broyles St, Dallas, TX" }
+        ];
+        const sitesToRender = (typeof currentSites !== 'undefined' && currentSites && currentSites.length > 0) ? currentSites : defaultSites;
+
+        sitesToRender.forEach(s => {
           const isMobile = s.rank === 5;
           const col = isMobile ? Cesium.Color.fromCssColorString('#f59e0b') : Cesium.Color.fromCssColorString('#00F0FF');
           
-          // Extruded 3D Volumetric Cylinder
+          // Extruded 3D Volumetric Cylinder (elevated to sit on Dallas ground surface at 140m)
           const cylinder = cesiumViewer.entities.add({
             name: `${s.facility_name} (Sited Hub #${s.rank})`,
-            position: Cesium.Cartesian3.fromDegrees(s.longitude, s.latitude, 160),
+            position: Cesium.Cartesian3.fromDegrees(s.longitude, s.latitude, 140.0 + 160.0),
             cylinder: {
               length: 320.0,
               topRadius: 40.0,
@@ -3796,16 +3959,17 @@
 
           isochroneTiers.forEach(t => {
             if (showIsochroneTiers[t.min]) {
-              // Ground Walking Accessibility Contour Ring
+              // Ground Walking Accessibility Contour Slab
               const bubbleRing = cesiumViewer.entities.add({
                 name: `${s.facility_name} — ${t.label}`,
-                position: Cesium.Cartesian3.fromDegrees(s.longitude, s.latitude),
-                ellipse: {
-                  semiMinorAxis: t.radius,
-                  semiMajorAxis: t.radius,
-                  material: t.color.withAlpha(0.12),
+                position: Cesium.Cartesian3.fromDegrees(s.longitude, s.latitude, 140.0 + 6.0),
+                cylinder: {
+                  length: 12.0,
+                  topRadius: t.radius,
+                  bottomRadius: t.radius,
+                  material: t.color.withAlpha(0.24),
                   outline: true,
-                  outlineColor: t.color.withAlpha(0.85),
+                  outlineColor: t.color.withAlpha(0.95),
                   outlineWidth: 2
                 }
               });
@@ -3815,12 +3979,12 @@
               if (showIsochroneDomes) {
                 const dome = cesiumViewer.entities.add({
                   name: `${s.facility_name} — 3D Volumetric ${t.min}-Min Cooling Dome`,
-                  position: Cesium.Cartesian3.fromDegrees(s.longitude, s.latitude, t.radius * 0.16),
+                  position: Cesium.Cartesian3.fromDegrees(s.longitude, s.latitude, 140.0 + t.radius * 0.18),
                   ellipsoid: {
-                    radii: new Cesium.Cartesian3(t.radius, t.radius, t.radius * 0.32),
-                    material: t.color.withAlpha(0.06),
+                    radii: new Cesium.Cartesian3(t.radius, t.radius, t.radius * 0.36),
+                    material: t.color.withAlpha(0.12),
                     outline: true,
-                    outlineColor: t.color.withAlpha(0.40)
+                    outlineColor: t.color.withAlpha(0.55)
                   }
                 });
                 cesiumEntities.push(dome);
@@ -3832,7 +3996,7 @@
           if (showSolarPV || activeSolarDataLayer === 'pv') {
             const pvArray = cesiumViewer.entities.add({
               name: `${s.facility_name} (Google Solar: 288 kW PV Array - 72h Backup)`,
-              position: Cesium.Cartesian3.fromDegrees(s.longitude, s.latitude, 325),
+              position: Cesium.Cartesian3.fromDegrees(s.longitude, s.latitude, 140.0 + 325.0),
               box: {
                 dimensions: new Cesium.Cartesian3(55, 40, 5),
                 material: Cesium.Color.fromCssColorString('#0284c7').withAlpha(0.95),
@@ -3847,8 +4011,18 @@
       }
 
       // 2. Climate TRACE Industrial Emission Stacks & Plumes (8.86M t CO₂e)
-      if (showEmissions && currentEmissionsAssets.length > 0) {
-        currentEmissionsAssets.forEach(a => {
+      if (showEmissions) {
+        const defaultEmissionsAssets = [
+          { asset_name: "Dallas Fort Worth International Airport", latitude: 32.8998, longitude: -97.0403, annual_emissions_tonnes: 3200000 },
+          { asset_name: "Dallas Love Field Airport", latitude: 32.8481, longitude: -96.8512, annual_emissions_tonnes: 1450000 },
+          { asset_name: "TXI Mountain Creek Cement Kiln", latitude: 32.7214, longitude: -96.9458, annual_emissions_tonnes: 1120000 },
+          { asset_name: "Midlothian Cement Complex (Ash Grove / Holcim)", latitude: 32.5085, longitude: -96.9922, annual_emissions_tonnes: 1890000 },
+          { asset_name: "TAMU CoGen Energy Facility", latitude: 32.7925, longitude: -96.7725, annual_emissions_tonnes: 680000 },
+          { asset_name: "Trinity Forest Industrial Point Source", latitude: 32.7150, longitude: -96.7450, annual_emissions_tonnes: 523000 }
+        ];
+        const assetsToRender = (typeof currentEmissionsAssets !== 'undefined' && currentEmissionsAssets && currentEmissionsAssets.length > 0) ? currentEmissionsAssets : defaultEmissionsAssets;
+
+        assetsToRender.forEach(a => {
           const name = a.asset_name || a.name || "Industrial Facility";
           const tonnes = a.annual_emissions_tonnes || a.annual_co2e_tonnes || 0;
           const lat = a.coordinates ? a.coordinates.latitude : a.latitude;
@@ -3857,7 +4031,7 @@
           if (lat && lon) {
             const stack = cesiumViewer.entities.add({
               name: `${name} (${(tonnes / 1e6).toFixed(2)}M t CO₂e)`,
-              position: Cesium.Cartesian3.fromDegrees(lon, lat, 220),
+              position: Cesium.Cartesian3.fromDegrees(lon, lat, 140.0 + 220.0),
               cylinder: {
                 length: 440.0,
                 topRadius: 45.0,
@@ -3869,6 +4043,18 @@
               }
             });
             cesiumEntities.push(stack);
+
+            const beacon = cesiumViewer.entities.add({
+              name: `${name} Plume Beacon`,
+              position: Cesium.Cartesian3.fromDegrees(lon, lat, 140.0 + 445.0),
+              point: {
+                pixelSize: 14,
+                color: Cesium.Color.fromCssColorString('#ff3366'),
+                outlineColor: Cesium.Color.WHITE,
+                outlineWidth: 2
+              }
+            });
+            cesiumEntities.push(beacon);
           }
         });
       }
@@ -3881,9 +4067,15 @@
               { longitude: -96.8520, latitude: 32.7800, temp_f: 106.2, heat_offset_f: 3.5 },
               { longitude: -96.8450, latitude: 32.7850, temp_f: 105.8, heat_offset_f: 3.1 },
               { longitude: -96.8025, latitude: 32.7797, temp_f: 104.2, heat_offset_f: 1.5 },
+              { longitude: -96.7970, latitude: 32.7850, temp_f: 105.5, heat_offset_f: 2.8 },
+              { longitude: -96.8120, latitude: 32.7710, temp_f: 104.7, heat_offset_f: 2.0 },
               { longitude: -96.7600, latitude: 32.7600, temp_f: 105.4, heat_offset_f: 2.7 },
               { longitude: -96.7822, latitude: 32.6965, temp_f: 104.9, heat_offset_f: 2.2 },
-              { longitude: -96.8500, latitude: 32.8450, temp_f: 105.1, heat_offset_f: 2.4 }
+              { longitude: -96.8500, latitude: 32.8450, temp_f: 105.1, heat_offset_f: 2.4 },
+              { longitude: -96.8624, latitude: 32.8687, temp_f: 106.0, heat_offset_f: 3.3 },
+              { longitude: -96.8250, latitude: 32.8100, temp_f: 104.6, heat_offset_f: 1.9 },
+              { longitude: -96.7725, latitude: 32.7925, temp_f: 105.7, heat_offset_f: 3.0 },
+              { longitude: -96.7450, latitude: 32.7150, temp_f: 105.0, heat_offset_f: 2.3 }
             ];
 
         const step = Math.max(1, Math.floor(ptsToRender.length / 80));
@@ -3898,12 +4090,12 @@
           const h = Math.max(80, Math.min(320, 120 + offset * 25));
           const p = cesiumViewer.entities.add({
             name: `NOAA Heat Observation: ${temp.toFixed(1)}°F (Offset: ${offset >= 0 ? '+' : ''}${offset.toFixed(1)}°F)`,
-            position: Cesium.Cartesian3.fromDegrees(hp.longitude, hp.latitude, h / 2.0),
+            position: Cesium.Cartesian3.fromDegrees(hp.longitude, hp.latitude, 140.0 + h / 2.0),
             cylinder: {
               length: h,
               topRadius: 18.0,
               bottomRadius: 28.0,
-              material: col.withAlpha(0.75),
+              material: col.withAlpha(0.80),
               outline: true,
               outlineColor: Cesium.Color.fromCssColorString('#fde047'),
               shadows: Cesium.ShadowMode.ENABLED
@@ -3916,7 +4108,7 @@
       // 4. Title VI Equity Vulnerability Overlays
       if (showEquity) {
         let equityZones = [];
-        if (currentSites && currentSites.length > 0) {
+        if (typeof currentSites !== 'undefined' && currentSites && currentSites.length > 0) {
           equityZones = currentSites.slice(0, 3).map(s => ({
             lon: s.longitude,
             lat: s.latitude,
@@ -3932,13 +4124,15 @@
         equityZones.forEach(ez => {
           const eq = cesiumViewer.entities.add({
             name: ez.name,
-            position: Cesium.Cartesian3.fromDegrees(ez.lon, ez.lat),
-            ellipse: {
-              semiMinorAxis: ez.r,
-              semiMajorAxis: ez.r,
+            position: Cesium.Cartesian3.fromDegrees(ez.lon, ez.lat, 140.0 + 3.0),
+            cylinder: {
+              length: 6.0,
+              topRadius: ez.r,
+              bottomRadius: ez.r,
               material: Cesium.Color.fromCssColorString('#10b981').withAlpha(0.18),
               outline: true,
-              outlineColor: Cesium.Color.fromCssColorString('#10b981')
+              outlineColor: Cesium.Color.fromCssColorString('#34d399').withAlpha(0.90),
+              outlineWidth: 2
             }
           });
           cesiumEntities.push(eq);
@@ -3948,7 +4142,7 @@
       // 5. 104°F Emergency Mobile Hydration Tankers (Active Radar Pulsing)
       if (showTankers) {
         let tankers = [];
-        if (currentSites && currentSites.length >= 2) {
+        if (typeof currentSites !== 'undefined' && currentSites && currentSites.length >= 2) {
           tankers = [
             {
               name: `Mobile Hydration Tanker #1 (${currentSites[0].facility_name} Transit Corridor)`,
@@ -3972,7 +4166,7 @@
         tankers.forEach(t => {
           const tankerEntity = cesiumViewer.entities.add({
             name: t.name,
-            position: Cesium.Cartesian3.fromDegrees(t.lon, t.lat, 80),
+            position: Cesium.Cartesian3.fromDegrees(t.lon, t.lat, 140.0 + 80.0),
             point: {
               pixelSize: 22,
               color: Cesium.Color.fromCssColorString(t.color),
@@ -4212,6 +4406,7 @@
         });
       }
     }
+    window.flyCesiumTo = flyCesiumTo;
 
     let currentHeatObservations = [];
     let currentCityExplainData = null;
@@ -4438,12 +4633,14 @@
         const resp = await fetch('/api/sites');
         const data = await resp.json();
         currentSites = data.recommendations || data.ranked_sites || [];
+        if (cesiumViewer) renderCesiumRiskLayers();
       } catch (e) { console.error(e); }
 
       try {
         const resp = await fetch('/api/climate-trace/assets');
         const data = await resp.json();
         currentEmissionsAssets = data.assets || [];
+        if (cesiumViewer) renderCesiumRiskLayers();
       } catch (e) { console.error(e); }
 
       // Initialize 68-city NOAA Campaign Catalog
@@ -5207,19 +5404,53 @@
       }
     }
 
-    // Drawer Controls
+    // Drawer & Simulator Modal Controls
     function toggleBottomDrawer(show) {
       const drawer = document.getElementById('bottom-drawer');
+      if (!drawer) return;
       if (show) {
+        drawer.classList.remove('hidden');
         drawer.classList.remove('translate-y-[calc(100%+140px)]');
+        setTimeout(() => {
+          if (!paretoChartInstance && typeof initParetoChart === 'function') {
+            initParetoChart();
+          } else if (paretoChartInstance) {
+            paretoChartInstance.resize();
+          }
+          if (!tempChartInstance && typeof initTempChart === 'function') {
+            initTempChart();
+          } else if (tempChartInstance) {
+            tempChartInstance.resize();
+          }
+          if (typeof recalcPareto === 'function') recalcPareto();
+        }, 50);
       } else {
-        drawer.classList.add('translate-y-[calc(100%+140px)]');
+        drawer.classList.add('hidden');
       }
     }
 
-    function toggleCopilot() {
-      document.getElementById('copilot-drawer').classList.toggle('translate-x-full');
+    // Global Escape key listener to close simulator modal
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const drawer = document.getElementById('bottom-drawer');
+        if (drawer && !drawer.classList.contains('hidden')) {
+          toggleBottomDrawer(false);
+        }
+      }
+    });
+
+    function toggleCopilot(open) {
+      const drawer = document.getElementById('copilot-drawer');
+      if (open === true) {
+        drawer.classList.remove('translate-x-full');
+      } else if (open === false) {
+        drawer.classList.add('translate-x-full');
+      } else {
+        drawer.classList.toggle('translate-x-full');
+      }
     }
+    window.toggleCopilot = toggleCopilot;
+    window.toggleCopilotDrawer = toggleCopilot;
 
     function askCoolAid(prompt) {
       const input = document.getElementById('copilot-input');
@@ -5818,22 +6049,106 @@
         if (loadEl) loadEl.remove();
 
         const isBlocked = data.model_armor_blocked;
-        const bg = isBlocked ? 'bg-rose-950/60 border-rose-800 text-rose-200' : 'trace-card border-white/10 text-slate-200';
+        const sub = data.subagent || {
+          id: 'root_orchestrator',
+          name: 'Commander CoolAid',
+          short_name: 'Commander CoolAid',
+          track: 'Chief Climate Resilience Officer',
+          icon: 'fa-solid fa-robot',
+          color: 'blue',
+          badge_class: 'bg-blue-500/20 text-blue-300 border-blue-400/40',
+          tools_used: []
+        };
+        const involvedList = data.subagents_involved || [sub];
+        const isMultiSub = (involvedList.length > 1);
+
+        let avatarBg = 'bg-gradient-to-tr from-blue-600 to-cyan-500 shadow-blue-900/40';
+        let avatarIcon = 'fa-robot';
+        let cardBorder = 'border-white/10';
+
+        if (isBlocked) {
+          avatarBg = 'bg-rose-600 shadow-rose-900/50';
+          avatarIcon = 'fa-shield-halved';
+          cardBorder = 'border-rose-800/80';
+        } else if (sub.color === 'amber') {
+          avatarBg = 'bg-gradient-to-tr from-amber-600 to-amber-500 shadow-amber-900/40';
+          avatarIcon = 'fa-truck-medical';
+          cardBorder = 'border-amber-500/30';
+        } else if (sub.color === 'cyan') {
+          avatarBg = 'bg-gradient-to-tr from-cyan-600 to-blue-600 shadow-cyan-900/40';
+          avatarIcon = 'fa-building-shield';
+          cardBorder = 'border-cyan-500/30';
+        } else if (sub.color === 'emerald') {
+          avatarBg = 'bg-gradient-to-tr from-emerald-600 to-teal-500 shadow-emerald-900/40';
+          avatarIcon = 'fa-tree';
+          cardBorder = 'border-emerald-500/30';
+        } else if (sub.color === 'rose') {
+          avatarBg = 'bg-gradient-to-tr from-rose-600 to-orange-500 shadow-rose-900/40';
+          avatarIcon = 'fa-heart-pulse';
+          cardBorder = 'border-rose-500/30';
+        } else if (sub.color === 'purple') {
+          avatarBg = 'bg-gradient-to-tr from-purple-600 to-indigo-600 shadow-purple-900/40';
+          avatarIcon = 'fa-scale-balanced';
+          cardBorder = 'border-purple-500/30';
+        }
+
+        const bg = isBlocked ? 'bg-rose-950/60 border-rose-800 text-rose-200' : `trace-card ${cardBorder} text-slate-200`;
         const rendered = renderDanaMarkdown(data.response);
         const locations = extractClientLocations(data.response, data.locations);
         const mapUid = Date.now();
         const locationsHtml = renderDanaLocationModule(locations, mapUid);
 
+        // Telemetry delegation banner if tools were invoked
+        let delegationHtml = '';
+        if (data.tool_calls && data.tool_calls.length > 0) {
+          const uniqueTools = Array.from(new Set(data.tool_calls.map(tc => tc.tool))).join(', ');
+          delegationHtml = `
+            <div class="mb-2.5 px-2.5 py-1.5 rounded-lg bg-black/40 border border-white/10 flex items-center justify-between text-[9px] font-mono text-slate-300">
+              <div class="flex items-center gap-1.5 truncate">
+                <span class="text-cyan-400 font-semibold flex items-center gap-1"><i class="fa-solid fa-diagram-project text-[8px]"></i> COUNCIL DELEGATION:</span>
+                <span class="text-slate-200 font-bold">${escapeHtml(sub.short_name || sub.name)}</span>
+                <span class="text-slate-600">•</span>
+                <span class="text-amber-300 truncate" title="${escapeHtml(uniqueTools)}"><i class="fa-solid fa-bolt text-[8px] text-amber-400 mr-1"></i>${escapeHtml(uniqueTools)}</span>
+              </div>
+              <span class="text-[8px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-white/5 text-slate-400 border border-white/5 flex-shrink-0 ml-1.5">BigQuery ML</span>
+            </div>
+          `;
+        }
+
+        const subBadgeHtml = isBlocked ? '' : `
+          <button onclick="renderAgentSwarm()" class="px-2 py-0.5 rounded-md font-mono text-[9px] flex items-center gap-1 border ${sub.badge_class || 'bg-blue-500/20 text-blue-300 border-blue-400/40'} hover:brightness-125 transition cursor-pointer shadow-sm" title="${escapeHtml(sub.role || 'Active Subagent')} — Click to open Agent Swarm">
+            <i class="${sub.icon}"></i> <span>${escapeHtml(sub.short_name || sub.name)}</span>
+          </button>
+        `;
+
+        const multiSubPill = (isMultiSub && !isBlocked) ? `
+          <button onclick="renderAgentSwarm()" class="px-1.5 py-0.5 rounded text-[8px] font-mono bg-purple-500/15 text-purple-300 border border-purple-400/20 hover:brightness-125 transition cursor-pointer" title="Involved: ${involvedList.map(s => s.short_name).join(', ')} — Click to view Council">
+            +${involvedList.length - 1} Council Member${involvedList.length > 2 ? 's' : ''}
+          </button>
+        ` : '';
+
+        const trackBadge = isBlocked ? '' : `
+          <span class="text-[9px] font-mono text-slate-400 px-1.5 py-0.5 rounded bg-white/5 border border-white/5">${escapeHtml(sub.track || 'Track')}</span>
+        `;
+
         container.innerHTML += `
           <div class="flex gap-2.5">
-            <div class="w-7 h-7 rounded-xl ${isBlocked ? 'bg-rose-600' : 'bg-blue-600'} flex-shrink-0 flex items-center justify-center text-white text-xs shadow-md">
-              <i class="fa-solid ${isBlocked ? 'fa-shield-halved' : 'fa-robot'}"></i>
+            <div class="w-7 h-7 rounded-xl ${avatarBg} flex-shrink-0 flex items-center justify-center text-white text-xs shadow-md">
+              <i class="fa-solid ${avatarIcon}"></i>
             </div>
             <div class="${bg} rounded-2xl p-3.5 max-w-[85%] border leading-relaxed shadow-lg">
-              <div class="flex items-center justify-between text-[9px] text-slate-400 mb-1.5 border-b border-white/10 pb-1">
-                <span class="font-semibold text-slate-300 flex items-center gap-1.5"><i class="fa-solid fa-robot text-cyan-400"></i> Commander CoolAid</span>
-                <span class="${isBlocked ? 'text-rose-400' : 'text-purple-400'} font-mono flex items-center gap-1"><i class="fa-solid fa-shield-cat"></i> Model Armor Verified</span>
+              <div class="flex items-center justify-between text-[9px] text-slate-400 mb-2 border-b border-white/10 pb-1.5 flex-wrap gap-1.5">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="font-bold text-slate-200 flex items-center gap-1"><i class="fa-solid fa-robot text-cyan-400"></i> Commander CoolAid</span>
+                  ${subBadgeHtml}
+                  ${multiSubPill}
+                </div>
+                <div class="flex items-center gap-2">
+                  ${trackBadge}
+                  <span class="${isBlocked ? 'text-rose-400' : 'text-purple-400'} font-mono flex items-center gap-1"><i class="fa-solid fa-shield-cat"></i> Model Armor Verified</span>
+                </div>
               </div>
+              ${delegationHtml}
               <div class="dana-markdown coolaid-markdown text-xs">
                 ${rendered}
               </div>
@@ -6301,34 +6616,102 @@
     // Modals
     function openEquityModal() { document.getElementById('modal-equity').classList.remove('hidden'); }
     function openScenarioModal() { document.getElementById('modal-scenario').classList.remove('hidden'); }
-    function openResolutionModal() { document.getElementById('modal-resolution').classList.remove('hidden'); }
+    function openResolutionModal() { 
+      const bEl = document.getElementById('sim-budget');
+      const bVal = bEl ? parseInt(bEl.value, 10) : 50;
+      const resAmt = document.getElementById('resolution-capital-amount');
+      if (resAmt) {
+        resAmt.innerText = `$${(bVal * 1000000).toLocaleString()}`;
+      }
+      document.getElementById('modal-resolution').classList.remove('hidden'); 
+    }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+    // Printable City Council Briefing Packet
+    function openCouncilReport() {
+      const city = window.currentActiveCity?.name || "Dallas";
+      const state = window.currentActiveCity?.state || "Texas";
+      const county = window.currentActiveCity?.county || "Dallas";
+      const bEl = document.getElementById('sim-budget');
+      const bVal = bEl ? (parseInt(bEl.value, 10) * 1000000) : 10000000;
+      const url = `/council-report?city=${encodeURIComponent(city)}&state=${encodeURIComponent(state)}&county=${encodeURIComponent(county)}&budget=${bVal}`;
+      window.open(url, '_blank');
+    }
+
+    // Simulator Slider Preset Shortcuts
+    function setSimBudget(val) {
+      const el = document.getElementById('sim-budget');
+      if (el) {
+        el.value = val;
+        recalcPareto();
+      }
+    }
+
+    function setSimWeight(val) {
+      const el = document.getElementById('sim-weight');
+      if (el) {
+        el.value = val;
+        recalcPareto();
+      }
+    }
+
+    // Apply Simulated Plan to Map
+    function applySimulatedPlan() {
+      toggleBottomDrawer(false);
+      const bEl = document.getElementById('sim-budget');
+      const bVal = bEl ? bEl.value : '50';
+      const wEl = document.getElementById('sim-weight');
+      const wVal = wEl ? wEl.value : '50';
+      if (typeof setMode === 'function') {
+        setMode('track2');
+      }
+      alert(`Applied \$${bVal}M Portfolio (${wVal}% Adaptation / ${100 - wVal}% Mitigation) to Resilience Map.\nPermanent hubs and microclimate buffer rings active.`);
+    }
 
     // Chart.js Pareto Frontier
     function initParetoChart() {
-      const ctx = document.getElementById('paretoChartCanvas').getContext('2d');
+      const canvas = document.getElementById('paretoChartCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
       paretoChartInstance = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: ['Option A (100% Adapt)', 'Option B (Balanced)', 'Option C (100% Mitig)'],
+          labels: ['Option A (100% Adapt)', 'Option B (75% Adapt)', 'Option C (Balanced)', 'Option D (75% Mitig)', 'Option E (100% Mitig)'],
           datasets: [
             {
               label: 'Residents Shielded',
-              data: [310000, 235000, 95000],
+              data: [310000, 275000, 235000, 160000, 95000],
               borderColor: '#00F0FF',
               backgroundColor: 'rgba(0, 240, 255, 0.12)',
               tension: 0.35,
               yAxisID: 'y',
-              fill: true
+              fill: true,
+              pointRadius: 3,
+              pointHoverRadius: 6
             },
             {
-              label: 'CO₂e Abated (Tonnes/yr)',
-              data: [24000, 365000, 840000],
+              label: 'CO₂e Abated (t/yr)',
+              data: [24000, 150000, 365000, 620000, 840000],
               borderColor: '#00E599',
               backgroundColor: 'rgba(0, 229, 153, 0.12)',
               tension: 0.35,
               yAxisID: 'y1',
-              fill: true
+              fill: true,
+              pointRadius: 3,
+              pointHoverRadius: 6
+            },
+            {
+              label: 'Operating Point',
+              data: [null, null, 235000, null, null],
+              borderColor: '#F59E0B',
+              backgroundColor: '#F59E0B',
+              pointBackgroundColor: '#F59E0B',
+              pointBorderColor: '#FFFFFF',
+              pointBorderWidth: 2,
+              pointRadius: 7,
+              pointHoverRadius: 9,
+              showLine: false,
+              yAxisID: 'y'
             }
           ]
         },
@@ -6338,51 +6721,219 @@
           interaction: { mode: 'index', intersect: false },
           scales: {
             x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#94a3b8', font: { size: 9 } } },
-            y: { type: 'linear', display: true, position: 'left', grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#00F0FF', font: { size: 9 } } },
-            y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false }, ticks: { color: '#00E599', font: { size: 9 } } }
+            y: { 
+              type: 'linear', 
+              display: true, 
+              position: 'left', 
+              grid: { color: 'rgba(255,255,255,0.04)' }, 
+              ticks: { color: '#00F0FF', font: { size: 9 }, callback: (v) => `${(v/1000).toFixed(0)}k` } 
+            },
+            y1: { 
+              type: 'linear', 
+              display: true, 
+              position: 'right', 
+              grid: { drawOnChartArea: false }, 
+              ticks: { color: '#00E599', font: { size: 9 }, callback: (v) => `${(v/1000).toFixed(0)}kt` } 
+            }
           },
-          plugins: { legend: { labels: { color: '#e2e8f0', boxWidth: 10, font: { size: 9 } } } }
+          plugins: { 
+            legend: { 
+              labels: { 
+                color: '#e2e8f0', 
+                boxWidth: 8, 
+                font: { size: 9 }
+              } 
+            } 
+          }
         }
       });
     }
 
-    function recalcPareto() {
-      const b = document.getElementById('sim-budget').value;
-      const w = document.getElementById('sim-weight').value;
-      document.getElementById('txt-slider-budget').innerText = `$${b}M`;
-      document.getElementById('drawer-budget-readout').innerText = `$${b},000,000 Allocation`;
-      document.getElementById('txt-slider-weight').innerText = `${w}% / ${100 - w}%`;
-
-      const scale = b / 50;
-      if (paretoChartInstance) {
-        paretoChartInstance.data.datasets[0].data = [Math.round(310000 * scale), Math.round(235000 * scale), Math.round(95000 * scale)];
-        paretoChartInstance.data.datasets[1].data = [Math.round(24000 * scale), Math.round(365000 * scale), Math.round(840000 * scale)];
-        paretoChartInstance.update();
-      }
-    }
-
-    // Chart.js Climatology
+    // Chart.js 10-Year Public Return & Capital Breakdown
     function initTempChart() {
-      const ctx = document.getElementById('tempChartCanvas').getContext('2d');
+      const canvas = document.getElementById('tempChartCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
       tempChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: ['2019', '2020', '2021', '2022', '2023', '2024', '2025'],
+          labels: ['Track 1 (Emerg)', 'Track 2 (Hubs)', 'Track 3 (Canopy)', 'Carbon Value', 'Health Value'],
           datasets: [
-            { label: 'Days > 95°F', data: [82, 88, 76, 104, 118, 109, 114], backgroundColor: 'rgba(255, 159, 10, 0.75)', borderRadius: 4 },
-            { label: 'Days > 100°F', data: [18, 24, 12, 47, 65, 52, 58], backgroundColor: 'rgba(255, 51, 102, 0.85)', borderRadius: 4 }
+            {
+              label: '$ Millions',
+              data: [3.5, 17.5, 29.0, 69.4, 14.1],
+              backgroundColor: [
+                'rgba(245, 158, 11, 0.75)',
+                'rgba(0, 240, 255, 0.75)',
+                'rgba(16, 185, 129, 0.75)',
+                'rgba(52, 211, 153, 0.90)',
+                'rgba(56, 189, 248, 0.90)'
+              ],
+              borderColor: [
+                '#F59E0B',
+                '#00F0FF',
+                '#10B981',
+                '#34D399',
+                '#38BDF8'
+              ],
+              borderWidth: 1,
+              borderRadius: 5
+            }
           ]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           scales: {
-            x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#94a3b8', font: { size: 9 } } },
-            y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#94a3b8', font: { size: 9 } } }
+            x: { 
+              grid: { color: 'rgba(255,255,255,0.04)' }, 
+              ticks: { color: '#94a3b8', font: { size: 8 } } 
+            },
+            y: { 
+              grid: { color: 'rgba(255,255,255,0.04)' }, 
+              ticks: { 
+                color: '#94a3b8', 
+                font: { size: 9 },
+                callback: (v) => `$${v}M`
+              } 
+            }
           },
-          plugins: { legend: { labels: { color: '#e2e8f0', boxWidth: 10, font: { size: 9 } } } }
+          plugins: { 
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => `Amount: $${ctx.raw}M`
+              }
+            }
+          }
         }
       });
+    }
+
+    function recalcPareto() {
+      const bEl = document.getElementById('sim-budget');
+      const wEl = document.getElementById('sim-weight');
+      if (!bEl || !wEl) return;
+
+      const b = parseFloat(bEl.value);
+      const w = parseFloat(wEl.value);
+      const alpha = w / 100.0; // 1 = 100% adaptation, 0 = 100% mitigation
+      const scale = b / 50.0;
+
+      // Update text readouts
+      const txtBudget = document.getElementById('txt-slider-budget');
+      if (txtBudget) txtBudget.innerText = `$${Math.round(b)}M`;
+
+      const drawerReadout = document.getElementById('drawer-budget-readout');
+      if (drawerReadout) drawerReadout.innerText = `$${Math.round(b)}M Portfolio`;
+
+      const txtWeight = document.getElementById('txt-slider-weight');
+      if (txtWeight) txtWeight.innerText = `${Math.round(w)}% Adapt / ${Math.round(100 - w)}% Mitig`;
+
+      const policyTag = document.getElementById('drawer-policy-tag');
+      if (policyTag) {
+        if (w >= 70) {
+          policyTag.innerText = 'Life Safety Focus';
+          policyTag.className = 'text-[11px] font-mono font-bold text-cyan-300 bg-cyan-500/10 px-2.5 py-0.5 rounded-full border border-cyan-500/30';
+        } else if (w <= 30) {
+          policyTag.innerText = 'Decarb & Offset Focus';
+          policyTag.className = 'text-[11px] font-mono font-bold text-emerald-300 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/30';
+        } else {
+          policyTag.innerText = 'Balanced Baseline';
+          policyTag.className = 'text-[11px] font-mono font-bold text-indigo-300 bg-indigo-500/10 px-2.5 py-0.5 rounded-full border border-indigo-500/30';
+        }
+      }
+
+      // Compute KPIs
+      const residents = Math.round((95000 + 215000 * Math.pow(alpha, 0.85)) * Math.pow(scale, 0.95));
+      const co2e = Math.round((840000 - 816000 * Math.pow(alpha, 1.15)) * Math.pow(scale, 0.95));
+      const offset = (-0.8 - 2.4 * alpha * Math.sqrt(scale)).toFixed(1);
+      const erVisits = Math.round((residents / 10000.0) * 4.2);
+
+      // Populate KPI cards
+      const kpiRes = document.getElementById('kpi-sim-residents');
+      if (kpiRes) kpiRes.innerText = residents.toLocaleString();
+
+      const kpiCo2 = document.getElementById('kpi-sim-co2e');
+      if (kpiCo2) kpiCo2.innerText = `${co2e.toLocaleString()} t`;
+
+      const kpiOffset = document.getElementById('kpi-sim-offset');
+      if (kpiOffset) kpiOffset.innerText = `${offset}°F`;
+
+      const kpiEr = document.getElementById('kpi-sim-er');
+      if (kpiEr) kpiEr.innerText = `${erVisits} / yr`;
+
+      // Multi-Track Siting Allocation Breakdown
+      const track1 = Math.round((b * (0.05 + 0.08 * alpha)) * 10) / 10;
+      const track2 = Math.round((b * (0.15 + 0.40 * alpha)) * 10) / 10;
+      const track3 = Math.max(0.5, Math.round((b - (track1 + track2)) * 10) / 10);
+
+      const pct1 = Math.round((track1 / b) * 100);
+      const pct2 = Math.round((track2 / b) * 100);
+      const pct3 = Math.max(1, 100 - (pct1 + pct2));
+
+      const bar1 = document.getElementById('bar-seg-track1');
+      if (bar1) bar1.style.width = `${pct1}%`;
+      const bar2 = document.getElementById('bar-seg-track2');
+      if (bar2) bar2.style.width = `${pct2}%`;
+      const bar3 = document.getElementById('bar-seg-track3');
+      if (bar3) bar3.style.width = `${pct3}%`;
+
+      const txtAlloc1 = document.getElementById('alloc-track1');
+      if (txtAlloc1) txtAlloc1.innerText = `$${track1.toFixed(1)}M (${pct1}%)`;
+      const txtAlloc2 = document.getElementById('alloc-track2');
+      if (txtAlloc2) txtAlloc2.innerText = `$${track2.toFixed(1)}M (${pct2}%)`;
+      const txtAlloc3 = document.getElementById('alloc-track3');
+      if (txtAlloc3) txtAlloc3.innerText = `$${track3.toFixed(1)}M (${pct3}%)`;
+
+      const barTot = document.getElementById('bar-total-capital');
+      if (barTot) barTot.innerText = `$${b.toFixed(1)}M`;
+
+      // Update Pareto Chart Data
+      if (paretoChartInstance) {
+        const resCurve = [
+          Math.round(310000 * scale),
+          Math.round(275000 * scale),
+          Math.round(235000 * scale),
+          Math.round(160000 * scale),
+          Math.round(95000 * scale)
+        ];
+        const co2Curve = [
+          Math.round(24000 * scale),
+          Math.round(150000 * scale),
+          Math.round(365000 * scale),
+          Math.round(620000 * scale),
+          Math.round(840000 * scale)
+        ];
+        paretoChartInstance.data.datasets[0].data = resCurve;
+        paretoChartInstance.data.datasets[1].data = co2Curve;
+
+        const targetIdx = Math.max(0, Math.min(4, Math.round((1.0 - alpha) * 4)));
+        const opPointData = [null, null, null, null, null];
+        opPointData[targetIdx] = residents;
+        paretoChartInstance.data.datasets[2].data = opPointData;
+        paretoChartInstance.update();
+      }
+
+      // Monetized Public Return & Benefit-Cost Ratio (BCR)
+      const carbonValM = Math.round(((co2e * 190.0 * 10) / 1000000.0) * 10) / 10;
+      const healthValM = Math.round(((erVisits * 14200.0 * 10) / 1000000.0) * 10) / 10;
+      const totalBenefitM = carbonValM + healthValM;
+      const bcr = (totalBenefitM / b).toFixed(1);
+
+      const kpiBcr = document.getElementById('kpi-sim-bcr');
+      if (kpiBcr) kpiBcr.innerText = `${bcr}x BCR (10-Yr)`;
+
+      if (tempChartInstance) {
+        tempChartInstance.data.datasets[0].data = [
+          track1,
+          track2,
+          track3,
+          carbonValM,
+          healthValM
+        ];
+        tempChartInstance.update();
+      }
     }
 
     // ================= MOBILE NAVIGATION & PANEL CONTROLLER =================
@@ -6464,7 +7015,7 @@
         }
       } else {
         if (currentAppMode === 'citizen') {
-          setCitizenMobileTab(currentCitizenMobileTab || 'list');
+          setCitizenMobileTab(currentCitizenMobileTab || 'map');
         } else {
           setMobileView(currentMobileView || 'map');
         }
@@ -6476,7 +7027,10 @@
       initMap();
       loadAllData();
       const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('mode') === 'citizen') {
+      const isMobileDevice = window.innerWidth < 768 || /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      const requestedMode = urlParams.get('mode');
+
+      if (requestedMode === 'citizen' || (isMobileDevice && requestedMode !== 'planner')) {
         switchAppMode('citizen');
         setCitizenMapDimension('3d');
       } else {
