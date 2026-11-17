@@ -5,11 +5,15 @@ An autonomous climate resilience decision support system and interactive web das
 
 ---
 
-## 🌟 Live Deployments
+## 🌟 Live Deployments & Official Deliverables
 
-- **Interactive Decision Support Dashboard**: Runs locally at `http://localhost:8000` or deployable to Vercel via [`web/vercel.json`](web/vercel.json).
-- **Cloud Run Agent & Web UI**: Deployed to [https://dallas-heat-planner-447063751013.us-central1.run.app](https://dallas-heat-planner-447063751013.us-central1.run.app)
+- **Live Cloud Run Deployment**: [https://dallas-heat-app-447063751013.us-central1.run.app](https://dallas-heat-app-447063751013.us-central1.run.app)
+- **Official Placement Recommendation Artifact**: [PLACEMENT_RECOMMENDATION.md](PLACEMENT_RECOMMENDATION.md) (Council Resolution No. 2026-HEAT-01)
+- **Interactive Command Center**: Real-time Google Maps Dark Vector styling, 1,200m walkability buffers, and Dana AI copilot.
 - **BigQuery ML Model**: `a4i_climate.heat_offset_model` (Linear regression with `ML.EXPLAIN_PREDICT` on Vertex AI `us-central1`).
+- **Security Gateway**: Google Cloud Model Armor prompt injection, jailbreak, and SQL/DDL injection interceptor (`agent/model_armor.py`).
+- **Decarbonization Layer**: Climate TRACE v5.12 monitored point-source assets (`a4i_climate.dallas_emissions_assets`).
+- **Climate Investment Simulator**: $50M Multi-Objective Pareto Frontier (Heat Adaptation vs. CO2e Mitigation).
 
 ---
 
