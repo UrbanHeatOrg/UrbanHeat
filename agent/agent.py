@@ -37,7 +37,7 @@ from agent.tools import (
 )
 
 os.environ.setdefault("GOOGLE_GENAI_USE_VERTEXAI", "1")
-os.environ.setdefault("GOOGLE_CLOUD_PROJECT", os.environ.get("GOOGLE_CLOUD_PROJECT", "qwiklabs-gcp-04-4753f87c7a64"))
+os.environ["GOOGLE_CLOUD_PROJECT"] = os.environ.get("GOOGLE_CLOUD_PROJECT", "climate-heat-challenge")
 os.environ["GOOGLE_CLOUD_LOCATION"] = os.environ.get("GOOGLE_CLOUD_LOCATION", "global")
 
 # ==============================================================================
@@ -246,10 +246,9 @@ You are fully prepared to answer all 3 challenge tracks and municipal workflows:
 root_agent = Agent(
     name="heatshield_commander",
     model=Gemini(
-        model="gemini-2.5-flash",
+        model="gemini-3.8-flash",
         client_kwargs={
-            "vertexai": True,
-            "location": "global"
+            "vertexai": False
         }
     ),
     description="HeatShield AI (Team CoolAid): Climate Orchestration and Optimization Lab — Artificial Intelligence Deployment.",
