@@ -78,3 +78,22 @@ Analysis of 27,187 Dallas weather station observations:
    ```bash
    python3 test_planner_scenarios.py
    ```
+
+---
+
+## 🌐 1-Click Deployment to Cloud Run
+
+Anyone on the team can deploy the live application and AI planning agent to Google Cloud Run with a single command from Cloud Shell:
+
+```bash
+# Standard 1-click deployment:
+bash scripts/deploy.sh
+
+# Deploy with custom service name (e.g. personal testing):
+bash scripts/deploy.sh --service urbanheat-track1
+
+# Deploy with a Google AI Studio API key:
+bash scripts/deploy.sh --api-key AIzaSy...
+```
+
+The script automatically sets project variables, configures IAM roles, enables Cloud Run and Vertex AI APIs, and outputs the live HTTPS public link (`*.run.app`).

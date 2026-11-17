@@ -10,7 +10,7 @@ import os
 from typing import Dict, List, Any, Optional
 from google.cloud import bigquery
 
-PROJECT_ID = os.environ.get("GOOGLE_CLOUD_PROJECT", "qwiklabs-gcp-04-4753f87c7a64")
+PROJECT_ID = os.environ.get("GOOGLE_CLOUD_PROJECT", "climate-heat-challenge")
 DATASET = os.environ.get("BIGQUERY_DATASET", "a4i_climate")
 
 # Dallas Operational Geographic Bounding Box
