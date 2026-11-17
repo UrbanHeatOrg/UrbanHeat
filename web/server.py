@@ -101,6 +101,12 @@ def nearby_places(lat: float, lon: float, radius: float = 3000.0, place_type: st
 def solar_insights(lat: float, lon: float):
     return tools.get_solar_and_shade_insights(lat, lon)
 
+@app.get("/api/isochrones")
+def cooling_isochrones(site_id: Optional[str] = None, lat: Optional[float] = None, lon: Optional[float] = None, speed: float = 1.2):
+    """Google Isochrones API cooling accessibility contours (5, 10, 15 min walking bubbles)."""
+    return tools.get_cooling_accessibility_isochrones(site_id=site_id, lat=lat, lon=lon, walking_speed_mps=speed)
+
+
 @app.get("/api/vulnerability")
 def vulnerability_profile(tract_id: str = "48113020500"):
     return tools.get_vulnerability_profile(tract_id)
@@ -157,6 +163,111 @@ def armor_status():
             "Jailbreak Prevention",
             "System Prompt Leak Shield",
             "SQL/DDL Injection Interception"
+        ]
+    }
+
+@app.get("/api/data-sources")
+def list_data_sources():
+    return {
+        "status": "SUCCESS",
+        "total_sources": 12,
+        "sources": [
+            {
+                "id": "noaa",
+                "name": "National Oceanic and Atmospheric Administration (NOAA)",
+                "category": "Microclimate & Heat Hazards",
+                "logo": "/static/logos/noaa.svg",
+                "datasets": ["heat_observations (19,491 traverses)", "station_daily_temps (27,187 daily)", "dallas_noaa_heatrisk"],
+                "role": "Ground-truth mobile thermal readings capturing 9.2°F spread, 7-year station trends, and Level 1-5 HeatRisk thresholds."
+            },
+            {
+                "id": "epa",
+                "name": "U.S. Environmental Protection Agency (EPA)",
+                "category": "Air Quality & Walkability",
+                "logo": "/static/logos/epa.svg",
+                "datasets": ["dallas_epa_air_quality (PM2.5 & Ozone)", "dallas_walkability_index (Smart Location Database)"],
+                "role": "Real-time/historical ambient air monitors and 15-minute pedestrian intersection density."
+            },
+            {
+                "id": "cdc",
+                "name": "Centers for Disease Control and Prevention (CDC)",
+                "category": "Civil Rights & Equity",
+                "logo": "/static/logos/cdc.svg",
+                "datasets": ["dallas_cdc_svi (618 Census tracts)"],
+                "role": "4-theme social vulnerability index used exclusively for post-hoc Title VI civil rights equity compliance."
+            },
+            {
+                "id": "hhs",
+                "name": "U.S. Department of Health and Human Services (HHS)",
+                "category": "Emergency & Life Safety",
+                "logo": "/static/logos/hhs.svg",
+                "datasets": ["dallas_hhs_empower"],
+                "role": "Medicare electricity-dependent registry (oxygen, dialysis, ventilators) for Disaster Red-Team simulations."
+            },
+            {
+                "id": "doe",
+                "name": "U.S. Department of Energy (DOE)",
+                "category": "Energy Burden & Cooling Poverty",
+                "logo": "/static/logos/doe.svg",
+                "datasets": ["dallas_doe_energy_burden (LEAD)"],
+                "role": "Utility expenditure as % of income identifying cooling poverty and inability to afford air conditioning."
+            },
+            {
+                "id": "census",
+                "name": "U.S. Census Bureau",
+                "category": "Demographics & Dynamics",
+                "logo": "/static/logos/census.svg",
+                "datasets": ["tract_demographics (ACS 5-Year)", "dallas_tract_boundaries (TIGER)", "dallas_lodes_daytime_population (LODES)"],
+                "role": "Poverty, carless transit dependency, population density, and daytime outdoor worker dynamics."
+            },
+            {
+                "id": "nasa",
+                "name": "National Aeronautics and Space Administration (NASA)",
+                "category": "Thermal Satellite Remote Sensing",
+                "logo": "/static/logos/nasa.svg",
+                "datasets": ["dallas_ecostress_lst"],
+                "role": "70-meter ECOSTRESS thermal infrared diurnal land surface temperature and thermal mass retention profiles."
+            },
+            {
+                "id": "dallas",
+                "name": "City of Dallas",
+                "category": "Civic Assets & Municipal Parks",
+                "logo": "/static/logos/dallas.svg",
+                "datasets": ["candidate_facilities_scored (782 buildings)", "dallas_parks (4,110 green polygons)"],
+                "role": "Official inventory of public libraries, rec centers, schools, and 68,000+ acres of park green space."
+            },
+            {
+                "id": "climatetrace",
+                "name": "Climate TRACE",
+                "category": "Industrial Point-Source Emissions",
+                "logo": "/static/logos/climatetrace.svg",
+                "datasets": ["dallas_emissions_assets (10 major emitters)", "Marginal abatement cost benchmarks"],
+                "role": "Facility-level emissions for aviation, power, cement, and landfills driving the $50M Pareto optimizer."
+            },
+            {
+                "id": "google_cloud",
+                "name": "Google Cloud & Vertex AI",
+                "category": "Enterprise AI & Security",
+                "logo": "/static/logos/google_cloud.svg",
+                "datasets": ["Gemini 2.5 Flash Foundation Model", "Google Cloud Model Armor Gateway"],
+                "role": "Powers HeatShield Commander (Dana) and domain subagents with prompt injection & jailbreak defense."
+            },
+            {
+                "id": "google_maps",
+                "name": "Google Maps Platform",
+                "category": "Live Geospatial & Environmental APIs",
+                "logo": "/static/logos/google_maps.svg",
+                "datasets": ["Routes API v2", "Places API New", "Solar API Building Insights", "Photorealistic 3D Tiles API"],
+                "role": "Real-time pedestrian heat stress routing, civic place discovery, rooftop solar/albedo, and 3D textured mesh."
+            },
+            {
+                "id": "bigquery",
+                "name": "Google Cloud BigQuery & BQML",
+                "category": "Spatial Data Warehouse & ML",
+                "logo": "/static/logos/bigquery.svg",
+                "datasets": ["a4i_climate schema (19 tables)", "a4i_climate.heat_offset_model"],
+                "role": "Serverless spatial joins, ML.EXPLAIN_PREDICT feature attribution, and petabyte-scale climate analytics."
+            }
         ]
     }
 

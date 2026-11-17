@@ -112,6 +112,24 @@ def main():
     # 18. Dana's Heat Contrast Question (4th & Marsalis vs Lake Cliff Park)
     ok, data = run_test("Dana Heat Contrast Diagnosis", "/api/contrast?loc_a=4th%20and%20Marsalis&loc_b=2%20blocks%20north")
     results["heat_contrast_diagnosis"] = ok and "contrast_analysis" in data and "planner_diagnosis" in data.get("contrast_analysis", {})
+
+    # 19. Data Sources & Official Logos Registry
+    ok, data = run_test("Data Sources & Logos Registry", "/api/data-sources")
+    logos_ok = True
+    if ok and data.get("sources"):
+        for src in data["sources"]:
+            logo_path = src.get("logo")
+            try:
+                l_req = urllib.request.Request(f"{BASE_URL}{logo_path}")
+                with urllib.request.urlopen(l_req, timeout=5) as l_resp:
+                    ct = l_resp.headers.get("content-type", "")
+                    if l_resp.status != 200 or "svg" not in ct:
+                        logos_ok = False
+                        break
+            except Exception:
+                logos_ok = False
+                break
+    results["data_sources_and_logos"] = ok and data.get("total_sources") == 12 and logos_ok
     
     # 19. Principled Refusal Check for Out-of-City Street Queries
     ok, data = run_test("Out-of-Scope Principled Refusal", "/api/resolve-location?query=63rd%20and%20Halsted,%20Chicago")
@@ -129,7 +147,11 @@ def main():
     ok, data = run_test("US National County Directory", "/api/us/counties?state=Georgia")
     results["us_county_directory"] = ok and data.get("count", 0) > 100
 
-    # 23. Gemini 3.8 Live API Real-Time Voice WebSocket Bridge
+    # 23. Google Isochrones API Cooling Accessibility Bubbles (5, 10, 15 min walking catchments)
+    ok, data = run_test("Google Isochrones API Bubbles", "/api/isochrones?site_id=1&speed=1.2")
+    results["google_isochrones_api"] = ok and "tiers" in data and len(data.get("tiers", [])) == 3 and data.get("total_15min_catchment_population", 0) > 0
+
+    # 24. Gemini 3.8 Live API Real-Time Voice WebSocket Bridge
     print("Testing [WS] /ws/live ... ", end="")
     try:
         from fastapi.testclient import TestClient
