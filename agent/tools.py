@@ -11,7 +11,7 @@ import json
 import math
 import urllib.request
 import urllib.error
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Tuple
 import google.auth
 from google.auth.transport.requests import Request
 from google.cloud import bigquery
@@ -3515,6 +3515,43 @@ def get_national_vulnerability_profile(
             "coverage": "Nationwide (All 50 US States)",
             "data": rows[0],
             "data_source": "BigQuery: a4i_climate.us_resilience_master (National 74,133 Census Tracts)"
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+def get_us_county_directory(state_name: Optional[str] = None, limit_n: int = 20) -> Dict[str, Any]:
+    """Lists available US counties and their summary resilience deficit scores from us_resilience_master.
+    
+    Args:
+        state_name: Optional state name (e.g. 'California', 'Texas', 'Illinois', 'Florida').
+        limit_n: Maximum counties to return (default: 20).
+    """
+    client = get_bq_client()
+    where_clause = f"WHERE LOWER(state_name) = LOWER('{state_name}')" if state_name else ""
+    query = f"""
+    SELECT 
+        state_name,
+        county_name,
+        COUNT(geo_id) as tract_count,
+        SUM(total_pop) as total_county_pop,
+        ROUND(AVG(poverty_rate_pct), 1) as avg_poverty_pct,
+        ROUND(AVG(no_vehicle_rate_pct), 1) as avg_no_vehicle_pct,
+        ROUND(AVG(heat_offset_estimated_f), 2) as avg_heat_offset_f,
+        ROUND(AVG(resilience_deficit_score), 2) as avg_resilience_deficit_score
+    FROM `{PROJECT_ID}.{DATASET}.us_resilience_master`
+    {where_clause}
+    GROUP BY state_name, county_name
+    ORDER BY avg_resilience_deficit_score DESC
+    LIMIT {limit_n}
+    """
+    try:
+        job = client.query(query)
+        counties = [dict(r) for r in job.result()]
+        return {
+            "state_filter": state_name or "All US States",
+            "counties_returned": len(counties),
+            "counties": counties,
+            "source": "BigQuery: a4i_climate.us_resilience_master"
         }
     except Exception as e:
         return {"error": str(e)}
