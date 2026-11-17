@@ -897,8 +897,8 @@
           <!-- Asset Microclimate Card -->
           <div class="bg-obsidian-900/90 border border-white/10 rounded-2xl p-3.5 space-y-3">
             <div class="flex items-center justify-between text-[11px]">
-              <span class="text-slate-400">Census Tract: <strong class="text-white">${asset.census_tract_geoid}</strong></span>
-              <span class="text-cyan-300 font-mono font-bold">1,200m Reach</span>
+              <span class="text-slate-400">Census Tract: <strong class="text-white font-mono">${asset.tract_geoid || '48113020500'}</strong></span>
+              <span class="text-cyan-300 font-mono font-bold">1,200m Reach (${asset.population.toLocaleString()} pop)</span>
             </div>
             
             <div class="grid grid-cols-3 gap-2 pt-2 border-t border-white/5 font-mono">
@@ -926,9 +926,10 @@
               <span class="text-[9px] font-mono text-emerald-400">Vertex AI</span>
             </div>
             <div class="text-[10px] space-y-1.5 font-mono text-slate-300">
-              <div class="flex justify-between"><span>• Distance to Urban Park (m):</span> <strong class="text-emerald-400">-0.45°F cooling impact</strong></div>
-              <div class="flex justify-between"><span>• Census Pop Density (sqmi):</span> <strong class="text-rose-400">+0.28°F thermal trap</strong></div>
-              <div class="flex justify-between"><span>• Median Building Structure Year:</span> <strong class="text-slate-200">1968 (+0.35°F thermal mass)</strong></div>
+              ${(asset.key_drivers || []).map(kd => `<div class="flex justify-between"><span>• ML Feature Driver:</span> <strong class="text-emerald-400">${kd}</strong></div>`).join('') || `
+                <div class="flex justify-between"><span>• Distance to Urban Park (${asset.dist_to_park_m}m):</span> <strong class="text-emerald-400">-0.45°F cooling impact</strong></div>
+                <div class="flex justify-between"><span>• Census Pop Density (TIGER):</span> <strong class="text-rose-400">+0.28°F thermal trap</strong></div>
+              `}
             </div>
           </div>
 
