@@ -8,8 +8,10 @@ An autonomous climate resilience decision support system and interactive web das
 ## 🌟 Live Deployments & Official Deliverables
 
 - **Live Cloud Run Deployment**: [https://dallas-heat-app-447063751013.us-central1.run.app](https://dallas-heat-app-447063751013.us-central1.run.app)
+- **Comprehensive Walkthrough**: [WALKTHROUGH.md](WALKTHROUGH.md) (Complete verification, architecture, and live screenshots)
+- **System Implementation Blueprint**: [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) (Multi-agent council design & $50M Pareto engine)
 - **Official Placement Recommendation Artifact**: [PLACEMENT_RECOMMENDATION.md](PLACEMENT_RECOMMENDATION.md) (Council Resolution No. 2026-HEAT-01)
-- **Interactive Command Center**: Real-time Google Maps Dark Vector styling, 1,200m walkability buffers, and Dana AI copilot.
+- **Interactive 3D Command Center**: Singapore DUCT 3D Heat X-Ray (CesiumJS) + Google Solar API Dynamic Sun & Shade Animator.
 - **BigQuery ML Model**: `a4i_climate.heat_offset_model` (Linear regression with `ML.EXPLAIN_PREDICT` on Vertex AI `us-central1`).
 - **Google MCP Toolbox for Databases**: Declarative [`mcp/tools.yaml`](mcp/tools.yaml) & [`mcp.json`](mcp.json) for [`googleapis/mcp-toolbox`](https://github.com/googleapis/mcp-toolbox).
 - **Security Gateway**: Google Cloud Model Armor prompt injection, jailbreak, and SQL/DDL injection interceptor (`agent/model_armor.py`).
