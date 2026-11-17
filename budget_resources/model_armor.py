@@ -15,7 +15,7 @@ LOCATION = os.environ.get("GOOGLE_CLOUD_LOCATION", "us-central1")
 INJECTION_PATTERNS = [
     r"ignore\s+(all\s+)?(previous|prior|above)\s+(instructions|prompts|directives)",
     r"disregard\s+(all\s+)?(previous|prior|system)\s+rules",
-    r"you\s+are\s+no\s+longer\s+dana",
+    r"you\s+are\s+no\s+longer\s+(?:dana|coolaid)",
     r"you\s+are\s+now\s+in\s+(developer|dan|jailbreak|unrestricted)\s+mode",
     r"print\s+your\s+(system\s+prompt|initial\s+instructions|hidden\s+rules)",
     r"reveal\s+the\s+(secret|system\s+instruction|developer\s+message)",
