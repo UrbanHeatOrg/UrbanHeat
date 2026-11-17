@@ -77,7 +77,10 @@
       <span class="hidden lg:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-purple-500/10 text-purple-400 border border-purple-500/20">
         <i class="fa-solid fa-shield-cat"></i>
         Model Armor Active
-      </span>
+      <button onclick="toggleAgentModal()" class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20 hover:bg-amber-500/20 transition cursor-pointer">
+        <i class="fa-solid fa-users-gear text-amber-400"></i>
+        <span>5 Subagents Active</span>
+      </button>
       <button onclick="toggleChat()" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-lg text-sm font-semibold flex items-center gap-2 transition shadow-lg shadow-blue-500/25">
         <i class="fa-solid fa-robot text-blue-200"></i>
         <span>Dana Copilot</span>
@@ -171,24 +174,43 @@
             <p class="text-xs text-slate-400">Overlaying BQML Heat Offsets, Climate TRACE Emitting Assets, and Walking Catchments</p>
           </div>
           
-          <!-- Layer Toggles -->
-          <div class="flex items-center gap-3 text-xs bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700">
-            <label class="flex items-center gap-1.5 cursor-pointer text-slate-300 hover:text-white">
-              <input type="checkbox" id="layer-cooling" checked onchange="toggleMapLayer('cooling')" class="rounded text-blue-600 focus:ring-0">
-              <span>Cooling Centers</span>
-            </label>
-            <label class="flex items-center gap-1.5 cursor-pointer text-slate-300 hover:text-white">
-              <input type="checkbox" id="layer-emissions" checked onchange="toggleMapLayer('emissions')" class="rounded text-rose-600 focus:ring-0">
-              <span>Climate TRACE (CO₂e)</span>
-            </label>
-            <label class="flex items-center gap-1.5 cursor-pointer text-slate-300 hover:text-white">
-              <input type="checkbox" id="layer-catchments" checked onchange="toggleMapLayer('catchments')" class="rounded text-emerald-600 focus:ring-0">
-              <span>10-Min Walk Buffer</span>
-            </label>
+          <!-- Layer Toggles & 3D Photorealistic Tiles Switcher -->
+          <div class="flex flex-wrap items-center gap-2">
+            <button id="btn-3d-tiles" onclick="toggle3DMode()" class="flex items-center gap-1.5 text-xs bg-slate-800/80 hover:bg-cyan-950/60 text-slate-300 hover:text-cyan-300 px-3 py-1.5 rounded-lg border border-slate-700 hover:border-cyan-500/50 transition cursor-pointer">
+              <i class="fa-solid fa-cube text-cyan-400"></i>
+              <span>Google Photorealistic 3D Tiles</span>
+            </button>
+            <div class="flex items-center gap-3 text-xs bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700">
+              <label class="flex items-center gap-1.5 cursor-pointer text-slate-300 hover:text-white">
+                <input type="checkbox" id="layer-cooling" checked onchange="toggleMapLayer('cooling')" class="rounded text-blue-600 focus:ring-0">
+                <span>Cooling Centers</span>
+              </label>
+              <label class="flex items-center gap-1.5 cursor-pointer text-slate-300 hover:text-white">
+                <input type="checkbox" id="layer-emissions" checked onchange="toggleMapLayer('emissions')" class="rounded text-rose-600 focus:ring-0">
+                <span>Climate TRACE (CO₂e)</span>
+              </label>
+              <label class="flex items-center gap-1.5 cursor-pointer text-slate-300 hover:text-white">
+                <input type="checkbox" id="layer-catchments" checked onchange="toggleMapLayer('catchments')" class="rounded text-emerald-600 focus:ring-0">
+                <span>10-Min Walk Buffer</span>
+              </label>
+            </div>
           </div>
         </div>
 
-        <div id="map" class="flex-1 min-h-[500px]"></div>
+        <div class="relative flex-1 min-h-[500px]">
+          <!-- 3D Digital Twin HUD -->
+          <div id="hud-3d-tiles" class="hidden absolute top-3 left-3 z-10 bg-slate-900/90 backdrop-blur-md border border-cyan-500/50 text-cyan-300 text-xs px-3.5 py-2 rounded-lg shadow-xl flex items-center gap-2.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping"></span>
+            <div>
+              <div class="font-bold text-white flex items-center gap-1.5">
+                <span>Google Photorealistic 3D Tiles Active</span>
+                <span class="text-[10px] px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">OGC 3D / glTF</span>
+              </div>
+              <div class="text-[10px] text-slate-400">Camera Tilt: 67.5° • Heading: 42° • Draping BQML Local Thermal Offsets onto 3D Mesh</div>
+            </div>
+          </div>
+          <div id="map" class="w-full h-full min-h-[500px]"></div>
+        </div>
 
         <!-- Legend and Explainer Footnote -->
         <div class="mt-3 pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400">
@@ -334,6 +356,12 @@
       </button>
       <button onclick="sendQuickPrompt('Draft the municipal resolution I am taking to City Council in the morning.')" class="whitespace-nowrap px-2.5 py-1 rounded-md text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">
         📜 Draft Council Resolution
+      </button>
+      <button onclick="sendQuickPrompt('Check the walking route between latitude 32.7834, longitude -96.8623 and 32.7800, -96.8600 using Google Routes API to see if it is safe under extreme heat.')" class="whitespace-nowrap px-2.5 py-1 rounded-md text-[11px] bg-emerald-950/60 hover:bg-emerald-900/60 text-emerald-300 border border-emerald-700/60 transition">
+        🚶 Walking Catchment (Routes API)
+      </button>
+      <button onclick="sendQuickPrompt('Check the rooftop solar capacity and cool roof potential for 32.7834, -96.8623 using Google Solar API.')" class="whitespace-nowrap px-2.5 py-1 rounded-md text-[11px] bg-amber-950/60 hover:bg-amber-900/60 text-amber-300 border border-amber-700/60 transition">
+        ☀️ Rooftop Solar (Solar API)
       </button>
     </div>
 
@@ -1039,8 +1067,162 @@
       }
     }
 
+    // 3D Photorealistic Tiles Mode Toggle
+    let is3DMode = false;
+    function toggle3DMode() {
+      if (!map) return;
+      is3DMode = !is3DMode;
+      const btn = document.getElementById('btn-3d-tiles');
+      const hud = document.getElementById('hud-3d-tiles');
+      if (is3DMode) {
+        // High-tilt 3D perspective with hybrid satellite and building heights
+        map.setMapTypeId('hybrid');
+        map.setTilt(67.5);
+        map.setHeading(42);
+        map.setZoom(15);
+        map.panTo({ lat: 32.7800, lng: -96.8000 });
+        if (btn) {
+          btn.className = "flex items-center gap-1.5 text-xs bg-cyan-600 text-white px-3 py-1.5 rounded-lg border border-cyan-400 shadow-lg shadow-cyan-500/30 transition cursor-pointer font-bold";
+          btn.innerHTML = '<i class="fa-solid fa-cube text-white animate-spin"></i> <span>3D Photorealistic Mesh (Active)</span>';
+        }
+        if (hud) hud.classList.remove('hidden');
+      } else {
+        // Reset to 2D Regional Vector
+        map.setMapTypeId('roadmap');
+        map.setTilt(0);
+        map.setHeading(0);
+        map.setZoom(11);
+        map.panTo({ lat: 32.7767, lng: -96.7970 });
+        if (btn) {
+          btn.className = "flex items-center gap-1.5 text-xs bg-slate-800/80 hover:bg-cyan-950/60 text-slate-300 hover:text-cyan-300 px-3 py-1.5 rounded-lg border border-slate-700 hover:border-cyan-500/50 transition cursor-pointer";
+          btn.innerHTML = '<i class="fa-solid fa-cube text-cyan-400"></i> <span>Google Photorealistic 3D Tiles</span>';
+        }
+        if (hud) hud.classList.add('hidden');
+      }
+    }
+
+    // Multi-Agent Roster Modal Toggle
+    function toggleAgentModal() {
+      const modal = document.getElementById('agent-modal');
+      if (modal.classList.contains('hidden')) {
+        modal.classList.remove('hidden');
+        loadAgentRoster();
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    async function loadAgentRoster() {
+      const container = document.getElementById('agent-roster-list');
+      try {
+        const resp = await fetch('/api/agents');
+        const data = await resp.json();
+        
+        let html = `
+          <!-- Commander -->
+          <div class="bg-gradient-to-r from-blue-950/60 to-indigo-950/60 border border-blue-500/40 rounded-xl p-4">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <span class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white text-sm">
+                  <i class="fa-solid fa-crown"></i>
+                </span>
+                <div>
+                  <div class="font-bold text-white text-sm">Dana (Root Orchestrator)</div>
+                  <div class="text-[11px] text-blue-300">${data.root_agent.role}</div>
+                </div>
+              </div>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                ${data.root_agent.model} • ${data.root_agent.total_tools} Tools
+              </span>
+            </div>
+          </div>
+          <div class="text-xs uppercase font-bold text-slate-400 tracking-wider mt-4 mb-2 flex items-center gap-2">
+            <i class="fa-solid fa-sitemap text-amber-400"></i>
+            <span>Autonomous Domain Subagents (Google ADK)</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        `;
+
+        data.subagents.forEach(sub => {
+          let icon = 'fa-robot';
+          let borderCol = 'border-slate-800';
+          let tagCol = 'bg-slate-800 text-slate-300';
+          if (sub.name.includes('emergency')) {
+            icon = 'fa-bolt text-amber-400';
+            borderCol = 'border-amber-500/30';
+            tagCol = 'bg-amber-500/20 text-amber-300';
+          } else if (sub.name.includes('siting')) {
+            icon = 'fa-landmark text-blue-400';
+            borderCol = 'border-blue-500/30';
+            tagCol = 'bg-blue-500/20 text-blue-300';
+          } else if (sub.name.includes('urban')) {
+            icon = 'fa-tree text-emerald-400';
+            borderCol = 'border-emerald-500/30';
+            tagCol = 'bg-emerald-500/20 text-emerald-300';
+          } else if (sub.name.includes('portfolio')) {
+            icon = 'fa-scale-balanced text-cyan-400';
+            borderCol = 'border-cyan-500/30';
+            tagCol = 'bg-cyan-500/20 text-cyan-300';
+          } else if (sub.name.includes('red_team')) {
+            icon = 'fa-triangle-exclamation text-rose-400';
+            borderCol = 'border-rose-500/30';
+            tagCol = 'bg-rose-500/20 text-rose-300';
+          }
+
+          html += `
+            <div class="bg-slate-900/90 border ${borderCol} rounded-xl p-3.5 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <div class="flex items-center gap-2">
+                    <i class="fa-solid ${icon}"></i>
+                    <span class="font-bold text-slate-200 text-xs">${sub.name}</span>
+                  </div>
+                  <span class="text-[10px] px-2 py-0.5 rounded-full ${tagCol}">
+                    ${sub.tools.length} Tools
+                  </span>
+                </div>
+                <p class="text-[11px] text-slate-400 leading-relaxed mb-2">${sub.description}</p>
+              </div>
+              <div class="text-[10px] text-slate-500 pt-2 border-t border-slate-800 flex flex-wrap gap-1">
+                ${sub.tools.map(t => `<span class="bg-slate-800 px-1.5 py-0.5 rounded text-slate-300">${t}</span>`).join('')}
+              </div>
+            </div>
+          `;
+        });
+
+        html += `</div>`;
+        container.innerHTML = html;
+      } catch (e) {
+        container.innerHTML = `<div class="text-rose-400 text-xs">Error loading subagent roster.</div>`;
+      }
+    }
+
     // Initialize Map on load
     window.addEventListener('load', initMap);
   </script>
+
+  <!-- Multi-Agent Roster Modal -->
+  <div id="agent-modal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-950 border border-slate-800 rounded-2xl w-full max-w-3xl max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
+      <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/50">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400">
+            <i class="fa-solid fa-users-gear text-base"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-base text-white">HeatShield Multi-Agent System</h3>
+            <p class="text-xs text-slate-400">Autonomous Hierarchical Agent Council built on Google ADK & Gemini 2.5 Flash</p>
+          </div>
+        </div>
+        <button onclick="toggleAgentModal()" class="text-slate-400 hover:text-white p-1 text-lg">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div id="agent-roster-list" class="p-6 overflow-y-auto space-y-4">
+        <div class="p-8 text-center text-slate-500 text-xs">Loading autonomous subagents...</div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

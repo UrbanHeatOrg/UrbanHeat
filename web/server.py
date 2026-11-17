@@ -84,6 +84,18 @@ def strategies(sector: str = None):
 def optimize_portfolio(budget: float = 50.0, adaptation_weight: float = 0.5, mitigation_weight: float = 0.5):
     return tools.optimize_climate_portfolio(budget, adaptation_weight, mitigation_weight)
 
+@app.get("/api/routes/walking")
+def walking_route(origin_lat: float, origin_lon: float, dest_lat: float, dest_lon: float):
+    return tools.compute_pedestrian_route(origin_lat, origin_lon, dest_lat, dest_lon)
+
+@app.get("/api/places/nearby")
+def nearby_places(lat: float, lon: float, radius: float = 3000.0, place_type: str = "all"):
+    return tools.search_civic_places(lat, lon, radius, place_type)
+
+@app.get("/api/solar/insights")
+def solar_insights(lat: float, lon: float):
+    return tools.get_solar_and_shade_insights(lat, lon)
+
 
 from agent.model_armor import inspect_prompt_armor
 
@@ -97,6 +109,47 @@ def armor_status():
             "Jailbreak Prevention",
             "System Prompt Leak Shield",
             "SQL/DDL Injection Interception"
+        ]
+    }
+
+@app.get("/api/agents")
+def list_agents():
+    return {
+        "root_agent": {
+            "name": ag.root_agent.name,
+            "model": ag.root_agent.model,
+            "role": "Chief Climate Resilience & Investment Officer (Commander)",
+            "total_tools": len(ag.root_agent.tools)
+        },
+        "subagents": [
+            {
+                "name": sub.name,
+                "model": sub.model,
+                "description": sub.description,
+                "tools": [t.__name__ for t in sub.tools]
+            }
+            for sub in ag.all_subagents
+        ]
+    }
+
+@app.get("/api/3d-tiles/config")
+def get_3d_tiles_config():
+    return {
+        "service": "Google Photorealistic 3D Tiles API",
+        "tile_server_url": "https://tile.googleapis.com/v1/3dtiles/root.json",
+        "format": "OGC 3D Tiles / glTF",
+        "integration_modes": ["CesiumJS", "deck.gl", "Google Maps 3D (<gmp-map-3d>)"],
+        "dallas_bounds": {
+            "center": {"lat": 32.7767, "lng": -96.7970},
+            "default_tilt": 65.0,
+            "default_heading": 30.0,
+            "default_range": 1500.0
+        },
+        "features": [
+            "Photorealistic textured building meshes",
+            "High-resolution 3D terrain and canopy extrusion",
+            "BigQuery ML heat offset layer draping",
+            "Solar radiation and shadow cast integration"
         ]
     }
 

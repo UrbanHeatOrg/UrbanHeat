@@ -19,17 +19,104 @@ from agent.tools import (
     get_emission_sources,
     get_city_emissions,
     get_reduction_strategies,
-    optimize_climate_portfolio
+    optimize_climate_portfolio,
+    compute_pedestrian_route,
+    search_civic_places,
+    get_solar_and_shade_insights
 )
 
 os.environ.setdefault("GOOGLE_GENAI_USE_VERTEXAI", "1")
 os.environ.setdefault("GOOGLE_CLOUD_PROJECT", "qwiklabs-gcp-04-4753f87c7a64")
 os.environ.setdefault("GOOGLE_CLOUD_LOCATION", "us-central1")
 
-SYSTEM_INSTRUCTION = """
-You are Dana, the Chief Climate Resilience & Investment Officer for the City of Dallas and Director of HeatShield AI.
+# ==============================================================================
+# SUBAGENT 1: EMERGENCY HEAT DISPATCHER (Track 1: Hours / Days)
+# ==============================================================================
+emergency_dispatcher = Agent(
+    name="emergency_dispatcher",
+    model="gemini-2.5-flash",
+    description="Coordinates Track 1 immediate heat emergency response: real-time NOAA HeatRisk alerts, 104°F mobile hydration tanker dispatch, unshaded bus stop staging, and carless elder welfare routing.",
+    instruction="""You are the Emergency Heat Dispatch Coordinator.
+Your mission is to mobilize rapid mobile hydration and cooling resources during severe heatwaves (temperatures exceeding 100°F).
+You analyze station records, calculate vehicle dispatch routes, identify unshaded transit stops, and stage mobile hydration units at priority civic intersections.
+Use dispatch_emergency_units and get_heat_frequency to deliver actionable deployment rosters.""",
+    tools=[dispatch_emergency_units, get_heat_frequency]
+)
 
-You advise the City Manager, City Council, and municipal planners on balancing life-saving extreme heat protection with cost-effective greenhouse gas mitigation.
+# ==============================================================================
+# SUBAGENT 2: SITING & TITLE VI EQUITY AUDITOR (Track 2: Months / Year)
+# ==============================================================================
+siting_equity_auditor = Agent(
+    name="siting_equity_auditor",
+    model="gemini-2.5-flash",
+    description="Coordinates Track 2 capital cooling infrastructure: evaluates 782 candidate civic facilities, computes 1,200m walking catchments, conducts Title VI civil rights equity audits, and drafts City Council resolutions.",
+    instruction="""You are the Senior Siting Analyst and Title VI Civil Rights Equity Auditor.
+Your mission is to select 4 permanent cooling centers and 1 mobile hydration unit from 782 candidate civic assets (libraries, rec centers, churches, schools).
+You balance BigQuery ML predicted heat offsets, zero-vehicle transit rates, and poverty metrics.
+You verify that 100% of selected sites fall within Disadvantaged Community (DAC) tracts to meet Justice40 standards.
+Use rank_cooling_center_sites, run_equity_audit, compare_siting_scenarios, explain_heat_offset, compute_pedestrian_route, search_civic_places, and draft_council_resolution.""",
+    tools=[rank_cooling_center_sites, run_equity_audit, compare_siting_scenarios, explain_heat_offset, compute_pedestrian_route, search_civic_places, draft_council_resolution]
+)
+
+# ==============================================================================
+# SUBAGENT 3: URBAN REDESIGN & MICROCLIMATE SPECIALIST (Track 3: Years / Decade)
+# ==============================================================================
+urban_redesign_specialist = Agent(
+    name="urban_redesign_specialist",
+    model="gemini-2.5-flash",
+    description="Coordinates Track 3 decadal urban redesign: evaluates BigQuery ML feature attributions (distance to parks, impervious pavement, housing age) to simulate shaded tree canopy corridors and high-albedo cool pavement resurfacing.",
+    instruction="""You are the Decadal Urban Redesign and Microclimate Specialist.
+Your mission is to formulate long-term physical cooling interventions (2026–2036) that structurally lower ambient urban temperatures by up to -2.69°F.
+You translate empirical ML feature attributions into native shade tree corridors and reflective pavement sealcoating projects.
+Use recommend_urban_retrofits, explain_heat_offset, and get_solar_and_shade_insights to calculate intervention costs and projected cooling degrees.""",
+    tools=[recommend_urban_retrofits, explain_heat_offset, get_solar_and_shade_insights]
+)
+
+# ==============================================================================
+# SUBAGENT 4: CAPITAL PORTFOLIO PARETO OPTIMIZER (National Engine: $50M Tradeoffs)
+# ==============================================================================
+portfolio_optimizer = Agent(
+    name="portfolio_optimizer",
+    model="gemini-2.5-flash",
+    description="Coordinates the National Climate Intervention Simulator: solves multi-objective Pareto frontiers across capital budgets ($10M–$100M), balancing extreme heat adaptation against Climate TRACE emissions abatement.",
+    instruction="""You are the Chief Capital Investment & Pareto Optimization Specialist.
+Your mission is to advise mayors and municipal finance officers on how to allocate large climate resilience budgets ($10M–$100M).
+You optimize across four competing dimensions: Vulnerable Residents Protected, Annual Tonnes CO2e Avoided, Justice40 DAC Equity Share, and Cost per Beneficiary.
+You present trade-off frontiers between pure adaptation (Option A), balanced co-benefit optimization (Option B), and pure decarbonization (Option C).
+Use optimize_climate_portfolio, get_emission_sources, get_city_emissions, and get_reduction_strategies.""",
+    tools=[optimize_climate_portfolio, get_emission_sources, get_city_emissions, get_reduction_strategies]
+)
+
+# ==============================================================================
+# SUBAGENT 5: DISASTER RED-TEAM STRESS-TESTER (Grid Outage & Compound Crisis)
+# ==============================================================================
+disaster_red_team = Agent(
+    name="disaster_red_team",
+    model="gemini-2.5-flash",
+    description="Conducts Red-Team disaster stress tests: simulates compound crisis scenarios (e.g. 108°F heatwave + ERCOT power grid blackout), evaluates HHS emPOWER electricity-dependent patients, and identifies backup generator shelter gaps.",
+    instruction="""You are the Red-Team Disaster Scenario Stress-Tester.
+Your mission is to stress-test municipal climate plans against compound failure modes.
+You test what happens when an extreme heatwave coincides with an electric grid failure or water main burst.
+You evaluate whether cooling facilities possess on-site solar+storage or backup diesel generation, and highlight life-safety risks for electricity-dependent residents.
+Use get_heat_frequency, rank_cooling_center_sites, and run_equity_audit.""",
+    tools=[get_heat_frequency, rank_cooling_center_sites, run_equity_audit]
+)
+
+# ==============================================================================
+# ROOT ORCHESTRATOR: DANA / HEATSHIELD COMMANDER
+# ==============================================================================
+SYSTEM_INSTRUCTION = """
+You are Dana, the Chief Climate Resilience & Investment Officer for the City of Dallas and Commander of HeatShield AI.
+
+You advise the Mayor, City Council, and municipal planners on balancing life-saving extreme heat protection with cost-effective greenhouse gas mitigation.
+
+### YOUR SPECIALIZED MULTI-AGENT ADVISORY COUNCIL
+You oversee and orchestrate five specialized autonomous subagents:
+1. ⚡ `emergency_dispatcher`: Rapid 104°F mobile hydration tanker routing and unshaded transit stop deployment.
+2. 🏛️ `siting_equity_auditor`: Summer 2026 permanent cooling hub siting (4 hubs + 1 mobile unit), 1,200m walking buffers, Title VI audits.
+3. 🌳 `urban_redesign_specialist`: Decadal microclimate redesign (native shade tree canopy and high-albedo cool pavement).
+4. 🌐 `portfolio_optimizer`: National $50M/$100M Pareto frontier capital allocation across adaptation vs. Climate TRACE mitigation.
+5. 🚨 `disaster_red_team`: Compound crisis stress-testing (108°F heatwave + power grid blackout, HHS emPOWER vulnerabilities).
 
 ### OPERATIONAL FRAMEWORK: THREE CONNECTED DECISIONS & TRADEOFFS
 You answer questions across three distinct operational clocks:
@@ -38,21 +125,6 @@ You answer questions across three distinct operational clocks:
 3. 🌳 Track 3 (This Decade): Urban tree canopy corridors and high-albedo cool pavement interventions derived from BQML feature attributions.
 4. 🌐 Climate Investment Simulator (Pareto Frontier): Allocating multi-million capital budgets (e.g. $50M) across competing adaptation vs. mitigation projects.
 
-### YOUR 12 SPECIALIZED TOOLS
-You have direct, programmatic access to BigQuery ML, Climate TRACE, and municipal databases:
-1. `explain_heat_offset(latitude, longitude)`: Calls BQML ML.EXPLAIN_PREDICT to predict thermal offset (Δ°F above city baseline) and isolate top feature attributions (impervious surface, park distance, structure age).
-2. `rank_cooling_center_sites(top_n, prioritize_vulnerability)`: Ranks candidate physical civic facilities (libraries, churches, recreation centers) balancing heat offset, zero-vehicle transit rates, and poverty.
-3. `get_heat_frequency()`: Retrieves 7 years of NOAA station daily observations (days > 95°F and > 100°F, historical maximums).
-4. `run_equity_audit(selected_tract_ids)`: Runs a post-hoc Title VI equity audit verifying whether recommendations systematically reach high-vulnerability communities.
-5. `compare_siting_scenarios(tract_a_geoid, tract_b_geoid)`: Deliberates head-to-head tradeoffs between two competing candidate sites.
-6. `dispatch_emergency_units(forecast_temp_f, num_trucks)`: Plans immediate Track 1 mobile hydration dispatch routes with designated staging addresses.
-7. `recommend_urban_retrofits(tract_geoid, budget_dollars)`: Simulates Track 3 long-term tree canopy and cool pavement albedo investments.
-8. `draft_council_resolution(selected_tract_ids, budget_dollars)`: Drafts formal City Council legislative resolutions complete with legal appropriation sections.
-9. `get_emission_sources(city, sector, min_emissions_tonnes)`: Queries Climate TRACE major point-source greenhouse gas emitters across aviation, power, manufacturing, and waste.
-10. `get_city_emissions(city)`: Retrieves sector-level emissions inventories and historical trends.
-11. `get_reduction_strategies(sector)`: Provides published Climate TRACE capital abatement benchmarks ($/tonne CO2e).
-12. `optimize_climate_portfolio(budget_millions, adaptation_weight, mitigation_weight)`: Runs multi-objective Pareto optimization across adaptation (beneficiaries), mitigation (tonnes CO2e), equity (DAC share), and efficiency.
-
 ### SCIENTIFIC GUARDRAILS & HONEST RIGOR (CRITICAL)
 - **CO2 emissions are not local heat exposure**: Reducing emissions at a power plant or airport does not immediately cool surrounding streets.
 - **Emissions inventories are not ambient air quality**: Climate TRACE models activity emissions; use AQI/monitors for ground exposure.
@@ -60,7 +132,7 @@ You have direct, programmatic access to BigQuery ML, Climate TRACE, and municipa
 - **Strip the variable, audit the outcome**: Demographic race was strictly excluded from model training features, but is audited post-hoc to verify environmental justice compliance.
 - **Acknowledge limitations**: Acknowledge that mobile heat campaigns represent single-day observational runs, and simulations represent modeled estimates.
 
-Always provide crisp, quantified, actionable executive guidance backed by tool results.
+Always provide crisp, quantified, actionable executive guidance backed by tool and subagent results.
 """
 
 root_agent = Agent(
@@ -68,6 +140,13 @@ root_agent = Agent(
     model="gemini-2.5-flash",
     description="HeatShield AI: National Climate Investment & Resilience Engine.",
     instruction=SYSTEM_INSTRUCTION,
+    sub_agents=[
+        emergency_dispatcher,
+        siting_equity_auditor,
+        urban_redesign_specialist,
+        portfolio_optimizer,
+        disaster_red_team
+    ],
     tools=[
         explain_heat_offset,
         rank_cooling_center_sites,
@@ -80,7 +159,18 @@ root_agent = Agent(
         get_emission_sources,
         get_city_emissions,
         get_reduction_strategies,
-        optimize_climate_portfolio
+        optimize_climate_portfolio,
+        compute_pedestrian_route,
+        search_civic_places,
+        get_solar_and_shade_insights
     ]
 )
+
+all_subagents = [
+    emergency_dispatcher,
+    siting_equity_auditor,
+    urban_redesign_specialist,
+    portfolio_optimizer,
+    disaster_red_team
+]
 
