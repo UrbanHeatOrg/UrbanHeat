@@ -10,7 +10,9 @@ QUESTIONS = [
     "We can fund four cooling centers and one mobile hydration unit this summer in Dallas. Where should they go?",
     "Why is the intersection at latitude 32.7834, longitude -96.8623 so much hotter than average? What features drive that?",
     "How often does Dallas actually hit dangerous heat above 95°F and 100°F? Is it getting worse based on station history?",
-    "Run an equity audit on our top recommended sites compared to the Dallas citywide baseline."
+    "Run an equity audit on our top recommended sites compared to the Dallas citywide baseline.",
+    "Can you evaluate the pedestrian walking route between 32.7834, -96.8623 and 32.7800, -96.8600 to see if it is safe under extreme heat?",
+    "Check the rooftop solar capacity and cool roof potential for 32.7834, -96.8623."
 ]
 
 async def run_scenario(question: str):

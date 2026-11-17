@@ -89,6 +89,26 @@ def main():
     ok, data = run_test("Draft Council Resolution", "/api/resolution?budget=10000000")
     results["council_resolution"] = ok and "resolution_full_text" in data
     
+    # 13. Google Maps Routes API (Walking duration & distance)
+    ok, data = run_test("Google Routes API (Walking Catchment)", "/api/routes/walking?origin_lat=32.7834&origin_lon=-96.8623&dest_lat=32.7800&dest_lon=-96.8600")
+    results["google_routes_api"] = ok and "duration_minutes" in data and "distance_meters" in data
+    
+    # 14. Google Places API (Nearby Civic Facilities)
+    ok, data = run_test("Google Places API (Civic Facilities)", "/api/places/nearby?lat=32.7834&lon=-96.8623&radius=3000")
+    results["google_places_api"] = ok and data.get("places_count", 0) > 0
+    
+    # 15. Google Solar API (Building Insights & Roof Area)
+    ok, data = run_test("Google Solar API (Building Insights)", "/api/solar/insights?lat=32.7834&lon=-96.8623")
+    results["google_solar_api"] = ok and ("roof_analysis" in data or "building_id" in data)
+    
+    # 16. Multi-Agent Swarm Hierarchy Registry
+    ok, data = run_test("Agent Swarm Registry", "/api/agents")
+    results["agent_swarm_registry"] = ok and "root_agent" in data and len(data.get("subagents", [])) >= 5
+    
+    # 17. Google Photorealistic 3D Tiles API Configuration
+    ok, data = run_test("Photorealistic 3D Tiles Config", "/api/3d-tiles/config")
+    results["photorealistic_3d_tiles"] = ok and "tile_server_url" in data and "dallas_bounds" in data
+    
     print("\n" + "=" * 70)
     print("VERIFICATION SUMMARY")
     print("=" * 70)
