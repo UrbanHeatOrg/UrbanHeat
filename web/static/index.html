@@ -485,6 +485,30 @@
       align-items: center;
       flex-shrink: 0;
     }
+    @media print {
+      body {
+        background-color: #ffffff !important;
+        color: #0f172a !important;
+      }
+      header, #copilot-drawer, #crosslink-modal, #print-report-modal, .no-print, #mobile-track-bar, #citizen-dock-nav, #planner-dock-nav {
+        display: none !important;
+      }
+      .trace-card, .bg-obsidian-950, .bg-obsidian-900, .bg-slate-900, .bg-slate-950 {
+        background-color: #ffffff !important;
+        color: #0f172a !important;
+        border-color: #cbd5e1 !important;
+      }
+      .text-white, .text-slate-100, .text-slate-200, .text-slate-300 {
+        color: #0f172a !important;
+      }
+      .text-slate-400 {
+        color: #475569 !important;
+      }
+      main {
+        max-width: 100% !important;
+        padding: 0 !important;
+      }
+    }
   </style>
 </head>
 <body class="relative flex flex-col h-[100dvh] w-screen bg-obsidian-950 text-slate-200">
@@ -523,7 +547,6 @@
         </button>
       </div>
     </div>
-
     <!-- Center: Segmented Navigation Pill (Planner Mode Tracks: Map, Plan, Budget, Evidence) -->
     <nav id="planner-nav-bar" class="hidden xl:flex trace-card rounded-2xl p-1 items-center gap-1 pointer-events-auto border border-white/10 shadow-2xl transition-all duration-300">
       <button id="nav-cesium" onclick="setMode('cesium')" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition active-flir-pill cursor-pointer whitespace-nowrap flex-shrink-0" title="3D GIS Heat Map">
@@ -545,6 +568,10 @@
       <button id="nav-council-report" onclick="openCouncilReport()" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-indigo-300 hover:text-white hover:bg-indigo-600/20 border border-indigo-500/30 flex items-center gap-1.5 transition cursor-pointer whitespace-nowrap flex-shrink-0" title="Printable City Council Briefing Packet">
         <i class="fa-solid fa-print text-indigo-400 text-xs"></i>
         <span>Council Packet</span>
+      </button>
+      <button id="nav-print-report" onclick="openPrintReportModal()" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-rose-300 hover:text-white hover:bg-rose-600/20 border border-rose-500/30 flex items-center gap-1.5 transition cursor-pointer whitespace-nowrap flex-shrink-0" title="Generate Executive Heat Report & PDF">
+        <i class="fa-solid fa-file-pdf text-rose-400 text-xs"></i>
+        <span>Print Heat Report</span>
       </button>
     </nav>
 
@@ -576,6 +603,8 @@
         <i class="fa-solid fa-robot text-cyan-200"></i>
         <span class="hidden xs:inline sm:inline">CoolAid AI Copilot</span>
         <span class="inline xs:hidden sm:hidden">CoolAid</span>
+      </button>
+    </div>
       </button>
     </div>
   </header>
@@ -1467,6 +1496,139 @@
 
   </main>
 
+  <!-- Interactive Data Cross-Link Analysis Modal -->
+  <div id="crosslink-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative transform transition-all">
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-blue-600/20 text-blue-400 border border-blue-500/30 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-circle-nodes"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 id="modal-tract-name" class="font-bold text-lg text-white">Tract Cross-Analysis</h3>
+              <span id="modal-tract-geoid" class="text-xs bg-slate-800 text-slate-400 px-2 py-0.5 rounded font-mono">GEOID</span>
+            </div>
+            <p class="text-xs text-slate-400">Multi-Dataset Cross-Synthesis: Microclimate Heat &bull; Night Trap &bull; Energy Burden &bull; emPOWER Grid Vulnerability</p>
+          </div>
+        </div>
+        <button onclick="closeTractCrossLink()" class="text-slate-400 hover:text-white p-2 rounded-lg bg-slate-800/60 hover:bg-slate-800 transition">
+          <i class="fa-solid fa-xmark text-base"></i>
+        </button>
+      </div>
+
+      <!-- Chain Reaction Visual Diagram -->
+      <div class="my-4 p-3 bg-slate-950 rounded-xl border border-slate-800 text-xs text-slate-300">
+        <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+          <i class="fa-solid fa-diagram-project text-blue-400"></i> Structural Compound Risk Pathway
+        </div>
+        <div class="flex flex-wrap items-center gap-1.5 font-mono text-[11px]">
+          <span class="bg-amber-950/80 text-amber-300 border border-amber-800/60 px-2 py-1 rounded">Microclimate Offset</span>
+          <i class="fa-solid fa-arrow-right text-slate-600 text-[10px]"></i>
+          <span class="bg-rose-950/80 text-rose-300 border border-rose-800/60 px-2 py-1 rounded">Night Heat Trap (+11.1°F)</span>
+          <i class="fa-solid fa-arrow-right text-slate-600 text-[10px]"></i>
+          <span class="bg-purple-950/80 text-purple-300 border border-purple-800/60 px-2 py-1 rounded">16-20% Energy Burden</span>
+          <i class="fa-solid fa-arrow-right text-slate-600 text-[10px]"></i>
+          <span class="bg-blue-950/80 text-blue-300 border border-blue-800/60 px-2 py-1 rounded">Plug-in Life Support Trap</span>
+        </div>
+      </div>
+
+      <!-- Cross-Dataset Matrix Cards -->
+      <div id="modal-stats" class="grid grid-cols-2 sm:grid-cols-4 gap-3 my-4">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Cross-Link Explanation & Action Directives -->
+      <div id="modal-description" class="p-3.5 bg-slate-800/50 rounded-xl border border-slate-700/60 text-xs text-slate-300 space-y-2">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Multi-Track Action Dispatch Buttons -->
+      <div class="mt-5 pt-4 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2">
+        <div class="text-xs text-slate-400">
+          <i class="fa-solid fa-bolt text-amber-400 mr-1"></i> Direct Operational Interventions:
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="modal-btn-dispatch" onclick="modalActionDispatch()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30 transition flex items-center gap-1">
+            <i class="fa-solid fa-truck-droplet"></i> Dispatch Track 1 EMS
+          </button>
+          <button id="modal-btn-ask" onclick="modalActionAskDana()" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow transition flex items-center gap-1">
+            <i class="fa-solid fa-robot"></i> Ask Dana About Tract
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Executive Print & PDF Report Modal -->
+  <div id="print-report-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700/80 rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative overflow-hidden flex flex-col max-h-[90vh]">
+      <!-- Header -->
+      <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-red-500/20 border border-red-500/30 flex items-center justify-center text-red-400">
+            <i class="fa-solid fa-file-pdf text-xl"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-lg text-white">Generate Executive Heat Report</h3>
+            <p class="text-xs text-slate-400">Print to physical printer or export official municipal PDF</p>
+          </div>
+        </div>
+        <button onclick="closePrintReportModal()" class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800 transition">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="py-5 space-y-4 overflow-y-auto custom-scroll pr-1 flex-1">
+        <!-- Report Configuration -->
+        <div class="p-4 bg-slate-800/50 rounded-xl border border-slate-700/50 space-y-3">
+          <div class="text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-sliders text-blue-400"></i> Report Configuration & Scope
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div>
+              <label class="block text-slate-400 mb-1">Capital Budget Allocation ($)</label>
+              <input type="number" id="report-budget-input" value="10000000" step="500000" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:border-blue-500 font-mono">
+            </div>
+            <div>
+              <label class="block text-slate-400 mb-1">Heatwave Forecast Ambient (°F)</label>
+              <input type="number" id="report-temp-input" value="102.0" step="0.5" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:border-blue-500 font-mono">
+            </div>
+          </div>
+        </div>
+
+        <!-- Contents Summary -->
+        <div class="p-4 bg-slate-950/60 rounded-xl border border-slate-800 space-y-2">
+          <div class="text-xs font-semibold text-slate-300 uppercase tracking-wider">Report Dossier Includes:</div>
+          <ul class="text-xs text-slate-300 space-y-1.5">
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Executive Climate & Equity KPIs (9.2°F Peak Spread, 20,864 residents protected)</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <strong>Track 1</strong>: 102°F Emergency Mobile Hydration & Wellness Dispatch Matrix (Alpha, Bravo, Charlie)</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <strong>Track 2</strong>: Summer 2026 Permanent Hub Siting & Title VI Four-Fifths Equity Audit</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <strong>Track 3</strong>: 2026–2036 Decadal Tree Canopy Corridors & Cool Pavement Allocations</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Formal City Council Legislative Resolution No. 2026-HEAT-01 with signature blocks</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Modal Footer Action Buttons -->
+      <div class="pt-4 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3">
+        <button onclick="printCurrentDashboard()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-desktop"></i> Print Current Dashboard
+        </button>
+        <div class="flex items-center gap-2">
+          <button onclick="openPrintView()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 transition border border-slate-700 hover:border-slate-500">
+            <i class="fa-solid fa-print"></i> Print to Printer (or Save PDF)
+          </button>
+          <button onclick="downloadOfficialPdf()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 transition shadow-lg shadow-blue-500/25">
+            <i class="fa-solid fa-download"></i> Download Official PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ================= COOLAID AI COPILOT SLIDE-OVER DRAWER ================= -->
   <aside id="copilot-drawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-obsidian-950/95 backdrop-blur-2xl border-l border-white/10 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col">
     <!-- Header -->
@@ -1474,6 +1636,7 @@
       <div class="flex items-center gap-2.5">
         <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white text-sm shadow-md">
           <i class="fa-solid fa-robot"></i>
+        </div>
         </div>
         <div>
           <h4 class="font-bold text-sm text-white flex items-center gap-2">
@@ -1875,6 +2038,39 @@
     let currentResidentFilter = 'all';
     let isSunlightMode = false;
     let residentSearchTimer = null;
+
+    // Print & PDF Report Functions
+    function openPrintReportModal() {
+      const modal = document.getElementById('print-report-modal');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closePrintReportModal() {
+      const modal = document.getElementById('print-report-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function openPrintView() {
+      const budget = document.getElementById('report-budget-input')?.value || '10000000';
+      const temp = document.getElementById('report-temp-input')?.value || '102.0';
+      window.open(`/api/report/print?budget=${budget}&temp=${temp}&autoprint=1`, '_blank');
+    }
+
+    function downloadOfficialPdf() {
+      const budget = document.getElementById('report-budget-input')?.value || '10000000';
+      const temp = document.getElementById('report-temp-input')?.value || '102.0';
+      window.open(`/api/report/pdf?budget=${budget}&temp=${temp}`, '_blank');
+    }
+
+    function printCurrentDashboard() {
+      closePrintReportModal();
+      setTimeout(() => window.print(), 300);
+    }
+
+    // Close modal on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closePrintReportModal();
+    });
 
     // Leaflet GIS Map state
     let citizenMap = null;

@@ -23,6 +23,7 @@ An autonomous climate resilience decision support system, nationwide equity allo
 - **Security Gateway**: Google Cloud Model Armor prompt injection, jailbreak, and SQL/DDL injection interceptor (`agent/model_armor.py`).
 - **Decarbonization Layer**: Climate TRACE v5.12 monitored point-source assets (`a4i_climate.dallas_emissions_assets`).
 - **Climate Investment Simulator**: $50M Multi-Objective Pareto Frontier (Heat Adaptation vs. CO2e Mitigation).
+- **Executive Municipal Print & PDF Dossier**: Instant vector-crisp PDF generator (`/api/report/pdf`) and print dossier (`/api/report/print`) rendering City Council Resolution No. 2026-HEAT-01, Title VI equity audits, Track 1 dispatch matrices, and official municipal signature blocks for physical printing or legislative packet filing.
 
 
 ---

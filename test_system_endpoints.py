@@ -19,7 +19,10 @@ def run_test(name, endpoint, method="GET", payload=None, expected_status=200):
             status = resp.status
             if status == expected_status:
                 print(f"PASS ({status})")
-                return True, json.loads(body)
+                try:
+                    return True, json.loads(body)
+                except Exception:
+                    return True, body
             else:
                 print(f"FAIL (Expected {expected_status}, got {status})")
                 return False, None
@@ -232,6 +235,18 @@ def main():
         and "predicted_heat_offset_f" in data
         and len(data.get("top_features", [])) > 0
         and "attribution_f" in data["top_features"][0]
+    )
+
+    # 31. Executive Municipal Heat Report PDF Binary Generation
+    ok, data = run_test("Executive Heat Report PDF Generation", "/api/report/pdf?budget=10000000&temp=102.0")
+    results["report_pdf_generation"] = (
+        ok and isinstance(data, str) and data.startswith("%PDF")
+    )
+
+    # 32. Print-Optimized Executive Report HTML Dossier
+    ok, data = run_test("Print-Optimized Dossier HTML", "/api/report/print?budget=10000000&temp=102.0&autoprint=0")
+    results["report_print_html"] = (
+        ok and isinstance(data, str) and "2026 Urban Heat Island Resilience" in data
     )
 
     print("\n" + "=" * 70)
