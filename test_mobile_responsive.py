@@ -97,10 +97,11 @@ async def run_all_tests():
 
             # Navigate to local web server
             try:
-                await page.goto(BASE_URL, wait_until="networkidle", timeout=15000)
+                await page.goto(BASE_URL, wait_until="domcontentloaded", timeout=20000)
             except Exception:
-                pass
-            await asyncio.sleep(2)
+                await page.goto(BASE_URL, timeout=20000)
+            await page.wait_for_function("typeof toggleResidentPortal === 'function'", timeout=15000)
+            await asyncio.sleep(1)
 
             # Test 1: Check no horizontal overflow on initial load
             await check_no_horizontal_overflow(page, f"{vp_name}-initial")

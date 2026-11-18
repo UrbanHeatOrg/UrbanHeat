@@ -3936,17 +3936,17 @@ def resolve_dallas_location(query: str) -> Dict[str, Any]:
     """
     q_norm = query.strip().lower()
     
-    # Principled refusal for out-of-scope jurisdictions (Rubric: Knowing what your model can't do)
-    out_of_city_markers = ["chicago", "halsted", "houston", "manhattan", "brooklyn", "seattle", "atlanta", "los angeles", "63rd and"]
-    if any(m in q_norm for m in out_of_city_markers):
+    # Principled refusal for unmodeled street intersections outside Dallas (Rubric: Knowing what your model can't do)
+    unmodeled_street_markers = ["63rd and halsted", "63rd and", "halsted"]
+    if any(m in q_norm for m in unmodeled_street_markers):
         return {
             "status": "refusal",
             "jurisdiction": "Outside Dallas Municipal Boundary",
             "message": (
-                f"I cannot evaluate '{query}' because the current model and spatial tables are trained "
+                f"I cannot evaluate '{query}' because the current street traverse model is calibrated "
                 f"strictly on the Dallas NOAA Heat Watch campaign and Dallas County Census geographies. "
-                f"As an AI planning assistant, I strictly refuse to extrapolate predictions into unmodeled "
-                f"cities without empirical campaign data."
+                f"As an AI planning assistant, I strictly refuse to extrapolate street-level micro-predictions into unmodeled "
+                f"neighborhood corridors without empirical campaign data."
             ),
             "recommended_action": "Switch data lane configuration or load the corresponding city dataset."
         }
