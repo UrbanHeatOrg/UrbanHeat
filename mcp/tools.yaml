@@ -153,6 +153,20 @@ tools:
       GROUP BY year
       ORDER BY year DESC;
 
+  broadcast_heat_alert_x:
+    kind: custom-python
+    description: "Broadcast an official municipal heat alert or siting decision to X / Twitter with 1-click Web Intent & Title VI equity audit proof."
+    parameters:
+      - name: alert_type
+        type: string
+        description: "'EMERGENCY_HEAT' or 'COUNCIL_RESOLUTION'"
+      - name: city
+        type: string
+        description: "Target city name (e.g. 'Dallas')."
+      - name: temp_f
+        type: float
+        description: "Modeled peak ambient temperature in Fahrenheit (e.g. 104.8)."
+
 toolsets:
   climate-resilience:
     - explain_heat_offset_bqml
@@ -160,3 +174,6 @@ toolsets:
     - rank_cooling_centers_mcp
     - query_climate_trace_emitters
     - get_noaa_station_extremes
+    - broadcast_heat_alert_x
+
+

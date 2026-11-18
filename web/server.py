@@ -2480,7 +2480,14 @@ def grid_vulnerability(top_n: int = 5, census_tract: str = None):
 def emergency_dispatch(forecast_temp: float = 102.0, top_n: int = 5, ercot_alert: bool = True):
     return tools.dispatch_emergency_wellness_checks(forecast_temp_f=forecast_temp, top_n=top_n, ercot_grid_alert=ercot_alert)
 
+@app.get("/api/social/broadcast-x")
+def get_x_broadcast(alert_type: str = "EMERGENCY_HEAT", city: str = "Dallas", temp_f: float = 104.8):
+    from agent.social_broadcast import broadcast_to_x
+    return broadcast_to_x(alert_type=alert_type, city=city, temp_f=temp_f)
+
 if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)
+
+
