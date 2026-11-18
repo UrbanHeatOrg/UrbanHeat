@@ -14,10 +14,12 @@ graph TD
     classDef gateway fill:#1e1e38,stroke:#f43f5e,stroke-width:2px,color:#f8fafc;
     classDef brain fill:#0f172a,stroke:#34d399,stroke-width:2px,color:#f8fafc;
     classDef data fill:#1c1917,stroke:#a855f7,stroke-width:2px,color:#f8fafc;
+    classDef mcp fill:#1e293b,stroke:#38bdf8,stroke-width:2px,stroke-dasharray: 4 4,color:#f8fafc;
 
     subgraph ClientLayer ["1. CLIENT & 3D DIGITAL TWIN (DUCT)"]
         UI["<b>CesiumJS 3D Digital Twin</b><br/>• FLIR Thermal Shaders<br/>• 5/10/15m Isochrone Domes<br/>• Solar & Shadow Ephemeris"]:::client
         Console["<b>Planner HUD</b><br/>• Live Agent Deliberation<br/>• $50M Pareto Slider"]:::client
+        BroadcastUI["<b>MCP Social Broadcaster</b><br/>• 1-Click X / Twitter Dispatch<br/>• Live 280-Char Telemetry"]:::client
     end
 
     subgraph SecLayer ["2. ZERO-TRUST SECURITY GATEWAY"]
@@ -35,7 +37,15 @@ graph TD
         Dana --> T1 & T2 & T3 & T4
     end
 
-    subgraph CloudLayer ["4. GOOGLE CLOUD ENTERPRISE DATA FOUNDATION"]
+    subgraph MCPLayer ["4. MODEL CONTEXT PROTOCOL (MCP TOOLBOX)"]
+        MCPSocial["<b>MCP Social Tool: broadcast_heat_alert_x</b><br/>• Dual-Mode: Live OAuth API v2 + Web Intent<br/>• Title VI Equity & Safe Walk Proof<br/>• &le; 280-Char Threading Engine"]:::mcp
+        MCPBQ["<b>MCP BigQuery Explorer</b><br/>• ML.EXPLAIN_PREDICT Interface<br/>• NOAA Station Extremes"]:::mcp
+
+        T1 & T2 --> MCPSocial
+        Dana --> MCPBQ
+    end
+
+    subgraph CloudLayer ["5. GOOGLE CLOUD ENTERPRISE DATA FOUNDATION"]
         BQ["<b>BigQuery ML (a4i_climate)</b><br/>• heat_offset_model (ML.EXPLAIN_PREDICT)<br/>• 19,491 NOAA Heat Watch Traverses"]:::data
         Census["<b>Census (BYOD TIGER 2020)</b><br/>• 529 Tract Polygons<br/>• Density, Poverty & Transit"]:::data
         Climate["<b>Climate TRACE v5.12</b><br/>• 10 Dallas Emitters<br/>• 8.86M t CO2e Abatement"]:::data
@@ -43,7 +53,8 @@ graph TD
     end
 
     ClientLayer <-->|HTTPS / WSS| Armor <--> Dana
-    AgentLayer <--> CloudLayer
+    AgentLayer <--> MCPLayer <--> CloudLayer
+    BroadcastUI -.->|1-Click Web Intent| Twitter[("<b>X / Twitter API v2</b><br/>Civic Heat Broadcast")]:::client
 ```
 
 ---
@@ -55,16 +66,21 @@ graph LR
     classDef edge fill:#1e293b,stroke:#38bdf8,stroke-width:1.5px,color:#f8fafc;
     classDef compute fill:#0f172a,stroke:#34d399,stroke-width:2px,color:#f8fafc;
     classDef managed fill:#1e1e38,stroke:#a855f7,stroke-width:1.5px,color:#f8fafc;
+    classDef external fill:#0f172a,stroke:#0ea5e9,stroke-width:2px,stroke-dasharray: 3 3,color:#f8fafc;
 
-    User([Planner / Evaluator]) --> CDN[Cloud CDN & Armor Edge]:::edge
-    CDN --> Run["<b>Google Cloud Run: dallas-heat-app</b><br/>Region: us-central1 - Revision 15<br/>FastAPI + Google ADK + Uvicorn"]:::compute
-
+    User([Planner / Public]) --> CDN[Cloud CDN & Armor Edge]:::edge
+    CDN --> Run["<b>Google Cloud Run: dallas-heat-app</b><br/>Region: us-central1 - Revision 15<br/>FastAPI + Google ADK + MCP Tools"]:::compute
 
     subgraph GCPManaged ["Managed Google Cloud Services (us-central1)"]
         Run --> Vertex[<b>Vertex AI</b><br/>Gemini 2.5 Flash]:::managed
         Run --> BQ[<b>BigQuery ML</b><br/>a4i_climate]:::managed
         Run --> Maps[<b>Maps Platform</b><br/>Solar & 3D Tiles]:::managed
         Run --> ArmorSvc[<b>Model Armor</b><br/>Rule Interceptor]:::managed
+    end
+
+    subgraph MCPOutbound ["Civic Outreach & Social MCP"]
+        Run --> MCPTool[<b>MCP Social Dispatcher</b><br/>Dual-Mode Broadcast]:::managed
+        MCPTool --> XNet[<b>X / Twitter API v2</b><br/>Live Tweet / Web Intent]:::external
     end
 ```
 
@@ -83,7 +99,7 @@ graph LR
 
 ---
 
-## 4. Hackathon Demo: 4 Standout Moments
+## 4. Hackathon Demo: 5 Standout Moments
 
 | # | Demo Action | Technology Demonstrated | Judge Takeaway |
 |:---:|---|---|---|
@@ -91,18 +107,23 @@ graph LR
 | **2** | **Title VI Equity Audit** | Census Demographics vs Baseline | Proves sites serve **3.0x higher poverty** and **6.5x higher transit burden** under federal Justice40 standards. |
 | **3** | **CesiumJS Isochrone Domes** | Google Isochrones + 3D Shaders | Visualizes 5, 10, and 15-minute pedestrian refuge buffers before heatstroke onset. |
 | **4** | **Council Resolution Memo** | Autonomous Document Generation | Exports binding **City Council Resolution No. 2026-HEAT-01** with $10M line-item appropriations. |
+| **5** | **MCP Social X/Twitter Alert** | Model Context Protocol (MCP) | Broadcasts urgent microclimate alerts & Title VI equity proofs to **X / Twitter** with 1-click Web Intent & &le;280-char compliance. |
 
 ---
 
 ## 5. Verification Commands for Evaluators
 
 ```bash
-# 1. Security & Model Armor Evals (6/6 Passing)
+# 1. MCP Social Broadcast & Character Compliance Tests (4/4 Passing)
+python3 test_social_broadcast.py
+
+# 2. Security & Model Armor Evals (6/6 Passing)
 python3 test_security_evals.py
 
-# 2. Complete System Integration (25/25 Passing)
+# 3. Complete System Integration (25/25 Passing)
 python3 test_system_endpoints.py
 
-# 3. Live Cloud Run Production Check
+# 4. Live Cloud Run Production Check
 curl -s "https://dallas-heat-app-447063751013.us-central1.run.app/api/audit" | jq .metrics
 ```
+
